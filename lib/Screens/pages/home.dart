@@ -1,26 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:kliencash/Screens/Widgets/ProfileData.dart';
 import 'package:kliencash/Screens/Widgets/mainGrid.dart';
 import 'package:kliencash/Screens/Widgets/myText.dart';
+import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var height =  MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.blue.shade800,
-            title: MyText(title: "Client Cash", 
-            fontSize: 20,color: Colors.white, fontWeight: FontWeight.w600,),
+            backgroundColor: Theme.of(context).colorScheme.onPrimary,
+            title: MyText(
+              title: "Client Cash",
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.settings, color: Colors.white, size: 30),
+              ),
+            ],
           ),
-          mainGrid()
+          ProfileData(),
+          mainGrid(),
+          BookingStatues(),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: 10,
+              (context, index) {
+                return ListTile(
+                  title: MyText(title: 'title $index'),
+                );
+              },
+            ),
+          )
         ],
       ),
     );
   }
 }
-
