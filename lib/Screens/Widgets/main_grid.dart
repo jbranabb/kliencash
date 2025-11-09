@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kliencash/Screens/Widgets/myText.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/state/bloc/client_bloc.dart';
 
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
@@ -28,7 +30,14 @@ SliverToBoxAdapter mainGrid() {
                 ),
               ],
             ),
-            child: childGrid(index,context),
+            child: GestureDetector(
+              onTap: () {
+                context.read<ClientBloc>().add(ReadDataClient());
+                if(index == 0){
+                context.read<ClientBloc>().add(PostDataClient());
+                }
+              },
+              child: childGrid(index,context)),
           ),
         ),
       ),
