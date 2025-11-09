@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kliencash/Screens/Widgets/ProfileData.dart';
-import 'package:kliencash/Screens/Widgets/mainGrid.dart';
-import 'package:kliencash/Screens/Widgets/myText.dart';
+import 'package:kliencash/Screens/Widgets/profile_data.dart';
+import 'package:kliencash/Screens/Widgets/main_grid.dart';
+import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 
 class HomePage extends StatelessWidget {
