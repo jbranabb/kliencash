@@ -24,11 +24,11 @@ SliverToBoxAdapter mainGrid() {
                 BoxShadow(
                   offset: Offset(0.2, 4),
                   blurRadius: 10,
-                  color: Colors.grey,
+                  color: Colors.grey.shade300,
                 ),
               ],
             ),
-            child: childGrid(index),
+            child: childGrid(index,context),
           ),
         ),
       ),
@@ -36,14 +36,14 @@ SliverToBoxAdapter mainGrid() {
   );
 }
 
-Widget childGrid(int index) {
+Widget childGrid(int index, BuildContext context) {
   switch (index) {
     case 1:
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Colors.blue.shade600,size: 30, Icons.receipt_long_rounded),
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.receipt_long_rounded),
         MyText(title: "Invoice")
       ],
     );
@@ -52,7 +52,7 @@ Widget childGrid(int index) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Colors.blue.shade600,size: 30, Icons.attach_money_rounded),
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.attach_money_rounded),
         MyText(title: "Payment")
       ],
     );
@@ -61,7 +61,7 @@ Widget childGrid(int index) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Colors.blue.shade600,size: 30, Icons.bar_chart_rounded),
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.bar_chart_rounded),
         MyText(title: "Report")
       ],
     );
@@ -70,7 +70,7 @@ Widget childGrid(int index) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Colors.blue.shade600,size: 30, Icons.person),
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.person),
         MyText(title: "Client")
       ],
     );
