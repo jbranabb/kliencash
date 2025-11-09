@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kliencash/Screens/Widgets/myText.dart';
+import 'package:kliencash/Screens/Widgets/my_text.dart';
 
 class BookingStatues extends StatelessWidget {
   const BookingStatues({super.key});
