@@ -7,9 +7,14 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
+  bloc: ^9.1.0
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
   google_fonts: ^6.3.2
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  sqllite: ^1.1.0
   syncfusion_flutter_charts: ^28.2.6
 
 dev_dependencies:
