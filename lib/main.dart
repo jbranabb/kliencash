@@ -8,7 +8,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp( MultiBlocProvider(
     providers: [
-      BlocProvider(create: (context) => ClientBloc()
+      BlocProvider(create: (context) => ClientBloc()..add(ReadDataClient())
       ,)
     ],
     child: MainApp()));
