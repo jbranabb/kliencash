@@ -1,15 +1,18 @@
 class ClientModel {
+  int? id;
   String name;
   String alamat;
-  int handphone;
+  String handphone;
   
   ClientModel({
+    this.id,
     required this.name,
     required this.alamat,
     required this.handphone,
   });
   factory ClientModel.fromJson(Map<String, dynamic> json){
    return ClientModel(
+    id: json['Id'],
     name: json['name'],
     alamat: json['alamat'],
     handphone: json['handphone']);

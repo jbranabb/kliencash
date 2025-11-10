@@ -24,7 +24,7 @@ class DatabaseHelper {
       CREATE TABLE CLIENT(
       Id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      handphone INTEGER NOT NULL,
+      handphone TEXT NOT NULL,
       alamat TEXT NOT NULL)
       ''');
     print('database dan table berhasil di buat !!!');
