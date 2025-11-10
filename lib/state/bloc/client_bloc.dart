@@ -13,15 +13,31 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
       emit(ClientLoading());
       final db = await database;
       final client = await db.query("CLIENT");
-     List<ClientModel> dataClient =  client.map((e) => ClientModel.fromJson(e)).toList();
-     emit(ClientSucces(list: dataClient));
-     print('fetching..');
+      List<ClientModel> dataClient = client
+          .map((e) => ClientModel.fromJson(e))
+          .toList();
+      emit(ClientSucces(list: dataClient));
+      print('fetching..');
     });
 
     on<PostDataClient>((event, emit) async {
+      emit(ClientLoading());
       final db = await database;
-      final results = await db.insert("CLIENT", event.clientModel.toJson());
-      print(results);
+      await db.insert("CLIENT", event.clientModel.toJson());
+      emit(PostClientSucces());
+    });
+    on<EditDataClient>((event, emit) async {
+      emit(ClientLoading());
+      final db = await database;
+      var data = event.clientModel.toJson();
+      await db.update("CLIENT", data, where: "Id = ?", whereArgs: [data['Id']]);
+      emit(EditClientSucces());
+    });
+    on<DeleteDataClient>((event, emit) async {
+      emit(ClientLoading());
+      final db = await database;
+      await db.delete("CLIENT",where: "Id = ?",whereArgs: [event.id]);
+      emit(DeleteClientSucces());
     });
   }
 }
