@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/mainGrid/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/data/model/client_model.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
@@ -33,9 +34,8 @@ SliverToBoxAdapter mainGrid() {
             ),
             child: GestureDetector(
               onTap: () {
-                context.read<ClientBloc>().add(ReadDataClient());
                 if(index == 0){
-                context.read<ClientBloc>().add(PostDataClient(clientModel: ClientModel(name: "jibran", alamat: "jalan Madura", handphone: "13131")));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ClientPage(),));
                 }
               },
               child: childGrid(index,context)),
