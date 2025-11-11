@@ -10,7 +10,8 @@ class PostDataClient extends ClientEvent {
 }
 class EditDataClient extends ClientEvent {
   ClientModel clientModel;
-  EditDataClient({required this.clientModel});
+  int id;
+  EditDataClient({required this.clientModel, required this.id});
 }
 class DeleteDataClient extends ClientEvent {
   int id; 

@@ -30,7 +30,7 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
       emit(ClientLoading());
       final db = await database;
       var data = event.clientModel.toJson();
-      await db.update("CLIENT", data, where: "Id = ?", whereArgs: [data['Id']]);
+      await db.update("CLIENT", data, where: "Id = ?", whereArgs: [event.id]);
       emit(EditClientSucces());
     });
     on<DeleteDataClient>((event, emit) async {

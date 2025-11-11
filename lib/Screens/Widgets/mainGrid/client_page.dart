@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/mainGrid/add_client.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/data/model/client_model.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:kliencash/state/cubit/countryCode.dart';
 
 class ClientPage extends StatefulWidget {
   const ClientPage({super.key});
@@ -19,9 +21,17 @@ class _ClientPageState extends State<ClientPage> {
     print('init');
   }
 
+  var name = TextEditingController();
+  var phone = TextEditingController();
+  var alamat = TextEditingController();
+
+  var nameF = FocusNode();
+  var phoneF = FocusNode();
+  var alamatF = FocusNode();
+
   @override
   Widget build(BuildContext context) {
-    var height =  MediaQuery.of(context).size.height;
+    var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: MyText(title: 'Client Side', fontSize: 20, color: Colors.white),
@@ -45,6 +55,7 @@ class _ClientPageState extends State<ClientPage> {
                     ),
                   );
                 } else if (state is EditClientSucces) {
+                  Navigator.of(context).pop();
                   context.read<ClientBloc>().add(ReadDataClient());
                   ScaffoldMessenger.of(context).showSnackBar(
                     mySnakcbar(
@@ -56,17 +67,25 @@ class _ClientPageState extends State<ClientPage> {
               },
               builder: (context, state) {
                 if (state is ClientSucces) {
-                  if(state.list.isEmpty){
+                  if (state.list.isEmpty) {
                     return SliverToBoxAdapter(
-                      child: Container(
+                      child: SizedBox(
                         height: height * 0.3,
                         child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.person_off,size: 40,color: Colors.grey,),
-                          MyText(title: "Tidak ada Clients Saat ini silahkan\ntambah client baru", textAlign: TextAlign.center,),
-                        ],  
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.person_off,
+                              size: 40,
+                              color: Colors.grey,
+                            ),
+                            MyText(
+                              title:
+                                  "Tidak ada Clients Saat ini silahkan\ntambah client baru",
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -86,7 +105,14 @@ class _ClientPageState extends State<ClientPage> {
                             children: [
                               SlidableAction(
                                 onPressed: (context) {
-                                  confrimDelete(list.name, context, list.id!);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => confrimDelete(
+                                      list.name,
+                                      context,
+                                      list.id!,
+                                    ),
+                                  );
                                 },
                                 backgroundColor: Color(0xFFFE4A49),
                                 foregroundColor: Colors.white,
@@ -95,47 +121,70 @@ class _ClientPageState extends State<ClientPage> {
                               ),
                             ],
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 0.5,
-                                  color: Colors.grey.shade300,
+                          child: InkWell(
+                            onLongPress: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => editDataClient(
+                                  list.id!,
+                                  name,
+                                  list.name,
+                                  phone,
+                                  list.handphone,
+                                  alamat,
+                                  list.alamat,
+                                  list.countryCode,
+                                  nameF,
+                                  phoneF,
+                                  alamatF,
+                                  context,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 0.5,
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: ListTile(
-                              leading: Container(
-                                height: 45,
-                                width: 45,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                alignment: Alignment.center,
-                                child: MyText(
-                                  title: list.name.characters.first,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              title: MyText(title: list.name),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MyText(
-                                    title:
-                                        "${list.countryCode} ${list.handphone}",
-                                    color: Colors.grey,
+                              child: ListTile(
+                                leading: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                   ),
-                                  MyText(
-                                    title: list.alamat,
-                                    color: Colors.grey,
+                                  alignment: Alignment.center,
+                                  child: MyText(
+                                    title: list.name.characters.first,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
                                   ),
-                                ],
+                                ),
+                                title: MyText(title: list.name),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MyText(
+                                      title:
+                                          "${list.countryCode} ${list.handphone}",
+                                      color: Colors.grey,
+                                    ),
+                                    MyText(
+                                      title: list.alamat,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -174,21 +223,175 @@ class _ClientPageState extends State<ClientPage> {
     );
   }
 }
-AlertDialog confrimDelete(String name, BuildContext context, int id){
+
+AlertDialog confrimDelete(String name, BuildContext context, int id) {
   return AlertDialog(
-    title: MyText(title: 'Hapus Client $name'),
+    title: MyText(title: 'Hapus Client $name?'),
     content: MyText(title: 'Apakah kamu yakin ingin hapus Client ini?'),
     actions: [
-      TextButton(onPressed: (){
-        Navigator.of(context).pop();
-      }, child: MyText(title: 'Batal')),
-      TextButton(onPressed: (){
-        context.read<ClientBloc>().add(DeleteDataClient(id: id));
-      },
-      style: TextButton.styleFrom(
-        backgroundColor: Colors.red
+      TextButton(
+        style: TextButton.styleFrom(backgroundColor: Colors.grey.shade100),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: MyText(title: 'Batal'),
       ),
-       child: MyText(title: 'Ya, Yakin')),
+      TextButton(
+        onPressed: () {
+          context.read<ClientBloc>().add(DeleteDataClient(id: id));
+        },
+        style: TextButton.styleFrom(backgroundColor: Colors.red),
+        child: MyText(title: 'Ya, Yakin', color: Colors.white),
+      ),
     ],
   );
+}
+
+Dialog editDataClient(
+  int id,
+  TextEditingController name,
+  String nameB,
+  TextEditingController phone,
+  String phoneB,
+  TextEditingController alamat,
+  String alamtB,
+  String ccb,
+  FocusNode nameF,
+  FocusNode phoneF,
+  FocusNode alamatF,
+  BuildContext context,
+) {
+  name.text = nameB;
+  phone.text = phoneB;
+  alamat.text = alamtB;
+  return Dialog(
+    insetPadding: EdgeInsets.symmetric(horizontal: 10),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 20,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: MyText(title: 'Edit data Client', fontSize: 18),
+            ),
+            MyTextFileds(
+              controller: name,
+              label: "Nama",
+              icon: Icons.person,
+              focusNode: nameF,
+            ),
+            MyTextFiledsForPhone(
+              controller: phone,
+              label: 'Phone',
+              icon: Icons.phone,
+              focusNode: phoneF,
+            ),
+            MyTextFileds(
+              controller: alamat,
+              label: "Alamat",
+              icon: Icons.home,
+              focusNode: alamatF,
+            ),
+            Row(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.grey.shade100,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: MyText(title: 'Batal'),
+                ),
+                BlocBuilder<CountrycodeCubit, String>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (nameB == name.text &&
+                            phone.text == phoneB &&
+                            alamat.text == alamtB && ccb == state) {
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Tidak Ada Yang Berubah',
+                               Theme.of(context).colorScheme.onPrimary));
+                            }else{
+                        validateEdit(
+                          id,
+                          name.text,
+                          state,
+                          phone.text,
+                          alamat.text,
+                          context,
+                        );
+                            }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
+                      ),
+                      child: MyText(
+                        title: "Selesai",
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+void validateEdit(
+  int id,
+  String name,
+  String countryCode,
+  String phone,
+  String alamat,
+  BuildContext context,
+) {
+  if (name.isNotEmpty && phone.isNotEmpty && alamat.isNotEmpty) {
+    context.read<ClientBloc>().add(
+      EditDataClient(
+        id: id,
+        clientModel: ClientModel(
+          name: name,
+          alamat: alamat,
+          handphone: phone,
+          countryCode: countryCode,
+        ),
+      ),
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: MyText(title: 'Terjadi Kesalahan'),
+        content: MyText(title: "Silahkan isi smua fileds terlebih dahulu"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(backgroundColor: Colors.grey.shade100),
+            child: MyText(title: 'Ok'),
+          ),
+        ],
+      ),
+    );
+  }
 }
