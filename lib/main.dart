@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
+import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/themeData.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp( MultiBlocProvider(
     providers: [
-      BlocProvider(create: (context) => ClientBloc()..add(ReadDataClient())
-      ,)
+      BlocProvider(create: (context) => ClientBloc()..add(ReadDataClient()),),
+      BlocProvider(create: (context) => CountrycodeCubit()),
     ],
     child: MainApp()));
 }

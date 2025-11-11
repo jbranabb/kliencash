@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/mainGrid/add_client.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
 
@@ -61,7 +62,7 @@ class _ClientPageState extends State<ClientPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyText(
-                                title: "${list.handphone}",
+                                title: list.handphone,
                                 color: Colors.grey,
                               ),
                               MyText(title: list.alamat, color: Colors.grey),
@@ -86,6 +87,11 @@ class _ClientPageState extends State<ClientPage> {
             },
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddClient(),)); 
+      },
+      child: Icon(Icons.person_add_alt_1_sharp, color: Colors.white),
       ),
     );
   }
