@@ -25,8 +25,8 @@ class DatabaseHelper {
       Id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       handphone TEXT NOT NULL,
+      country_code TEXT NOT NULL
       alamat TEXT NOT NULL)
       ''');
-    print('database dan table berhasil di buat !!!');
   }
 }
