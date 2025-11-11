@@ -21,6 +21,7 @@ class _ClientPageState extends State<ClientPage> {
 
   @override
   Widget build(BuildContext context) {
+    var height =  MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: MyText(title: 'Client Side', fontSize: 20, color: Colors.white),
@@ -55,6 +56,21 @@ class _ClientPageState extends State<ClientPage> {
               },
               builder: (context, state) {
                 if (state is ClientSucces) {
+                  if(state.list.isEmpty){
+                    return SliverToBoxAdapter(
+                      child: Container(
+                        height: height * 0.3,
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.person_off,size: 40,color: Colors.grey,),
+                          MyText(title: "Tidak ada Clients Saat ini silahkan\ntambah client baru", textAlign: TextAlign.center,),
+                        ],  
+                        ),
+                      ),
+                    );
+                  }
                   return SliverList.builder(
                     itemCount: state.list.length,
                     itemBuilder: (context, index) {
