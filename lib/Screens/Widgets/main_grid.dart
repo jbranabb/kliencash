@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/mainGrid/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
-import 'package:kliencash/data/model/client_model.dart';
-import 'package:kliencash/state/bloc/client_bloc.dart';
-
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
     child: SizedBox(
@@ -16,7 +12,7 @@ SliverToBoxAdapter mainGrid() {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
         ),
-        itemCount: 4,
+        itemCount: 6,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -48,16 +44,34 @@ SliverToBoxAdapter mainGrid() {
 
 Widget childGrid(int index, BuildContext context) {
   switch (index) {
+    case 0: 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.person),
+        MyText(title: "Client")
+      ],
+    );
     case 1:
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.receipt_long_rounded),
-        MyText(title: "Invoice")
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.work),
+        MyText(title: "Projects")
       ],
     );
     case 2:
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+       Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.receipt_long_rounded),
+        MyText(title: "Invoice")
+       ],
+    );
+    case 3:
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,13 +80,22 @@ Widget childGrid(int index, BuildContext context) {
         MyText(title: "Payment")
       ],
     );
-    case 3:
-    return Column(
+    case 4:
+      return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.bar_chart_rounded),
         MyText(title: "Report")
+      ],
+    );
+    case 5:
+      return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.factory),
+        MyText(title: "Operasional", textAlign: TextAlign.center,)
       ],
     );
     default:
@@ -81,7 +104,7 @@ Widget childGrid(int index, BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.person),
-        MyText(title: "Client")
+        MyText(title: "seprei gratis bowok", textAlign: TextAlign.center,)
       ],
     );
   }
