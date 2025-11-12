@@ -34,6 +34,9 @@ class _ClientPageState extends State<ClientPage> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
         title: MyText(title: 'Client Side', fontSize: 20, color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
@@ -213,6 +216,7 @@ class _ClientPageState extends State<ClientPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
           Navigator.of(
             context,

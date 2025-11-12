@@ -37,12 +37,14 @@ class _AddClientState extends State<AddClient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         title: MyText(
           title: "Add Client",
           color: Colors.white,
           fontSize: 18,
-          fontWeight: FontWeight.w700,
         ),
       ),
       body: BlocListener<ClientBloc, ClientState>(
