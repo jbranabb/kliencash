@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kliencash/Screens/Widgets/mainGrid/add_client.dart';
+import 'package:kliencash/Screens/Widgets/snackbar.dart';
+import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/Screens/pages/mainGrid/clientPage/add_client.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/data/model/client_model.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';

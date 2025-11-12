@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/Widgets/snackbar.dart';
+import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/client_model.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
@@ -37,23 +39,25 @@ class _AddClientState extends State<AddClient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop();
-        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: MyText(
-          title: "Add Client",
-          color: Colors.white,
-          fontSize: 18,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: MyText(title: "Add Client", color: Colors.white, fontSize: 18),
       ),
       body: BlocListener<ClientBloc, ClientState>(
         listener: (context, state) {
-          if(state is PostClientSucces){
+          if (state is PostClientSucces) {
             Navigator.of(context).pop();
             context.read<ClientBloc>().add(ReadDataClient());
             ScaffoldMessenger.of(context).showSnackBar(
-              mySnakcbar('Berhasil Menambahkan Client baru', Theme.of(context).colorScheme.onPrimary)
+              mySnakcbar(
+                'Berhasil Menambahkan Client baru',
+                Theme.of(context).colorScheme.onPrimary,
+              ),
             );
           }
         },
@@ -126,97 +130,6 @@ class _AddClientState extends State<AddClient> {
   }
 }
 
-class MyTextFileds extends StatelessWidget {
-  MyTextFileds({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.icon,
-    required this.focusNode,
-    this.onEditingCom,
-  });
-  TextEditingController controller;
-  IconData icon;
-  String label;
-  FocusNode focusNode;
-  void Function()? onEditingCom;
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      onEditingComplete: onEditingCom,
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        enabled: true,
-        prefixIcon: Icon(icon, color: Colors.grey),
-        suffixText: "*",
-        suffixStyle: TextStyle(color: Colors.red),
-        label: MyText(title: label),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
-        ),
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-}
-
-class MyTextFiledsForPhone extends StatelessWidget {
-  MyTextFiledsForPhone({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.icon,
-    required this.focusNode,
-    this.onEditingCom,
-  });
-  TextEditingController controller;
-  IconData icon;
-  String label;
-  FocusNode focusNode;
-  void Function()? onEditingCom;
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      onEditingComplete: onEditingCom,
-      keyboardType: TextInputType.number,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: InputDecoration(
-        enabled: true,
-        icon: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border: BoxBorder.all(color: Colors.grey.shade300, width: 1.5),
-          ),
-          child: CountryCodePicker(
-            initialSelection: "ID",
-            onInit: (value) {
-              context.read<CountrycodeCubit>().changeCountryCode(
-                value.toString(),
-              );
-            },
-            onChanged: (value) {
-              context.read<CountrycodeCubit>().changeCountryCode(
-                value.toString(),
-              );
-            },
-          ),
-        ),
-        prefixIcon: Icon(icon, color: Colors.grey),
-        suffixText: "*",
-        suffixStyle: TextStyle(color: Colors.red),
-        label: MyText(title: label),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
-        ),
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-}
 
 void validatePost(
   String name,
@@ -243,10 +156,3 @@ void validatePost(
   }
 }
 
-SnackBar mySnakcbar(String title, Color? color) {
-  return SnackBar(
-    content: MyText(title: title, color: Colors.white),
-    duration: Durations.extralong3,
-    backgroundColor: color ?? Colors.red,
-  );
-}

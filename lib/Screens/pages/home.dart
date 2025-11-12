@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kliencash/Screens/Widgets/profile_data.dart';
-import 'package:kliencash/Screens/Widgets/mainGrid/main_grid.dart';
+import 'package:kliencash/Screens/Widgets/main_grid.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 

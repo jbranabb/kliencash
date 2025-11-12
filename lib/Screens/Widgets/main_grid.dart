@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kliencash/Screens/Widgets/mainGrid/client_page.dart';
+import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
     child: SizedBox(
@@ -32,6 +33,9 @@ SliverToBoxAdapter mainGrid() {
               onTap: () {
                 if(index == 0){
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ClientPage(),));
+                }
+                if(index == 1){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProjectsPage(),));
                 }
               },
               child: childGrid(index,context)),

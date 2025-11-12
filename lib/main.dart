@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
+import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:kliencash/themeData.dart';
 
 void main() async{
@@ -11,6 +12,7 @@ void main() async{
     providers: [
       BlocProvider(create: (context) => ClientBloc()..add(ReadDataClient()),),
       BlocProvider(create: (context) => CountrycodeCubit()),
+      BlocProvider(create: (context) => StatusprojectrsCubit()),
     ],
     child: MainApp()));
 }
