@@ -26,11 +26,24 @@ class TextFieldsDropDown extends StatelessWidget {
               )
               .toList(),
           underline: Container(),
+          borderRadius: BorderRadius.circular(12),
           hint: BlocBuilder<StatusprojectrsCubit, String?>(
             builder: (context, state) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: MyText(title: state ?? 'Pilih Status',color: state != null ?Colors.black : Colors.grey, fontWeight: FontWeight.w600,),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: bgcolors(state ?? ''),
+                    border: Border.all(
+                      color: colors(state ?? '')
+                    ),
+                    borderRadius: BorderRadius.circular(12) 
+                  ),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0, top: 4,left: 8,right: 8),
+                    child: MyText(title: state ?? 'Pilih Status',color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
+                  )),
               );
             },
           ),
@@ -40,6 +53,34 @@ class TextFieldsDropDown extends StatelessWidget {
   }
 }
 
+Color bgcolors(String state){
+  switch(state.toLowerCase()){
+    case "pending":
+    return Colors.orange.shade100;
+    case "on going":
+    return Colors.blue.shade100;
+    case "completed":
+    return Colors.green.shade100;
+    case "cancelled":
+    return Colors.red.shade100;
+  default:
+  return Colors.grey.shade100;
+  }
+}
+Color colors(String state){
+  switch(state.toLowerCase()){
+    case "pending":
+    return Colors.orange.shade700;
+    case "on going":
+    return Colors.blue.shade700;
+    case "completed":
+    return Colors.green.shade700;
+    case "cancelled":
+    return Colors.red;
+  default:
+  return Colors.grey.shade100;
+  }
+}
 class MyTextFileds extends StatelessWidget {
   MyTextFileds({
     super.key,

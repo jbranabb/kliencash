@@ -1,9 +1,12 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
-import 'package:kliencash/Screens/pages/mainGrid/clientPage/add_client.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
+import 'package:kliencash/state/cubit/SelectedClient.dart';
+import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 
 class AddProjects extends StatefulWidget {
@@ -15,9 +18,14 @@ class AddProjects extends StatefulWidget {
 class _AddProjectsState extends State<AddProjects> {
   var agendaC = TextEditingController();
   var agendaF = FocusNode();
+  var descC = TextEditingController();
+  var descF = FocusNode();
+  var priceC = TextEditingController();
+  var priceF = FocusNode();
 
   @override
   Widget build(BuildContext context) {
+    context.read<StatusprojectrsCubit>().setStatus(null);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -36,67 +44,154 @@ class _AddProjectsState extends State<AddProjects> {
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 10,
-          children: [
-            Container(
-              width: width * 0.95,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: BoxBorder.all(width: 1.4, color: Colors.grey.shade300),
-              ),
-              child: ListTile(
-                title: MyText(title: 'Pilih Client'),
-                leading: Icon(Icons.person, color: Colors.grey),
-                trailing: Icon(Icons.arrow_drop_down, color: Colors.grey),
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) => Container(
-                      height: height * 0.8,
-                      decoration: BoxDecoration(
-                      color: Colors.white,
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12))
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 10,
+            children: [
+              Container(
+                width: width * 0.95,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: BoxBorder.all(
+                    width: 1.4,
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                child: BlocBuilder<Selectedclient, Map<String, dynamic>>(
+                  builder: (context, state) {
+                    var stateIsnotEmpty = state['name'] != null;
+                    return ListTile(
+                      title: MyText(
+                        title: stateIsnotEmpty ? state['name'] : 'Pilih Client',
                       ),
-                      child: userstoAdd(context, height),
-                    ),
-                  );
+                      leading: stateIsnotEmpty
+                          ? Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: MyText(
+                                title: state['name']
+                                    .toString()
+                                    .characters
+                                    .first,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : Icon(Icons.person, color: Colors.grey),
+                      subtitle: stateIsnotEmpty
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  title:
+                                      "${state['countryCode']} ${state['handphone']}",
+                                  color: Colors.grey,
+                                ),
+                                MyText(
+                                  title: state['almat'].toString(),
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            )
+                          : null,
+                      trailing: Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) => Container(
+                            height: height * 0.8,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(12),
+                                topLeft: Radius.circular(12),
+                              ),
+                            ),
+                            child: userstoAdd(context, height),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              MyTextFileds(
+                controller: agendaC,
+                label: "Agenda",
+                icon: Icons.work,
+                focusNode: agendaF,
+                onEditingCom: () {
+                  FocusScope.of(context).requestFocus(descF);
                 },
               ),
-            ),
-            MyTextFileds(
-              controller: agendaC,
-              label: "Agenda",
-              icon: Icons.work,
-              focusNode: agendaF,
-            ),
-            MyTextFileds(
-              controller: agendaC,
-              label: "Deskripsi",
-              icon: Icons.description,
-              focusNode: agendaF,
-            ),
-            MyTextFileds(
-              controller: agendaC,
-              label: "Harga Awal",
-              icon: Icons.attach_money_outlined,
-              focusNode: agendaF,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                spacing: 10,
+              MyTextFileds(
+                controller: descC,
+                label: "Deskripsi",
+                icon: Icons.description,
+                focusNode: descF,
+                onEditingCom: () {
+                  FocusScope.of(context).requestFocus(priceF);
+                },
+              ),
+              MyTextFileds(
+                controller: priceC,
+                label: "Harga Awal",
+                icon: Icons.attach_money_outlined,
+                focusNode: priceF,
+                onEditingCom: () {
+                  FocusScope.of(context).unfocus();
+                  // tutup keyboard pake apa?
+                },
+              ),
+              Row(
                 children: [
-                  MyText(title: 'Status:'),
-                  TextFieldsDropDown(),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      showDialog(context: context, builder: (context) => showDateTime(context));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: BoxBorder.all(color: Colors.grey.shade300, width: 1.5),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          spacing: 10,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(Icons.calendar_month, color: Colors.grey,),
+                            MyText(title: 'Pilih Tanggal'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Status:'),
+                    TextFieldsDropDown(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -111,19 +206,19 @@ Widget userstoAdd(BuildContext context, double height) {
           height: height * 0.8,
           child: Column(
             children: [
-              SizedBox(height: 20,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 0.0,
-                  width: 120,
-                  decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.shade300,
-
+              SizedBox(
+                height: 20,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 0.0,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.shade300,
+                    ),
                   ),
                 ),
-              ),
               ),
               Expanded(
                 child: ListView.builder(
@@ -134,8 +229,11 @@ Widget userstoAdd(BuildContext context, double height) {
                     return Card(
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12),
-                        onTap: (){
-                          print('object');
+                        onTap: () {
+                          context.read<Selectedclient>().selectedClient(
+                            list.id!,
+                          );
+                          Navigator.of(context).pop();
                         },
                         child: ListTile(
                           leading: Container(
@@ -146,18 +244,23 @@ Widget userstoAdd(BuildContext context, double height) {
                               shape: BoxShape.circle,
                             ),
                             alignment: Alignment.center,
-                            child: MyText(title: list.name.characters.first,
-                             color: Theme.of(context).colorScheme.onPrimary,fontSize: 25,
-                             fontWeight: FontWeight.bold,
-                             ),
+                            child: MyText(
+                              title: list.name.characters.first,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           title: MyText(title: list.name),
                           subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText(title: "${list.countryCode} ${list.handphone}", color: Colors.grey,),
-                            MyText(title: list.alamat, color: Colors.grey,),
-                          ],
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText(
+                                title: "${list.countryCode} ${list.handphone}",
+                                color: Colors.grey,
+                              ),
+                              MyText(title: list.alamat, color: Colors.grey),
+                            ],
                           ),
                         ),
                       ),
@@ -171,5 +274,56 @@ Widget userstoAdd(BuildContext context, double height) {
       }
       return Container();
     },
+  );
+}
+
+Widget showDateTime(BuildContext context) {
+  List<DateTime?> rangeDatePickerValueWithDefaultValue = [
+    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+    DateTime.now().add(Duration(days: 7)),
+  ];
+  return Dialog(
+    insetPadding: EdgeInsets.symmetric(horizontal: 10),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CalendarDatePicker2(
+          config: CalendarDatePicker2Config(
+            calendarType: CalendarDatePicker2Type.range,
+            selectedDayHighlightColor: Theme.of(context).colorScheme.onPrimary,
+            selectedDayTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            weekdayLabelTextStyle: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          value: rangeDatePickerValueWithDefaultValue,
+          onValueChanged: (value) {
+            context.read<Selecteddatecubit>().setDate(value);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          spacing: 19,
+          children: [
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: MyText(title: 'Batal')),
+            TextButton(onPressed: (){
+            var state = context.read<Selecteddatecubit>().state;
+            print(state.length);
+            if(state.length == 2){
+              print('oke');
+            }else{
+              print('wahh');
+            }
+            }, child: MyText(title: 'Oke')),
+            ],
+        )
+      ],
+    ),
   );
 }
