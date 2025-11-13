@@ -29,17 +29,18 @@ class ClientModel {
   }
 }
 class ProjectsModel {
-  int id;
+  int? id;
   int clientId;
   String agenda;
   String desc;
-  String price;
+  int price;
   String startAt;
   String endAt;
   String status;
   String createdAt;
+  ClientModel? client;
   ProjectsModel({
-    required this.id,
+    this.id,
     required this.clientId,
     required this.agenda,
     required this.desc,
@@ -48,6 +49,7 @@ class ProjectsModel {
     required this.endAt,
     required this.status,
     required this.createdAt,
+    this.client
     });
     factory ProjectsModel.fromJson(Map<String, dynamic> json){
       return ProjectsModel(
@@ -59,7 +61,13 @@ class ProjectsModel {
       startAt: json['startAt'],
       endAt: json['endAt'],
       status: json['status'],
-      createdAt: json['createdAt']
+      createdAt: json['createdAt'],
+      client: json['client_name'] !=null ?
+       ClientModel(
+       name: json['client_name'],
+       alamat: json['client_alamat'],
+       handphone: json['client_handphone'],
+       countryCode: json['client_countryCode']) : null 
       );
     }
     Map<String,dynamic> toJson() {

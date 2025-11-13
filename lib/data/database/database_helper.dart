@@ -38,7 +38,7 @@ class DatabaseHelper {
     status TEXT NOT NULL,
     startAt TEXT NOT NULL,
     endAt TEXT NOT NULL,
-    estimatedValue REAL NOT NULL,
+    estimatedValue INTEGER NOT NULL,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (client_id) REFERENCES CLIENT(Id) ON DELETE CASCADE
     )
@@ -49,10 +49,10 @@ class DatabaseHelper {
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
     status TEXT NOT NULL,
-    subtotal REAL NOT NULL,
-    pajak REAL NOT NULL,
-    discount REAL NOT NULL,
-    total_amount REAL NOT NULL,
+    subtotal INTEGER NOT NULL,
+    pajak INTEGER NOT NULL,
+    discount INTEGER NOT NULL,
+    total_amount INTEGER NOT NULL,
     tanggal TEXT NOT NULL,    
     jatuh_tempo TEXT NOT NULL,    
     createdAt TEXT NOT NULL,
