@@ -34,7 +34,11 @@ class DatabaseHelper {
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id INTEGER NOT NULL,
     agenda TEXT NOT NULL,
+    desc TEXT NOT NULL,
     status TEXT NOT NULL,
+    startAt TEXT NOT NULL,
+    endAt TEXT NOT NULL,
+    estimatedValue REAL NOT NULL,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (client_id) REFERENCES CLIENT(Id) ON DELETE CASCADE
     )
