@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:kliencash/data/database/database_helper.dart';
-import 'package:kliencash/data/model/client_model.dart';
+import 'package:kliencash/data/model/model.dart';
 import 'package:meta/meta.dart';
 part 'client_event.dart';
 part 'client_state.dart';

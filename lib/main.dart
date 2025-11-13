@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/pages/home.dart';
-import 'package:kliencash/state/bloc/client_bloc.dart';
+import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
@@ -17,6 +18,7 @@ void main() async{
       BlocProvider(create: (context) => StatusprojectrsCubit()),
       BlocProvider(create: (context) => Selectedclient()),
       BlocProvider(create: (context) => Selecteddatecubit()),
+      BlocProvider(create: (context) => ProjectsBloc()..add(ReadDataProjects())),
     ],
     child: MainApp()));
 }

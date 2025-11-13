@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/data/database/database_helper.dart';
-import 'package:kliencash/data/model/client_model.dart';
+import 'package:kliencash/data/model/model.dart';
 
 class Selectedclient extends Cubit<Map<String, dynamic>>{
   Selectedclient(): super({});
