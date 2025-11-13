@@ -8,6 +8,7 @@ import 'package:kliencash/state/bloc/client_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
+import 'package:intl/intl.dart';
 
 class AddProjects extends StatefulWidget {
   const AddProjects({super.key});
@@ -25,9 +26,14 @@ class _AddProjectsState extends State<AddProjects> {
 
   @override
   Widget build(BuildContext context) {
+     List<DateTime> rangeDatePickerValueWithDefaultValue = [
+    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+    DateTime.now().add(Duration(days: 7)),
+  ];
     context.read<StatusprojectrsCubit>().setStatus(null);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
+    context.read<Selecteddatecubit>().setDate(rangeDatePickerValueWithDefaultValue);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -155,27 +161,81 @@ class _AddProjectsState extends State<AddProjects> {
               ),
               Row(
                 children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      showDialog(context: context, builder: (context) => showDateTime(context));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: BoxBorder.all(color: Colors.grey.shade300, width: 1.5),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          spacing: 10,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.calendar_month, color: Colors.grey,),
-                            MyText(title: 'Pilih Tanggal'),
-                          ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(title: 'Tanggal Mulai Dan Selesai'),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => showDateTime(context),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: BoxBorder.all(
+                                color: Colors.grey.shade300,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  BlocBuilder<
+                                    Selecteddatecubit,
+                                    List<DateTime>
+                                  >(
+                                    builder: (context, state) {
+                                      if (state.length > 1) {
+                                        var startDate = DateFormat(
+                                          "dd-MM-yyyy",
+                                        ).format(state[0]);
+                                        var endDate = DateFormat(
+                                          "dd-MM yyyy",
+                                        ).format(state[1]);
+                                        return Row(
+                                          spacing: 10,
+                                          children: [
+                                            Icon(
+                                              Icons.calendar_month,
+                                              color: Colors.grey,
+                                            ),
+                                            MyText(
+                                              title: startDate,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            MyText(title: 'Sd'),
+                                            MyText(
+                                              title: endDate,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                      return Row(
+                                        spacing: 10,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.calendar_month,
+                                            color: Colors.grey,
+                                          ),
+                                          MyText(title: 'Pilih Tanggal'),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -278,10 +338,11 @@ Widget userstoAdd(BuildContext context, double height) {
 }
 
 Widget showDateTime(BuildContext context) {
-  List<DateTime?> rangeDatePickerValueWithDefaultValue = [
+  List<DateTime> rangeDatePickerValueWithDefaultValue = [
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
     DateTime.now().add(Duration(days: 7)),
   ];
+  var state = context.read<Selecteddatecubit>().state;
   return Dialog(
     insetPadding: EdgeInsets.symmetric(horizontal: 10),
     child: Column(
@@ -291,6 +352,14 @@ Widget showDateTime(BuildContext context) {
           config: CalendarDatePicker2Config(
             calendarType: CalendarDatePicker2Type.range,
             selectedDayHighlightColor: Theme.of(context).colorScheme.onPrimary,
+            selectedMonthTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            selectedYearTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             selectedDayTextStyle: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -300,29 +369,64 @@ Widget showDateTime(BuildContext context) {
               fontWeight: FontWeight.bold,
             ),
           ),
-          value: rangeDatePickerValueWithDefaultValue,
+          value: state.length > 1
+              ? state
+              : rangeDatePickerValueWithDefaultValue,
           onValueChanged: (value) {
             context.read<Selecteddatecubit>().setDate(value);
+          },
+          onDisplayedMonthChanged: (value) {
+            // context.read<Selecteddatecubit>().setDate(value);
+            print('displayed value $value');
           },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 19,
           children: [
-            TextButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, child: MyText(title: 'Batal')),
-            TextButton(onPressed: (){
-            var state = context.read<Selecteddatecubit>().state;
-            print(state.length);
-            if(state.length == 2){
-              print('oke');
-            }else{
-              print('wahh');
-            }
-            }, child: MyText(title: 'Oke')),
-            ],
-        )
+            TextButton(
+              onPressed: () {
+                context.read<Selecteddatecubit>().setDate([]);
+                Navigator.of(context).pop();
+              },
+              child: MyText(title: 'Batal'),
+            ),
+            TextButton(
+              onPressed: () {
+                var state = context.read<Selecteddatecubit>().state;
+                print(state.length);
+                if (state.isEmpty) {
+               print('satu');
+                context.read<Selecteddatecubit>().setDate(rangeDatePickerValueWithDefaultValue);
+                  Navigator.of(context).pop();
+                  } else if(state.length == 2){
+               print('dua');
+                  Navigator.of(context).pop();
+                } else {
+               print('tiga');
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: MyText(title: 'Terjadi Kesalahan'),
+                      content: MyText(
+                        title: 'Silahkan pilih tanggal Mulai dan Selesai',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: MyText(title: 'Oke'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              child: MyText(title: 'Oke'),
+            ),
+          ],
+        ),
       ],
     ),
   );
