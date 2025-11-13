@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/state/bloc/client_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
@@ -24,16 +25,23 @@ class _AddProjectsState extends State<AddProjects> {
   var priceC = TextEditingController();
   var priceF = FocusNode();
 
+  var idC = TextEditingController();
+  var startDateC = TextEditingController();
+  var endtDateC = TextEditingController();
+  var status = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-     List<DateTime> rangeDatePickerValueWithDefaultValue = [
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-    DateTime.now().add(Duration(days: 7)),
-  ];
+    List<DateTime> rangeDatePickerValueWithDefaultValue = [
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      DateTime.now().add(Duration(days: 7)),
+    ];
     context.read<StatusprojectrsCubit>().setStatus(null);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    context.read<Selecteddatecubit>().setDate(rangeDatePickerValueWithDefaultValue);
+    context.read<Selecteddatecubit>().setDate(
+      rangeDatePickerValueWithDefaultValue,
+    );
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -69,6 +77,7 @@ class _AddProjectsState extends State<AddProjects> {
                 child: BlocBuilder<Selectedclient, Map<String, dynamic>>(
                   builder: (context, state) {
                     var stateIsnotEmpty = state['name'] != null;
+                    idC.text = state['Id'].toString();
                     return ListTile(
                       title: MyText(
                         title: stateIsnotEmpty ? state['name'] : 'Pilih Client',
@@ -187,10 +196,14 @@ class _AddProjectsState extends State<AddProjects> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child:
-                                  BlocBuilder<
+                                  BlocConsumer<
                                     Selecteddatecubit,
-                                    List<DateTime>
-                                  >(
+                                    List<DateTime>>(
+                                      listener: (context, state) {
+                                        startDateC.text = (state.length)
+                                            .toString();
+                                        endtDateC.text = state.toString();
+                                      },
                                     builder: (context, state) {
                                       if (state.length > 1) {
                                         var startDate = DateFormat(
@@ -250,6 +263,29 @@ class _AddProjectsState extends State<AddProjects> {
                   ],
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  var status = context.read<StatusprojectrsCubit>().state;
+                  validatePost(
+                    idC.text,
+                    agendaC.text,
+                    descC.text,
+                    priceC.text,
+                    startDateC.text,
+                    endtDateC.text,
+                    status,
+                    context
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                ),
+                child: MyText(
+                  title: 'Selesai',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),
@@ -258,10 +294,74 @@ class _AddProjectsState extends State<AddProjects> {
   }
 }
 
+void validatePost(
+  String id,
+  String agenda,
+  String desc,
+  String price,
+  String startDate,
+  String enddate,
+  String? status,
+  BuildContext context
+) {
+  print(id);
+  print(agenda.isEmpty);
+  print(desc);
+  print(price);
+  print(startDate);
+  print(enddate);
+  print(status);
+  if(id.isNotEmpty && agenda.isNotEmpty  && desc.isNotEmpty 
+  && price.isNotEmpty && startDate.isNotEmpty && status != null){
+    print('masok pake eko');
+  }else{
+ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Mohon isi semua fileds', null));
+    }
+}
+
 Widget userstoAdd(BuildContext context, double height) {
   return BlocBuilder<ClientBloc, ClientState>(
     builder: (context, state) {
       if (state is ClientSucces) {
+        if (state.list.isEmpty) {
+          return SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 0.0,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey.shade300,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: height * 0.4,
+                  // alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_off, size: 40, color: Colors.grey),
+                      MyText(
+                        title:
+                            "Tidak ada Clients Saat ini silahkan\ntambah client baru",
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
         return SizedBox(
           height: height * 0.8,
           child: Column(
@@ -387,6 +487,10 @@ Widget showDateTime(BuildContext context) {
             TextButton(
               onPressed: () {
                 context.read<Selecteddatecubit>().setDate([]);
+                // print('batal > $state');
+                print(state.length > 1);
+                print(state.length);
+                print(state);
                 Navigator.of(context).pop();
               },
               child: MyText(title: 'Batal'),
@@ -394,16 +498,22 @@ Widget showDateTime(BuildContext context) {
             TextButton(
               onPressed: () {
                 var state = context.read<Selecteddatecubit>().state;
+                // print(state.length);
+                print(state.length > 1);
                 print(state.length);
+                print(state);
+
                 if (state.isEmpty) {
-               print('satu');
-                context.read<Selecteddatecubit>().setDate(rangeDatePickerValueWithDefaultValue);
+                  // print('satu');
+                  context.read<Selecteddatecubit>().setDate(
+                    rangeDatePickerValueWithDefaultValue,
+                  );
                   Navigator.of(context).pop();
-                  } else if(state.length == 2){
-               print('dua');
+                } else if (state.length == 2) {
+                  // print('dua');
                   Navigator.of(context).pop();
                 } else {
-               print('tiga');
+                  // print('tiga');
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(

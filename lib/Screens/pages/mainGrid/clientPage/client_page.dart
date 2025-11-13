@@ -245,6 +245,7 @@ AlertDialog confrimDelete(String name, BuildContext context, int id) {
       TextButton(
         onPressed: () {
           context.read<ClientBloc>().add(DeleteDataClient(id: id));
+          Navigator.of(context).pop();
         },
         style: TextButton.styleFrom(backgroundColor: Colors.red),
         child: MyText(title: 'Ya, Yakin', color: Colors.white),

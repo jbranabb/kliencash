@@ -10,6 +10,7 @@ class Selectedclient extends Cubit<Map<String, dynamic>>{
     var data = results.map((e)=> ClientModel.fromJson(e)).toList();
     print(data[0].name);
     emit({
+      "Id": data[0].id,
       "name": data[0].name,
       "handphone": data[0].handphone,
       "countryCode": data[0].countryCode,
