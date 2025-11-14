@@ -7,6 +7,7 @@ import 'package:kliencash/state/cubit/SelectedClient.dart';
 class SelectClientsWidget extends StatelessWidget {
   SelectClientsWidget({super.key, required this.listener});
   void Function(BuildContext, Map<String, dynamic>) listener;
+  
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;

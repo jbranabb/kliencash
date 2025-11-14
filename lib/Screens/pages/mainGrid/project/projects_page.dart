@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/selectClientsWidget.dart';
@@ -39,20 +40,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        title: MyText(
-          title: 'Projects Client',
-          color: Colors.white,
-          fontSize: 20,
-        ),
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
+      appBar: myAppBar(context,"All Projects"),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<ProjectsBloc>().add(ReadDataProjects());

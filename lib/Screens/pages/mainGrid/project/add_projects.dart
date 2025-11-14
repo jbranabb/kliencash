@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/selectClientsWidget.dart';
@@ -49,21 +50,7 @@ class _AddProjectsState extends State<AddProjects> {
       rangeDatePickerValueWithDefaultValue,
     );
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            context.read<StatusprojectrsCubit>().setStatus(null);
-          },
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        title: MyText(
-          title: 'Projects Client',
-          color: Colors.white,
-          fontSize: 20,
-        ),
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
+      appBar:myAppBar(context,"Add Projects"),
       body: BlocListener<ProjectsBloc, ProjectsState>(
         listener: (context, state) {
           if (state is ProjectsPostSuccesState) {

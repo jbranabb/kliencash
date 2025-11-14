@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
@@ -38,16 +39,7 @@ class _AddClientState extends State<AddClient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: MyText(title: "Add Client", color: Colors.white, fontSize: 18),
-      ),
+      appBar: myAppBar(context,"Add Client"),
       body: BlocListener<ClientBloc, ClientState>(
         listener: (context, state) {
           if (state is PostClientSucces) {
