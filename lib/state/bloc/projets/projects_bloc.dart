@@ -33,5 +33,15 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       await db.insert("PROJECTS", event.projectsModel.toJson());
       emit(ProjectsPostSuccesState());
     });
+    on<EditDataProjects>((event, emit) async {
+     var db = await database.getDatabase;
+     await db.update("PROJECTS", event.projectsModel.toJson(), where: "Id = ?", whereArgs: [event.id]); 
+      emit(ProjectsEditSuccesState());
+    });
+    on<DeleteDataProjects>((event, emit) async{
+      var db = await database.getDatabase;
+      await db.delete("PROJECTS", where: 'Id = ?',whereArgs: [event.id]);
+      emit(ProjectsDeleteSuccesState());
+    });
   }
 }

@@ -7,5 +7,12 @@ class PostDataProjects extends ProjectsEvent{
   ProjectsModel projectsModel;
   PostDataProjects({required this.projectsModel});
 }
-class EditDataProjects extends ProjectsEvent{}
-class DeleteDataProjects extends ProjectsEvent{}
+class EditDataProjects extends ProjectsEvent{
+  ProjectsModel projectsModel;
+  int id;
+  EditDataProjects({required this.projectsModel, required this.id});
+}
+class DeleteDataProjects extends ProjectsEvent{
+  int id; 
+  DeleteDataProjects({required this.id});
+}
