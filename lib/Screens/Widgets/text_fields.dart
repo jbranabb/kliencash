@@ -89,6 +89,7 @@ class MyTextFileds extends StatelessWidget {
     required this.icon,
     required this.focusNode,
     required this.isOtional,
+    this.textType,
     this.onEditingCom,
   });
   TextEditingController controller;
@@ -96,6 +97,7 @@ class MyTextFileds extends StatelessWidget {
   String label;
   bool isOtional;
   FocusNode focusNode;
+  TextInputType? textType;
   void Function()? onEditingCom;
   @override
   Widget build(BuildContext context) {
@@ -103,7 +105,10 @@ class MyTextFileds extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       onEditingComplete: onEditingCom,
-      keyboardType: TextInputType.text,
+      keyboardType: textType ?? TextInputType.text,
+      inputFormatters:textType == TextInputType.number ? [
+        FilteringTextInputFormatter.digitsOnly
+      ] : [],
       decoration: InputDecoration(
         enabled: true,
         prefixIcon: Icon(icon, color: Colors.grey),

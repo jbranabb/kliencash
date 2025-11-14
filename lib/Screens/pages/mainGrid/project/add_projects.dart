@@ -2,8 +2,11 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/Widgets/selectClientsWidget.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
+import 'package:kliencash/Screens/Widgets/statusWidget.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
@@ -34,6 +37,7 @@ class _AddProjectsState extends State<AddProjects> {
 
   @override
   Widget build(BuildContext context) {
+    print('rebuild');
     List<DateTime> rangeDatePickerValueWithDefaultValue = [
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
       DateTime.now().add(Duration(days: 7)),
@@ -62,11 +66,15 @@ class _AddProjectsState extends State<AddProjects> {
       ),
       body: BlocListener<ProjectsBloc, ProjectsState>(
         listener: (context, state) {
-          if(state is ProjectsPostSuccesState){
+          if (state is ProjectsPostSuccesState) {
             Navigator.of(context).pop();
             context.read<ProjectsBloc>().add(ReadDataProjects());
-            ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Berhasil Membuat Data',
-             Theme.of(context).colorScheme.onPrimary));
+            ScaffoldMessenger.of(context).showSnackBar(
+              mySnakcbar(
+                'Berhasil Membuat Data',
+                Theme.of(context).colorScheme.onPrimary,
+              ),
+            );
           }
         },
         child: SingleChildScrollView(
@@ -76,87 +84,10 @@ class _AddProjectsState extends State<AddProjects> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 10,
               children: [
-                Container(
-                  width: width * 0.95,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: BoxBorder.all(
-                      width: 1.4,
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                  child: BlocBuilder<Selectedclient, Map<String, dynamic>>(
-                    builder: (context, state) {
-                      var stateIsnotEmpty = state['name'] != null;
-                      idC.text = state['Id'].toString();
-                      return ListTile(
-                        title: MyText(
-                          title: stateIsnotEmpty
-                              ? state['name']
-                              : 'Pilih Client',
-                        ),
-                        leading: stateIsnotEmpty
-                            ? Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: MyText(
-                                  title: state['name']
-                                      .toString()
-                                      .characters
-                                      .first,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : Icon(Icons.person, color: Colors.grey),
-                        subtitle: stateIsnotEmpty
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MyText(
-                                    title:
-                                        "${state['countryCode']} ${state['handphone']}",
-                                    color: Colors.grey,
-                                  ),
-                                  MyText(
-                                    title: state['almat'].toString(),
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              )
-                            : null,
-                        trailing: Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.grey,
-                        ),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => Container(
-                              height: height * 0.8,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(12),
-                                  topLeft: Radius.circular(12),
-                                ),
-                              ),
-                              child: userstoAdd(context, height),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                SelectClientsWidget(
+                  listener: (_, state) {
+                    idC.text = state['Id'].toString();
+                  },
                 ),
                 MyTextFileds(
                   controller: agendaC,
@@ -184,111 +115,25 @@ class _AddProjectsState extends State<AddProjects> {
                   icon: Icons.attach_money_outlined,
                   focusNode: priceF,
                   isOtional: false,
+                  textType: TextInputType.number,
                   onEditingCom: () {
                     FocusScope.of(context).unfocus();
                     // tutup keyboard pake apa?
                   },
                 ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        spacing: 10,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          MyText(title: 'Tanggal Mulai Dan Selesai'),
-                          InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => showDateTime(context),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: BoxBorder.all(
-                                  color: Colors.grey.shade300,
-                                  width: 1.5,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child:
-                                    BlocConsumer<
-                                      Selecteddatecubit,
-                                      List<DateTime>
-                                    >(
-                                      listener: (context, state) {
-                                        startDateC.text = state[0].toIso8601String();
-                                        endtDateC.text = state[1].toIso8601String();
-                                      },
-                                      builder: (context, state) {
-                                        if (state.length > 1) {
-                                          var startDate = DateFormat(
-                                            "dd-MM-yyyy",
-                                          ).format(state[0]);
-                                          var endDate = DateFormat(
-                                            "dd-MM yyyy",
-                                          ).format(state[1]);
-                                          return Row(
-                                            spacing: 10,
-                                            children: [
-                                              Icon(
-                                                Icons.calendar_month,
-                                                color: Colors.grey,
-                                              ),
-                                              MyText(
-                                                title: startDate,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              MyText(title: 'Sd'),
-                                              MyText(
-                                                title: endDate,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                        return Row(
-                                          spacing: 10,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.calendar_month,
-                                              color: Colors.grey,
-                                            ),
-                                            MyText(title: 'Pilih Tanggal'),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                DateStartAndEnd(
+                  listener: (_, state) {
+                    startDateC.text = state[0].toIso8601String();
+                    endtDateC.text = state[1].toIso8601String();
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    spacing: 10,
-                    children: [
-                      MyText(title: 'Status:'),
-                      TextFieldsDropDown(),
-                    ],
-                  ),
-                ),
+                Statuswidget(),
                 ElevatedButton(
                   onPressed: () {
+                    var selectedClientState = context.read<Selectedclient>().state;
                     var status = context.read<StatusprojectrsCubit>().state;
                     validatePost(
-                      idC.text,
+                      selectedClientState['Id'].toString(),
                       agendaC.text,
                       descC.text,
                       priceC.text,
@@ -326,6 +171,12 @@ void validatePost(
   String? status,
   BuildContext context,
 ) {
+  print(id);
+  print(agenda);
+  print(desc);
+  print(price);
+  print(startDate);
+  print(status);
   if (id.isNotEmpty &&
       agenda.isNotEmpty &&
       price.isNotEmpty &&
