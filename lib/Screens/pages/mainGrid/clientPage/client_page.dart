@@ -36,9 +36,12 @@ class _ClientPageState extends State<ClientPage> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop();
-        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
         title: MyText(title: 'Client Side', fontSize: 20, color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
@@ -295,12 +298,18 @@ Dialog editDataClient(
               icon: Icons.person,
               focusNode: nameF,
               isOtional: false,
+              onEditingCom: () {
+                FocusScope.of(context).requestFocus(phoneF);
+              },
             ),
             MyTextFiledsForPhone(
               controller: phone,
               label: 'Phone',
               icon: Icons.phone,
               focusNode: phoneF,
+              onEditingCom: () {
+                FocusScope.of(context).requestFocus(alamatF);
+              },
             ),
             MyTextFileds(
               controller: alamat,
@@ -308,6 +317,30 @@ Dialog editDataClient(
               icon: Icons.home,
               focusNode: alamatF,
               isOtional: false,
+              onEditingCom: () {
+                var state = context.read<CountrycodeCubit>().state;
+                if (nameB == name.text &&
+                    phone.text == phoneB &&
+                    alamat.text == alamtB &&
+                    ccb == state) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    mySnakcbar(
+                      'Tidak Ada Yang Berubah',
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  );
+                } else {
+                  validateEdit(
+                    id,
+                    name.text,
+                    state,
+                    phone.text,
+                    alamat.text,
+                    context,
+                  );
+                }
+              },
             ),
             Row(
               spacing: 10,
@@ -328,20 +361,25 @@ Dialog editDataClient(
                       onPressed: () {
                         if (nameB == name.text &&
                             phone.text == phoneB &&
-                            alamat.text == alamtB && ccb == state) {
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Tidak Ada Yang Berubah',
-                               Theme.of(context).colorScheme.onPrimary));
-                            }else{
-                        validateEdit(
-                          id,
-                          name.text,
-                          state,
-                          phone.text,
-                          alamat.text,
-                          context,
-                        );
-                            }
+                            alamat.text == alamtB &&
+                            ccb == state) {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            mySnakcbar(
+                              'Tidak Ada Yang Berubah',
+                              Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          );
+                        } else {
+                          validateEdit(
+                            id,
+                            name.text,
+                            state,
+                            phone.text,
+                            alamat.text,
+                            context,
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(
