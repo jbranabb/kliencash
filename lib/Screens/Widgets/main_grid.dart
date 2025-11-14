@@ -16,29 +16,33 @@ SliverToBoxAdapter mainGrid() {
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
+          child: Material(
+            child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(0.2, 4),
-                  blurRadius: 10,
-                  color: Colors.grey.shade300,
-                ),
-              ],
-            ),
-            child: GestureDetector(
               onTap: () {
-                if(index == 0){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ClientPage(),));
-                }
-                if(index == 1){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProjectsPage(),));
-                }
-              },
-              child: childGrid(index,context)),
+                    if(index == 0){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ClientPage(),));
+                    }
+                    if(index == 1){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProjectsPage(),));
+                    }
+                  },
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                 color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0.2, 4),
+                      blurRadius: 10,
+                      color: Colors.grey.shade300,
+                    ),
+                  ],
+                ),
+                child: childGrid(index,context),
+              ),
+            ),
           ),
         ),
       ),
