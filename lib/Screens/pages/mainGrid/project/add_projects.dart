@@ -163,15 +163,17 @@ class _AddProjectsState extends State<AddProjects> {
                   label: "Agenda",
                   icon: Icons.work,
                   focusNode: agendaF,
+                  isOtional: false,
                   onEditingCom: () {
                     FocusScope.of(context).requestFocus(descF);
                   },
                 ),
                 MyTextFileds(
                   controller: descC,
-                  label: "Deskripsi",
+                  label: "Deskripsi (Optional)",
                   icon: Icons.description,
                   focusNode: descF,
+                  isOtional: true,
                   onEditingCom: () {
                     FocusScope.of(context).requestFocus(priceF);
                   },
@@ -181,6 +183,7 @@ class _AddProjectsState extends State<AddProjects> {
                   label: "Harga Awal",
                   icon: Icons.attach_money_outlined,
                   focusNode: priceF,
+                  isOtional: false,
                   onEditingCom: () {
                     FocusScope.of(context).unfocus();
                     // tutup keyboard pake apa?
@@ -325,7 +328,6 @@ void validatePost(
 ) {
   if (id.isNotEmpty &&
       agenda.isNotEmpty &&
-      desc.isNotEmpty &&
       price.isNotEmpty &&
       startDate.isNotEmpty &&
       status != null) {

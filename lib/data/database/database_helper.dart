@@ -34,7 +34,7 @@ class DatabaseHelper {
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id INTEGER NOT NULL,
     agenda TEXT NOT NULL,
-    desc TEXT NOT NULL,
+    desc TEXT,
     status TEXT NOT NULL,
     startAt TEXT NOT NULL,
     endAt TEXT NOT NULL,

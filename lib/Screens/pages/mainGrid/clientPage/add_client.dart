@@ -73,6 +73,7 @@ class _AddClientState extends State<AddClient> {
                     icon: Icons.person,
                     label: "Nama",
                     focusNode: nameF,
+                    isOtional: false,
                     onEditingCom: () {
                       FocusScope.of(context).requestFocus(phoneF);
                     },
@@ -91,6 +92,7 @@ class _AddClientState extends State<AddClient> {
                     icon: Icons.home,
                     label: "Alamat",
                     focusNode: alamatF,
+                    isOtional: false,
                     onEditingCom: () {
                       validatePost(
                         nameC.text,

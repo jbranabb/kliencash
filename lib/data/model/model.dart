@@ -32,7 +32,7 @@ class ProjectsModel {
   int? id;
   int clientId;
   String agenda;
-  String desc;
+  String? desc;
   int price;
   String startAt;
   String endAt;
@@ -43,7 +43,7 @@ class ProjectsModel {
     this.id,
     required this.clientId,
     required this.agenda,
-    required this.desc,
+    this.desc,
     required this.price,
     required this.startAt,
     required this.endAt,

@@ -294,6 +294,7 @@ Dialog editDataClient(
               label: "Nama",
               icon: Icons.person,
               focusNode: nameF,
+              isOtional: false,
             ),
             MyTextFiledsForPhone(
               controller: phone,
@@ -306,6 +307,7 @@ Dialog editDataClient(
               label: "Alamat",
               icon: Icons.home,
               focusNode: alamatF,
+              isOtional: false,
             ),
             Row(
               spacing: 10,

@@ -88,11 +88,13 @@ class MyTextFileds extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.focusNode,
+    required this.isOtional,
     this.onEditingCom,
   });
   TextEditingController controller;
   IconData icon;
   String label;
+  bool isOtional;
   FocusNode focusNode;
   void Function()? onEditingCom;
   @override
@@ -105,7 +107,7 @@ class MyTextFileds extends StatelessWidget {
       decoration: InputDecoration(
         enabled: true,
         prefixIcon: Icon(icon, color: Colors.grey),
-        suffixText: "*",
+        suffixText: isOtional ? "" : "*",
         suffixStyle: TextStyle(color: Colors.red),
         label: MyText(title: label),
         enabledBorder: OutlineInputBorder(
