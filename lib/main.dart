@@ -5,7 +5,11 @@ import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
+import 'package:kliencash/state/cubit/checkbook_pembulatan.dart';
+import 'package:kliencash/state/cubit/count_amount.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
+import 'package:kliencash/state/cubit/drop_down_rounded.dart';
+import 'package:kliencash/state/cubit/selectedProjects.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:kliencash/themeData.dart';
 
@@ -19,6 +23,10 @@ void main() async{
       BlocProvider(create: (context) => Selectedclient()),
       BlocProvider(create: (context) => Selecteddatecubit()),
       BlocProvider(create: (context) => ProjectsBloc()..add(ReadDataProjects())),
+      BlocProvider(create: (context) => SelectedProjects()),
+      BlocProvider(create: (context) => CountMount()),
+      BlocProvider(create: (context) => CheckbookPembulatan()),
+      BlocProvider(create: (context) => DropDownRounded()),
     ],
     child: MainApp()));
 }
@@ -30,7 +38,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: normalTheme,
+      theme: bluetheme,
       home: HomePage()
     );
   }
