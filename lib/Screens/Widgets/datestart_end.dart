@@ -5,8 +5,9 @@ import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:intl/intl.dart';
 class DateStartAndEnd extends StatelessWidget {
-    DateStartAndEnd({super.key, required this.listener});
+    DateStartAndEnd({super.key, required this.listener, this.title});
   void Function(BuildContext, List<DateTime>) listener;
+  String? title;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -17,7 +18,7 @@ class DateStartAndEnd extends StatelessWidget {
             spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(title: 'Tanggal Mulai Dan Selesai'),
+              MyText(title: title ?? 'Tanggal Mulai Dan Selesai'),
               InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {

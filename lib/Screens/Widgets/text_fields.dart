@@ -91,29 +91,37 @@ class MyTextFileds extends StatelessWidget {
     required this.isOtional,
     this.textType,
     this.onEditingCom,
+    this.onChanged,
+    this.suffix,
+  this.maxlines
   });
   TextEditingController controller;
   IconData icon;
   String label;
   bool isOtional;
   FocusNode focusNode;
+  int? maxlines;
   TextInputType? textType;
+  Widget? suffix; 
   void Function()? onEditingCom;
+  void Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       focusNode: focusNode,
+      minLines: 1,
+      maxLines: maxlines ?? 1,
       onEditingComplete: onEditingCom,
       keyboardType: textType ?? TextInputType.text,
       inputFormatters:textType == TextInputType.number ? [
         FilteringTextInputFormatter.digitsOnly
       ] : [],
+      onChanged: onChanged,
       decoration: InputDecoration(
         enabled: true,
         prefixIcon: Icon(icon, color: Colors.grey),
-        suffixText: isOtional ? "" : "*",
-        suffixStyle: TextStyle(color: Colors.red),
+        suffix: suffix ?? MyText(title: isOtional ? "" : "*", color: Colors.red),
         label: MyText(title: label),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -170,6 +178,39 @@ class MyTextFiledsForPhone extends StatelessWidget {
         ),
         prefixIcon: Icon(icon, color: Colors.grey),
         suffixText: "*",
+        suffixStyle: TextStyle(color: Colors.red),
+        label: MyText(title: label),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+}
+
+class TextFiledsReadOnly extends StatelessWidget {
+  TextFiledsReadOnly({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.icon,
+    this.onChanged
+  });
+  TextEditingController controller;
+  IconData icon;
+  String label;
+  void Function(String value)? onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      readOnly: true,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        enabled: true,
+        prefixIcon: Icon(icon, color: Colors.grey),
         suffixStyle: TextStyle(color: Colors.red),
         label: MyText(title: label),
         enabledBorder: OutlineInputBorder(

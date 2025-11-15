@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/pages/mainGrid/invoice/invoice_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
@@ -23,8 +24,11 @@ SliverToBoxAdapter mainGrid() {
                     if(index == 0){
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ClientPage(),));
                     }
-                    if(index == 1){
+                    else if(index == 1){
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ProjectsPage(),));
+                    }
+                    else if(index == 2){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const InvoicePage(),));
                     }
                   },
               child: Container(
