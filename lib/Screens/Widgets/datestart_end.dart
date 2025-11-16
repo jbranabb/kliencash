@@ -6,7 +6,7 @@ import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:intl/intl.dart';
 class DateStartAndEnd extends StatelessWidget {
     DateStartAndEnd({super.key, required this.listener, this.title});
-  void Function(BuildContext, List<DateTime>) listener;
+  void Function(BuildContext context, List<DateTime> state) listener;
   String? title;
   @override
   Widget build(BuildContext context) {
