@@ -105,7 +105,12 @@ class _AddProjectsState extends State<AddProjects> {
                   textType: TextInputType.number,
                   onEditingCom: () {
                     FocusScope.of(context).unfocus();
-                    // tutup keyboard pake apa?
+                    },
+                  onChanged: (value) {
+                    final cursorPos =  priceC.selection;
+                    priceC.text =  value;
+                    priceC.selection =  cursorPos;
+                    
                   },
                 ),
                 DateStartAndEnd(
