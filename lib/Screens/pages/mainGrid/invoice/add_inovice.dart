@@ -56,6 +56,7 @@ class _AddInoviceState extends State<AddInovice> {
     var inoviceState = context.watch<DropdownStatusinvoice>().state;
     var roundedValue = context.watch<DropDownRounded>().state;
     var checkbooxRoundedValue = context.watch<CheckbookPembulatan>().state;
+    var stateList = context.read<InvoiceBloc>().state;
     var state = context.watch<CountMount>().state;
     var formated = formatRupiah.format(state);
     var display = state <= 0 ? 'Gratis' : formated;
@@ -186,14 +187,16 @@ class _AddInoviceState extends State<AddInovice> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+
                     var subtotalFormated = subtotalC.text.replaceAll(
                       RegExp(r'[Rp\s.]'),
                       '',
                     );
-                    var totalAmoutFormated = totalAmountC.text.replaceAll(
+                    var rawtotalAmoutFormated = totalAmountC.text.replaceAll(
                       RegExp(r'[Rp\s.]'),
                       '',
                     );
+                    var totalAmoutFormated =  rawtotalAmoutFormated.toLowerCase().contains('gratis') ? 0 : int.parse(rawtotalAmoutFormated);
                     validatePost(
                       context,
                       idC.text,
@@ -203,10 +206,11 @@ class _AddInoviceState extends State<AddInovice> {
                       notes.text,
                       datevalue[0].toIso8601String(),
                       datevalue[1].toIso8601String(),
-                      int.parse(totalAmoutFormated),
+                      totalAmoutFormated,
                       inoviceState,
                       checkbooxRoundedValue,
                       int.parse(roundedValue),
+                      stateList is InvoiceReadSucces ? stateList.list.length.toString() : stateList.toString()
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -240,14 +244,18 @@ void validatePost(
   String? status,
   bool isrounded,
   int roundedValue,
+  String statelist,
 ) {
   if (id.isNotEmpty &&
       subtotal != 0 &&
       startAt.isNotEmpty &&
       jatuhTempoAt.isNotEmpty &&
-      totalAmout != 0 &&
       status != null) {
-    context.read<InvoiceBloc>().add(
+        var rawLegth = int.parse(statelist) + 1;
+        var seprated =  rawLegth / 1000;
+        var listlength = seprated.toString().replaceAll('.', '');
+        print(totalAmout);
+        context.read<InvoiceBloc>().add(
       PostInvoice(
         invoiceModel: InvoiceModel(
           projectsId: int.parse(id),
@@ -261,13 +269,11 @@ void validatePost(
           jatuhTempo: jatuhTempoAt,
           isRounded: isrounded ? 1 : 0,
           roundedValue: isrounded ? roundedValue : 0,
-          invoiceNumber: 'Invoice234',
+          invoiceNumber: 'INVOICE-$listlength',
           createdAt: DateTime.now().toIso8601String(),
         ),
       ),
     );
-    print(id);
-    print('object');
   } else {
     print('isi');
     ScaffoldMessenger.of(
