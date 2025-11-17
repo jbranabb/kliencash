@@ -21,7 +21,7 @@ ThemeData pinkTheme = ThemeData(
   textTheme: GoogleFonts.poppinsTextTheme(),
   colorScheme: ColorScheme(
     brightness: Brightness.light,
-    primary: Colors.pink.shade100,
+    primary: const Color.fromARGB(255, 252, 228, 236),
     onPrimary: Colors.pink.shade400,
     secondary: Colors.white,
     onSecondary: Colors.grey,

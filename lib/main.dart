@@ -11,6 +11,7 @@ import 'package:kliencash/state/cubit/count_amount.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/state/cubit/drop_down_rounded.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
+import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:kliencash/themeData.dart';
@@ -22,7 +23,7 @@ void main() async{
       BlocProvider(create: (context) => ClientBloc()..add(ReadDataClient()),),
       BlocProvider(create: (context) => CountrycodeCubit()),
       BlocProvider(create: (context) => StatusprojectrsCubit()),
-      BlocProvider(create: (context) => Selectedclient()),
+    BlocProvider(create: (context) => Selectedclient()),
       BlocProvider(create: (context) => Selecteddatecubit()),
       BlocProvider(create: (context) => ProjectsBloc()..add(ReadDataProjects())),
       BlocProvider(create: (context) => SelectedProjects()),
@@ -31,6 +32,7 @@ void main() async{
       BlocProvider(create: (context) => DropDownRounded()),
       BlocProvider(create: (context) => DropdownStatusinvoice()),
       BlocProvider(create: (context) => InvoiceBloc()..add(ReadInvoice())),
+      BlocProvider(create: (context) => Selectedinvoice()),
     ],
     child: MainApp()));
 }
@@ -42,7 +44,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: bluetheme,
+      theme: pinkTheme,
       home: HomePage()
     );
   }
