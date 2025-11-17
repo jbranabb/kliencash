@@ -252,9 +252,10 @@ void validatePost(
       jatuhTempoAt.isNotEmpty &&
       status != null) {
         var rawLegth = int.parse(statelist) + 1;
-        var seprated =  rawLegth / 1000;
+        var seprated =  rawLegth / 100;
         var listlength = seprated.toString().replaceAll('.', '');
-        print(totalAmout);
+        var date =   DateFormat('ddMMyyyy').format(DateTime.now());
+        print(date);
         context.read<InvoiceBloc>().add(
       PostInvoice(
         invoiceModel: InvoiceModel(
@@ -269,7 +270,7 @@ void validatePost(
           jatuhTempo: jatuhTempoAt,
           isRounded: isrounded ? 1 : 0,
           roundedValue: isrounded ? roundedValue : 0,
-          invoiceNumber: 'INVOICE-$listlength',
+          invoiceNumber: 'INV-$date-$listlength',
           createdAt: DateTime.now().toIso8601String(),
         ),
       ),

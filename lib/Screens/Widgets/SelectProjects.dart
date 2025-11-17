@@ -7,6 +7,12 @@ import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 
+var formatRupiah = NumberFormat.currency(
+  locale: 'id_ID',
+  symbol: 'Rp ',
+  decimalDigits: 0,
+);
+
 class SelectProjecstWidget extends StatelessWidget {
   const SelectProjecstWidget({super.key});
   @override
@@ -77,7 +83,7 @@ class SelectProjecstWidget extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                           MyText(
-                            title: "Rp ${state['estimatedValue']}",
+                            title:  formatRupiah.format(state['estimatedValue']),
                             fontSize: 12,
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.w600,
@@ -168,10 +174,10 @@ Widget projectsToAdd(double height) {
                       Icon(Icons.cancel, color: Colors.grey, size: 60),
                       MyText(
                         title:
-                        'Belum Ada Projects Saat Ini\n Silahkan Tambahkan Terlebih Dahulu',
+                            'Belum Ada Projects Saat Ini\n Silahkan Tambahkan Terlebih Dahulu',
                         textAlign: TextAlign.center,
                       ),
-                     ],
+                    ],
                   ),
                 );
               }
@@ -223,7 +229,7 @@ Widget projectsToAdd(double height) {
                                   color: Colors.grey.shade600,
                                 ),
                                 MyText(
-                                  title: "Rp ${list.price}",
+                                  title: formatRupiah.format(list.price),
                                   fontSize: 12,
                                   color: Colors.grey.shade700,
                                 ),
