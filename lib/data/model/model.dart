@@ -146,7 +146,7 @@ class InvoiceModel {
               'desc': json['projects_desc'],
               'status': json['projects_status'] ?? '',
               'client_id': json['projects_client_id'] ?? 0,
-              'price': json['projects_price'] ?? 0,
+              'estimatedValue': json['projects_price'] ?? 0,
               'startAt': json['projects_startAt'] ?? '',
               'endAt': json['projects_endAt'] ?? '',
               'createdAt': json['projects_createdAt'] ?? '',
