@@ -45,6 +45,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
         onRefresh: () async {
           context.read<ProjectsBloc>().add(ReadDataProjects());
         },
+        color: Theme.of(context).colorScheme.onPrimary,
         child: CustomScrollView(
           slivers: [
             BlocConsumer<ProjectsBloc, ProjectsState>(
@@ -532,7 +533,7 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
             Navigator.of(context).pop();
           },
           style: TextButton.styleFrom(backgroundColor: Colors.red),
-          child: MyText(title: 'Ya, Yakin', color: Colors.white),
+          child: MyText(title: 'Ya, Yakin', color: Colors.white, fontWeight: FontWeight.w600,),
         ),
       ],
     ),

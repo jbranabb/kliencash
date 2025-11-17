@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 
@@ -161,7 +162,18 @@ Widget projectsToAdd(double height) {
               if (state.list.isEmpty) {
                 return SizedBox(
                   width: double.maxFinite,
-                  child: Text('Belum Ada Projects'));
+                  child: Column(
+                    children: [
+                      SizedBox(height: height * 0.18),
+                      Icon(Icons.cancel, color: Colors.grey, size: 60),
+                      MyText(
+                        title:
+                        'Belum Ada Projects Saat Ini\n Silahkan Tambahkan Terlebih Dahulu',
+                        textAlign: TextAlign.center,
+                      ),
+                     ],
+                  ),
+                );
               }
               return Expanded(
                 child: ListView.builder(

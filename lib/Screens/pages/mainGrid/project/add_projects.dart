@@ -44,11 +44,12 @@ class _AddProjectsState extends State<AddProjects> {
       DateTime.now().add(Duration(days: 7)),
     ];
     context.read<StatusprojectrsCubit>().setStatus(null);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
     context.read<Selecteddatecubit>().setDate(
       rangeDatePickerValueWithDefaultValue,
     );
+    var stateDate = context.read<Selecteddatecubit>().state;
+    startDateC.text  = stateDate[0].toIso8601String();
+    endtDateC.text =  stateDate[1].toIso8601String();
     return Scaffold(
       appBar:myAppBar(context,"Add Projects"),
       body: BlocListener<ProjectsBloc, ProjectsState>(
@@ -242,6 +243,7 @@ Widget userstoAdd(BuildContext context, double height) {
           height: height * 0.8,
           child: Column(
             children: [
+              SizedBox(height: 10,),
               SizedBox(
                 height: 20,
                 child: Padding(
@@ -256,9 +258,9 @@ Widget userstoAdd(BuildContext context, double height) {
                   ),
                 ),
               ),
+              SizedBox(height: 10,),
               Expanded(
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
                   itemCount: state.list.length,
                   itemBuilder: (context, index) {
                     var list = state.list[index];
