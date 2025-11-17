@@ -16,6 +16,13 @@ import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 
+var formatRupiah = NumberFormat.currency(
+  decimalDigits: 0,
+  locale: 'id_ID',
+  symbol: 'Rp '
+);
+
+
 class ProjectsPage extends StatefulWidget {
   const ProjectsPage({super.key});
 
@@ -196,7 +203,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                       MyText(
-                                        title: "Rp ${list.price}",
+                                        title: formatRupiah.format(list.price),
                                         fontSize: 12,
                                         color: Colors.grey,
                                         fontWeight: FontWeight.bold,

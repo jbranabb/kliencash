@@ -17,6 +17,12 @@ import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:intl/intl.dart';
 
+var formatRupiah = NumberFormat.currency(
+  decimalDigits: 0,
+  locale: 'id_ID',
+  symbol: 'Rp ',
+);
+
 class AddProjects extends StatefulWidget {
   const AddProjects({super.key});
   @override
@@ -35,10 +41,23 @@ class _AddProjectsState extends State<AddProjects> {
   var startDateC = TextEditingController();
   var endtDateC = TextEditingController();
   var status = TextEditingController();
+  @override
+  void dispose() {
+    agendaC.dispose();
+    agendaF.dispose();
+    descC.dispose();
+    descF.dispose();
+    priceC.dispose();
+    priceF.dispose();
+    idC.dispose();
+    startDateC.dispose();
+    endtDateC.dispose();
+    status.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    print('rebuild');
     List<DateTime> rangeDatePickerValueWithDefaultValue = [
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
       DateTime.now().add(Duration(days: 7)),
@@ -48,14 +67,25 @@ class _AddProjectsState extends State<AddProjects> {
       rangeDatePickerValueWithDefaultValue,
     );
     var stateDate = context.read<Selecteddatecubit>().state;
-    startDateC.text  = stateDate[0].toIso8601String();
-    endtDateC.text =  stateDate[1].toIso8601String();
+    startDateC.text = stateDate[0].toIso8601String();
+    endtDateC.text = stateDate[1].toIso8601String();
     return Scaffold(
-      appBar:myAppBar(context,"Add Projects"),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            context.read<Selectedclient>().reset();
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: MyText(title: 'Add Projects', color: Colors.white, fontSize: 18),
+      ),
       body: BlocListener<ProjectsBloc, ProjectsState>(
         listener: (context, state) {
           if (state is ProjectsPostSuccesState) {
             Navigator.of(context).pop();
+            context.read<Selectedclient>().reset();
             context.read<ProjectsBloc>().add(ReadDataProjects());
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
@@ -106,12 +136,10 @@ class _AddProjectsState extends State<AddProjects> {
                   textType: TextInputType.number,
                   onEditingCom: () {
                     FocusScope.of(context).unfocus();
-                    },
+                  },
                   onChanged: (value) {
-                    final cursorPos =  priceC.selection;
-                    priceC.text =  value;
-                    priceC.selection =  cursorPos;
-                    
+                    var formated = formatRupiah.format(int.parse(priceC.text));
+                    priceC.value = TextEditingValue(text: formated);
                   },
                 ),
                 DateStartAndEnd(
@@ -123,13 +151,19 @@ class _AddProjectsState extends State<AddProjects> {
                 Statuswidget(),
                 ElevatedButton(
                   onPressed: () {
-                    var selectedClientState = context.read<Selectedclient>().state;
+                    var subtotalFormated = priceC.text.replaceAll(
+                      RegExp(r'[Rp\s.]'),
+                      '',
+                    );
+                    var selectedClientState = context
+                        .read<Selectedclient>()
+                        .state;
                     var status = context.read<StatusprojectrsCubit>().state;
                     validatePost(
                       selectedClientState['Id'].toString(),
                       agendaC.text,
                       descC.text,
-                      priceC.text,
+                      subtotalFormated,
                       startDateC.text,
                       endtDateC.text,
                       status,
@@ -243,7 +277,7 @@ Widget userstoAdd(BuildContext context, double height) {
           height: height * 0.8,
           child: Column(
             children: [
-              SizedBox(height: 10,),
+              SizedBox(height: 10),
               SizedBox(
                 height: 20,
                 child: Padding(
@@ -258,7 +292,7 @@ Widget userstoAdd(BuildContext context, double height) {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
                   itemCount: state.list.length,

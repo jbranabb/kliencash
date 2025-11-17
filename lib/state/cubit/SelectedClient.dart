@@ -17,4 +17,7 @@ class Selectedclient extends Cubit<Map<String, dynamic>>{
       "almat": data[0].alamat,
       });
   }
+  void reset(){
+    emit({});
+  }
 }
