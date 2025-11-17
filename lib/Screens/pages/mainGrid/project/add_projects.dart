@@ -102,45 +102,67 @@ class _AddProjectsState extends State<AddProjects> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 10,
               children: [
-                SelectClientsWidget(
-                  listener: (_, state) {
-                    idC.text = state['Id'].toString();
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Client in Projects', color: Colors.grey,),
+                    SelectClientsWidget(
+                      listener: (_, state) {
+                        idC.text = state['Id'].toString();
+                      },
+                    ),
+                  ],
                 ),
-                MyTextFileds(
-                  controller: agendaC,
-                  label: "Agenda",
-                  icon: Icons.work,
-                  focusNode: agendaF,
-                  isOtional: false,
-                  onEditingCom: () {
-                    FocusScope.of(context).requestFocus(descF);
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Agenda & Deskripsi', color: Colors.grey,),
+                    MyTextFileds(
+                      controller: agendaC,
+                      label: "Agenda",
+                      icon: Icons.work,
+                      focusNode: agendaF,
+                      isOtional: false,
+                      onEditingCom: () {
+                        FocusScope.of(context).requestFocus(descF);
+                      },
+                    ),
+                  ],
                 ),
                 MyTextFileds(
                   controller: descC,
-                  label: "Deskripsi (Optional)",
+                  label: "Deskripsi",
                   icon: Icons.description,
                   focusNode: descF,
                   isOtional: true,
+                  maxlines: 10,
                   onEditingCom: () {
                     FocusScope.of(context).requestFocus(priceF);
                   },
                 ),
-                MyTextFileds(
-                  controller: priceC,
-                  label: "Harga Awal",
-                  icon: Icons.attach_money_outlined,
-                  focusNode: priceF,
-                  isOtional: false,
-                  textType: TextInputType.number,
-                  onEditingCom: () {
-                    FocusScope.of(context).unfocus();
-                  },
-                  onChanged: (value) {
-                    var formated = formatRupiah.format(int.parse(priceC.text));
-                    priceC.value = TextEditingValue(text: formated);
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Harga & Info Lainya', color: Colors.grey,),
+                    MyTextFileds(
+                      controller: priceC,
+                      label: "Harga Awal",
+                      icon: Icons.attach_money_outlined,
+                      focusNode: priceF,
+                      isOtional: false,
+                      textType: TextInputType.number,
+                      onEditingCom: () {
+                        FocusScope.of(context).unfocus();
+                      },
+                      onChanged: (value) {
+                        var formated = formatRupiah.format(int.parse(priceC.text));
+                        priceC.value = TextEditingValue(text: formated);
+                      },
+                    ),
+                  ],
                 ),
                 DateStartAndEnd(
                   listener: (_, state) {

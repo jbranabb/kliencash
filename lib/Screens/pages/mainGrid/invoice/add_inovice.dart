@@ -98,23 +98,37 @@ class _AddInoviceState extends State<AddInovice> {
             child: Column(
               spacing: 10,
               children: [
-                SelectProjecstWidget(),
-                MyTextFileds(
-                  controller: subtotalC,
-                  label: 'Subtotal',
-                  icon: Icons.receipt,
-                  focusNode: subtotalF,
-                  isOtional: false,
-                  textType: TextInputType.number,
-                  onChanged: (value) {
-                    print(state);
-                    context.read<CountMount>().setSubtotal(
-                      int.tryParse(subtotalC.text),
-                    );
-                    var data = int.tryParse(subtotalC.text) ?? 0;
-                    var formated = formatRupiah.format(data);
-                    subtotalC.value = TextEditingValue(text: formated);
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Client Projects', color: Colors.grey,),
+                    SelectProjecstWidget(),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Subtotal, Pajak & Discount', color: Colors.grey,),
+                    MyTextFileds(
+                      controller: subtotalC,
+                      label: 'Subtotal',
+                      icon: Icons.receipt,
+                      focusNode: subtotalF,
+                      isOtional: false,
+                      textType: TextInputType.number,
+                      onChanged: (value) {
+                        print(state);
+                        context.read<CountMount>().setSubtotal(
+                          int.tryParse(subtotalC.text),
+                        );
+                        var data = int.tryParse(subtotalC.text) ?? 0;
+                        var formated = formatRupiah.format(data);
+                        subtotalC.value = TextEditingValue(text: formated);
+                      },
+                    ),
+                  ],
                 ),
                 Row(
                   spacing: 10,
@@ -161,13 +175,20 @@ class _AddInoviceState extends State<AddInovice> {
                     ),
                   ],
                 ),
-                MyTextFileds(
-                  controller: notes,
-                  label: "Catatan",
-                  icon: Icons.description,
-                  focusNode: notesF,
-                  isOtional: true,
-                  maxlines: 10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    MyText(title: 'Catatan & DLL ', color: Colors.grey,),
+                    MyTextFileds(
+                      controller: notes,
+                      label: "Catatan",
+                      icon: Icons.description,
+                      focusNode: notesF,
+                      isOtional: true,
+                      maxlines: 10,
+                    ),
+                  ],
                 ),
                 DateStartAndEnd(
                   title: "Tanggal Awal Dan Jatuh Tempo",

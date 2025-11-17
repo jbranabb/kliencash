@@ -40,83 +40,106 @@ class _AddClientState extends State<AddClient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar(context,"Add Client"),
-      body: BlocListener<ClientBloc, ClientState>(
-        listener: (context, state) {
-          if (state is PostClientSucces) {
-            Navigator.of(context).pop();
-            context.read<ClientBloc>().add(ReadDataClient());
-            ScaffoldMessenger.of(context).showSnackBar(
-              mySnakcbar(
-                'Berhasil Menambahkan Client baru',
-                Theme.of(context).colorScheme.onPrimary,
-              ),
-            );
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<CountrycodeCubit, String>(
-            builder: (context, state) {
-              return Column(
-                spacing: 10,
-                children: [
-                  MyTextFileds(
-                    controller: nameC,
-                    icon: Icons.person,
-                    label: "Nama",
-                    focusNode: nameF,
-                    isOtional: false,
-                    onEditingCom: () {
-                      FocusScope.of(context).requestFocus(phoneF);
-                    },
-                  ),
-                  MyTextFiledsForPhone(
-                    controller: phoneC,
-                    label: "Phone",
-                    icon: Icons.phone,
-                    focusNode: phoneF,
-                    onEditingCom: () {
-                      FocusScope.of(context).requestFocus(alamatF);
-                    },
-                  ),
-                  MyTextFileds(
-                    controller: alamatC,
-                    icon: Icons.home,
-                    label: "Alamat",
-                    focusNode: alamatF,
-                    isOtional: false,
-                    onEditingCom: () {
-                      validatePost(
-                        nameC.text,
-                        state,
-                        phoneC.text,
-                        alamatC.text,
-                        context,
-                      );
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      validatePost(
-                        nameC.text,
-                        state,
-                        phoneC.text,
-                        alamatC.text,
-                        context,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    child: MyText(
-                      title: 'Selesai',
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: BlocListener<ClientBloc, ClientState>(
+          listener: (context, state) {
+            if (state is PostClientSucces) {
+              Navigator.of(context).pop();
+              context.read<ClientBloc>().add(ReadDataClient());
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  'Berhasil Menambahkan Client baru',
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
               );
-            },
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: BlocBuilder<CountrycodeCubit, String>(
+              builder: (context, state) {
+                return Column(
+                  spacing: 10,
+                  children: [
+                    Column(
+                      spacing: 4,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(title: 'Nama Client', color: Colors.grey,),
+                        MyTextFileds(
+                          controller: nameC,
+                          icon: Icons.person,
+                          label: "Nama",
+                          focusNode: nameF,
+                          isOtional: false,
+                          onEditingCom: () {
+                            FocusScope.of(context).requestFocus(phoneF);
+                          },
+                        ),
+                      ],
+                    ),
+                    Column(
+                      spacing: 4,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(title: 'Phone Number', color: Colors.grey,),
+                        MyTextFiledsForPhone(
+                          controller: phoneC,
+                          label: "Phone",
+                          icon: Icons.phone,
+                          focusNode: phoneF,
+                          onEditingCom: () {
+                            FocusScope.of(context).requestFocus(alamatF);
+                          },
+                        ),
+                      ],
+                    ),
+                    Column(
+                      spacing: 4,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(title: 'Alamat Client', color: Colors.grey,),
+                        MyTextFileds(
+                          controller: alamatC,
+                          icon: Icons.home,
+                          label: "Alamat",
+                          focusNode: alamatF,
+                          isOtional: false,
+                          onEditingCom: () {
+                            validatePost(
+                              nameC.text,
+                              state,
+                              phoneC.text,
+                              alamatC.text,
+                              context,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        validatePost(
+                          nameC.text,
+                          state,
+                          phoneC.text,
+                          alamatC.text,
+                          context,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      child: MyText(
+                        title: 'Selesai',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
