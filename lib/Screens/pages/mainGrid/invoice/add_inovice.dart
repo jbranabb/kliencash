@@ -42,6 +42,7 @@ class _AddInoviceState extends State<AddInovice> {
   var subtotalF = FocusNode();
   var pajakF = FocusNode();
   var discountF = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -68,8 +69,9 @@ class _AddInoviceState extends State<AddInovice> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            context.read<CountMount>().reset();
             Navigator.of(context).pop();
+            context.read<CountMount>().reset();
+            context.read<SelectedProjects>().reset();
           },
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
@@ -85,6 +87,9 @@ class _AddInoviceState extends State<AddInovice> {
           if(state is InvoicePostSucces){
             Navigator.of(context).pop();
             context.read<InvoiceBloc>().add(ReadInvoice());
+            context.read<CountMount>().reset();
+            context.read<SelectedProjects>().reset();
+          
           }
         },
         child: SingleChildScrollView(

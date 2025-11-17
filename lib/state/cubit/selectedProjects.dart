@@ -29,4 +29,7 @@ class SelectedProjects extends Cubit<Map<String,dynamic>> {
       };
       emit(data);
   }
+  void reset(){
+    emit({});
+  }
 }
