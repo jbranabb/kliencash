@@ -18,12 +18,6 @@ class ClientPage extends StatefulWidget {
 }
 
 class _ClientPageState extends State<ClientPage> {
-  @override
-  void initState() {
-    super.initState();
-    print('init');
-  }
-
   var name = TextEditingController();
   var phone = TextEditingController();
   var alamat = TextEditingController();
@@ -33,217 +27,328 @@ class _ClientPageState extends State<ClientPage> {
   var alamatF = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    print('init');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: myAppBar(context,"All Client"),
+      backgroundColor: Colors.grey[50],
+      appBar: myAppBar(context, "All Clients"),
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.onPrimary,
         onRefresh: () async {
           context.read<ClientBloc>().add(ReadDataClient());
         },
-        child: CustomScrollView(
-          slivers: [
-            BlocConsumer<ClientBloc, ClientState>(
-              listener: (context, state) {
-                if (state is DeleteClientSucces) {
-                  context.read<ClientBloc>().add(ReadDataClient());
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    mySnakcbar(
-                      'Berhasil Menghapus Client',
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  );
-                } else if (state is EditClientSucces) {
-                  Navigator.of(context).pop();
-                  context.read<ClientBloc>().add(ReadDataClient());
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    mySnakcbar(
-                      'Berhasil Edit Data Client',
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  );
-                }
+        child: BlocConsumer<ClientBloc, ClientState>(
+          listener: (context, state) {
+            if (state is DeleteClientSucces) {
+              context.read<ClientBloc>().add(ReadDataClient());
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  'Berhasil Menghapus Client',
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+            } else if (state is EditClientSucces) {
+              Navigator.of(context).pop();
+              context.read<ClientBloc>().add(ReadDataClient());
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  'Berhasil Edit Data Client',
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is ClientSucces) {
+              if (state.list.isEmpty) {
+                return _buildEmptyState();
+              }
+              return ListView.builder(
+                padding: EdgeInsets.all(16),
+                itemCount: state.list.length,
+                itemBuilder: (context, index) {
+                  var client = state.list[index];
+                  return _buildClientCard(context, client, index);
+                },
+              );
+            } else if (state is ClientLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+            }
+            return SizedBox.shrink();
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => AddClient()),
+          );
+        },
+        icon: Icon(Icons.person_add, color: Colors.white),
+        label: MyText(
+          title: 'Client',
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.people_outline, color: Colors.grey[400], size: 80),
+          SizedBox(height: 16),
+          MyText(
+            title: 'Belum ada Client',
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[700]!,
+          ),
+          SizedBox(height: 8),
+          MyText(
+            title: 'Silahkan tambahkan client baru',
+            color: Colors.grey[500]!,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildClientCard(BuildContext context, dynamic client, int index) {
+    String initials = client.name.trim().isEmpty 
+        ? '?' 
+        : client.name.trim().length == 1
+            ? client.name[0].toUpperCase()
+            : client.name.trim().split(' ').length > 1
+                ? '${client.name.trim().split(' ')[0][0]}${client.name.trim().split(' ')[1][0]}'.toUpperCase()
+                : client.name[0].toUpperCase();
+
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical:4 ),
+      child: Slidable(
+        key: Key(index.toString()),
+        endActionPane: ActionPane(
+          motion: DrawerMotion(),
+          extentRatio: 0.25,
+          children: [
+            SlidableAction(
+              onPressed: (context) {
+                showDialog(
+                  context: context,
+                  builder: (context) => confirmDelete(
+                    client.name,
+                    context,
+                    client.id!,
+                  ),
+                );
               },
-              builder: (context, state) {
-                if (state is ClientSucces) {
-                  if (state.list.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: height * 0.3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.person_off,
-                              size: 40,
-                              color: Colors.grey,
-                            ),
-                            MyText(
-                              title:
-                                  "Tidak ada Clients Saat ini silahkan\ntambah client baru",
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return SliverList.builder(
-                    itemCount: state.list.length,
-                    itemBuilder: (context, index) {
-                      var list = state.list[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Slidable(
-                          key: Key(index.toString()),
-                          enabled: true,
-                          endActionPane: ActionPane(
-                            motion: DrawerMotion(),
-                            extentRatio: 0.2,
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => confrimDelete(
-                                      list.name,
-                                      context,
-                                      list.id!,
-                                    ),
-                                  );
-                                },
-                                backgroundColor: Color(0xFFFE4A49),
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                                label: 'Delete',
-                              ),
-                            ],
-                          ),
-                          child: InkWell(
-                            onLongPress: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => editDataClient(
-                                  list.id!,
-                                  name,
-                                  list.name,
-                                  phone,
-                                  list.handphone,
-                                  alamat,
-                                  list.alamat,
-                                  list.countryCode,
-                                  nameF,
-                                  phoneF,
-                                  alamatF,
-                                  context,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    width: 0.5,
-                                    color: Colors.grey.shade300,
-                                  ),
-                                ),
-                              ),
-                              child: ListTile(
-                                leading: Container(
-                                  height: 45,
-                                  width: 45,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: MyText(
-                                    title: list.name.characters.first,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                title: MyText(title: list.name),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    MyText(
-                                      title:
-                                          "${list.countryCode} ${list.handphone}",
-                                      color: Colors.grey,
-                                    ),
-                                    MyText(
-                                      title: list.alamat,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                } else if (state is ClientLoading) {
-                  SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        MyText(title: "Tunngu Sebentar..."),
-                      ],
-                    ),
-                  );
-                }
-                return SliverToBoxAdapter(child: SizedBox.shrink());
-              },
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete_outline,
+              label: 'Hapus',
+              borderRadius: BorderRadius.circular(16),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        onPressed: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => AddClient()));
-        },
-        child: Icon(Icons.person_add_alt_1_sharp, color: Colors.white),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => editDataClient(
+                    client.id!,
+                    name,
+                    client.name,
+                    phone,
+                    client.handphone,
+                    alamat,
+                    client.alamat,
+                    client.countryCode,
+                    nameF,
+                    phoneF,
+                    alamatF,
+                    context,
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    // Avatar
+                    Container(
+                      height: 56,
+                      width: 56,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                       color: Theme.of(context).colorScheme.onPrimary,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.primary,
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: MyText(
+                          title: initials,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+      
+                    SizedBox(width: 16),
+      
+                    // Client Info
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            title: client.name,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                          SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.phone,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              SizedBox(width: 6),
+                              Expanded(
+                                child: MyText(
+                                  title: "${client.countryCode} ${client.handphone}",
+                                  fontSize: 14,
+                                  color: Colors.grey[600]!,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              SizedBox(width: 6),
+                              Expanded(
+                                child: MyText(
+                                  title: client.alamat,
+                                  fontSize: 13,
+                                  color: Colors.grey[600]!,
+                                  
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+      
+                    // Arrow Icon
+                    Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey[400],
+                      size: 24,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-AlertDialog confrimDelete(String name, BuildContext context, int id) {
+AlertDialog confirmDelete(String name, BuildContext context, int id) {
   return AlertDialog(
-    title: MyText(title: 'Hapus Client $name?'),
-    content: MyText(title: 'Apakah kamu yakin ingin hapus Client ini?'),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+    title: Row(
+      children: [
+        Icon(Icons.delete_outline, color: Colors.red),
+        SizedBox(width: 8),
+        Expanded(
+          child: MyText(
+            title: 'Hapus Client?',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+    content: MyText(
+      title: 'Apakah Anda yakin ingin menghapus client "$name"? Tindakan ini tidak dapat dibatalkan.',
+    ),
     actions: [
       TextButton(
-        style: TextButton.styleFrom(backgroundColor: Colors.grey.shade100),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: MyText(title: 'Batal'),
+        onPressed: () => Navigator.of(context).pop(),
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        ),
+        child: MyText(
+          title: 'Batal',
+          color: Colors.grey[700]!,
+        ),
       ),
-      TextButton(
+      ElevatedButton(
         onPressed: () {
           context.read<ClientBloc>().add(DeleteDataClient(id: id));
           Navigator.of(context).pop();
         },
-        style: TextButton.styleFrom(backgroundColor: Colors.red),
-        child: MyText(title: 'Ya, Yakin', color: Colors.white),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: MyText(
+          title: 'Ya, Hapus',
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ],
   );
@@ -266,133 +371,200 @@ Dialog editDataClient(
   name.text = nameB;
   phone.text = phoneB;
   alamat.text = alamtB;
+
   return Dialog(
-    insetPadding: EdgeInsets.symmetric(horizontal: 10),
+    insetPadding: EdgeInsets.all(16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    ),
     child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: MyText(title: 'Edit data Client', fontSize: 18),
-            ),
-            MyTextFileds(
-              controller: name,
-              label: "Nama",
-              icon: Icons.person,
-              focusNode: nameF,
-              isOtional: false,
-              onEditingCom: () {
-                FocusScope.of(context).requestFocus(phoneF);
-              },
-            ),
-            MyTextFiledsForPhone(
-              controller: phone,
-              label: 'Phone',
-              icon: Icons.phone,
-              focusNode: phoneF,
-              onEditingCom: () {
-                FocusScope.of(context).requestFocus(alamatF);
-              },
-            ),
-            MyTextFileds(
-              controller: alamat,
-              label: "Alamat",
-              icon: Icons.home,
-              focusNode: alamatF,
-              isOtional: false,
-              onEditingCom: () {
-                var state = context.read<CountrycodeCubit>().state;
-                if (nameB == name.text &&
-                    phone.text == phoneB &&
-                    alamat.text == alamtB &&
-                    ccb == state) {
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    mySnakcbar(
-                      'Tidak Ada Yang Berubah',
-                      Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  );
-                } else {
-                  validateEdit(
-                    id,
-                    name.text,
-                    state,
-                    phone.text,
-                    alamat.text,
-                    context,
-                  );
-                }
-              },
-            ),
-            Row(
-              spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey.shade100,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      SizedBox(width: 8),
+                      MyText(
+                        title: 'Edit Client',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: MyText(title: 'Batal'),
-                ),
-                BlocBuilder<CountrycodeCubit, String>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (nameB == name.text &&
-                            phone.text == phoneB &&
-                            alamat.text == alamtB &&
-                            ccb == state) {
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            mySnakcbar(
-                              'Tidak Ada Yang Berubah',
-                              Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          );
-                        } else {
-                          validateEdit(
-                            id,
-                            name.text,
-                            state,
-                            phone.text,
-                            alamat.text,
-                            context,
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary,
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close, color: Colors.grey),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.grey[100],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+
+              MyTextFileds(
+                controller: name,
+                label: "Nama",
+                icon: Icons.person,
+                focusNode: nameF,
+                isOtional: false,
+                onEditingCom: () {
+                  FocusScope.of(context).requestFocus(phoneF);
+                },
+              ),
+
+              SizedBox(height: 12),
+
+              MyTextFiledsForPhone(
+                controller: phone,
+                label: 'Nomor Telepon',
+                icon: Icons.phone,
+                focusNode: phoneF,
+                onEditingCom: () {
+                  FocusScope.of(context).requestFocus(alamatF);
+                },
+              ),
+
+              SizedBox(height: 12),
+
+              MyTextFileds(
+                controller: alamat,
+                label: "Alamat",
+                icon: Icons.home,
+                focusNode: alamatF,
+                isOtional: false,
+                onEditingCom: () {
+                  _handleSave(
+                    context,
+                    id,
+                    name,
+                    nameB,
+                    phone,
+                    phoneB,
+                    alamat,
+                    alamtB,
+                    ccb,
+                  );
+                },
+              ),
+
+              SizedBox(height: 20),
+
+              // Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: Colors.grey[300]!),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: MyText(
-                        title: "Selesai",
-                        color: Colors.white,
+                        title: 'Batal',
+                        color: Colors.grey[700]!,
                         fontWeight: FontWeight.w600,
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: BlocBuilder<CountrycodeCubit, String>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            _handleSave(
+                              context,
+                              id,
+                              name,
+                              nameB,
+                              phone,
+                              phoneB,
+                              alamat,
+                              alamtB,
+                              ccb,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: MyText(
+                            title: "Simpan",
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     ),
   );
+}
+
+void _handleSave(
+  BuildContext context,
+  int id,
+  TextEditingController name,
+  String nameB,
+  TextEditingController phone,
+  String phoneB,
+  TextEditingController alamat,
+  String alamtB,
+  String ccb,
+) {
+  var state = context.read<CountrycodeCubit>().state;
+  if (nameB == name.text &&
+      phone.text == phoneB &&
+      alamat.text == alamtB &&
+      ccb == state) {
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      mySnakcbar(
+        'Tidak ada perubahan',
+        Theme.of(context).colorScheme.onPrimary,
+      ),
+    );
+  } else {
+    validateEdit(
+      id,
+      name.text,
+      state,
+      phone.text,
+      alamat.text,
+      context,
+    );
+  }
 }
 
 void validateEdit(
@@ -405,29 +577,39 @@ void validateEdit(
 ) {
   if (name.isNotEmpty && phone.isNotEmpty && alamat.isNotEmpty) {
     context.read<ClientBloc>().add(
-      EditDataClient(
-        id: id,
-        clientModel: ClientModel(
-          name: name,
-          alamat: alamat,
-          handphone: phone,
-          countryCode: countryCode,
-        ),
-      ),
-    );
+          EditDataClient(
+            id: id,
+            clientModel: ClientModel(
+              name: name,
+              alamat: alamat,
+              handphone: phone,
+              countryCode: countryCode,
+            ),
+          ),
+        );
   } else {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: MyText(title: 'Terjadi Kesalahan'),
-        content: MyText(title: "Silahkan isi smua fileds terlebih dahulu"),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            SizedBox(width: 8),
+            MyText(title: 'Perhatian'),
+          ],
+        ),
+        content: MyText(title: "Silahkan isi semua field terlebih dahulu"),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: TextButton.styleFrom(backgroundColor: Colors.grey.shade100),
-            child: MyText(title: 'Ok'),
+            onPressed: () => Navigator.of(context).pop(),
+            child: MyText(
+              title: 'Mengerti',
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
