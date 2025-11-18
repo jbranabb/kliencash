@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/Screens/pages/pdfViwer.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
@@ -285,7 +286,10 @@ class DetailInvoice extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {},
+            onPressed: () {
+              print('object');
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Pdfviwer(),));
+            },
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             icon: Icon(Icons.payment, color: Colors.white),
             label: MyText(

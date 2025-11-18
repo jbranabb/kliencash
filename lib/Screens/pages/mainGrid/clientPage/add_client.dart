@@ -105,6 +105,7 @@ class _AddClientState extends State<AddClient> {
                           label: "Alamat",
                           focusNode: alamatF,
                           isOtional: false,
+                          maxlines: 10,
                           onEditingCom: () {
                             validatePost(
                               nameC.text,

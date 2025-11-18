@@ -44,7 +44,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: pinkTheme,
+      theme: bluetheme,
       home: HomePage()
     );
   }
