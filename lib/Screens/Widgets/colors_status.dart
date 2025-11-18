@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
 
 Color bgcolors(String state) {
   switch (state.toLowerCase()) {
@@ -28,5 +29,19 @@ Color colors(String state) {
       return Colors.red;
     default:
       return Colors.grey.shade100;
+  }
+}
+PdfColor pdfcolors(String state) {
+  switch (state.toLowerCase()) {
+    case "pending":
+      return PdfColors.orange700;
+    case "on going":
+      return PdfColors.blue700;
+    case "completed":
+      return PdfColors.green;
+    case "cancelled":
+      return PdfColors.red;
+    default:
+      return PdfColors.grey;
   }
 }
