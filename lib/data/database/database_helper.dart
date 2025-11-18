@@ -49,6 +49,7 @@ class DatabaseHelper {
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
     status TEXT NOT NULL,
+    title TEXT NOT NULL,
     subtotal INTEGER NOT NULL,
     pajak INTEGER,
     discount INTEGER,
@@ -74,6 +75,18 @@ class DatabaseHelper {
     bukti_payment TEXT NOT NULL,
     notes TEXT,
     FOREIGN KEY (invoice_id) REFERENCES INVOICE(Id) ON DELETE CASCADE
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE USERS(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nama_perusahaan TEXT NOT NULL,
+    alamat TETX NOT NULL,
+    countryCode TEXT NOT NULL,
+    handphone INTEGER NOT NULL,
+    email TEXT NOT NULL,
+    tagline TEXT
     )
     ''');
   }
