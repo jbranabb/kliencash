@@ -6,6 +6,7 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/add_inovice.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/detail_invoice.dart';
+import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
@@ -87,7 +88,7 @@ class InvoicePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInvoiceCard(BuildContext context, dynamic invoice) {
+  Widget _buildInvoiceCard(BuildContext context, InvoiceModel invoice) {
     final formatRupiah = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -98,7 +99,6 @@ class InvoicePage extends StatelessWidget {
     final dueDate = DateTime.parse(invoice.jatuhTempo);
     final formattedDate = DateFormat('dd MMM yyyy').format(invoiceDate);
     final formattedDueDate = DateFormat('dd MMM yyyy').format(dueDate);
-
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -127,7 +127,6 @@ class InvoicePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Invoice Number & Status
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -162,19 +161,28 @@ class InvoicePage extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 SizedBox(height: 12),
                 Divider(height: 1, color: Colors.grey[200]),
                 SizedBox(height: 12),
-
-                // Client & Project Info
                 MyText(
-                  title: invoice.projectsModel!.agenda,
+                  title: invoice.title,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
                 SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(Icons.work, size: 14, color: Colors.grey[600]),
+                    SizedBox(width: 4),
+                    MyText(
+                      title: invoice.projectsModel!.agenda,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[600]!,
+                    ),
+                  ],
+                ),
                 Row(
                   children: [
                     Icon(Icons.person, size: 14, color: Colors.grey[600]),
@@ -189,8 +197,6 @@ class InvoicePage extends StatelessWidget {
                 ),
 
                 SizedBox(height: 12),
-
-                // Financial Summary
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -210,19 +216,19 @@ class InvoicePage extends StatelessWidget {
                         formatRupiah.format(invoice.subtotal),
                         Colors.blueGrey,
                       ),
-                      if (invoice.pajak > 0) ...[
+                      if (invoice.pajak != null && invoice.pajak! > 0) ...[
                         SizedBox(height: 6),
                         _buildFinancialRow(
                           'Pajak (${invoice.pajak}%)',
-                          '+ ${formatRupiah.format(invoice.subtotal * invoice.pajak / 100)}',
+                          '+ ${formatRupiah.format(invoice.subtotal * invoice.pajak !/ 100)}',
                           Colors.deepOrange,
                         ),
                       ],
-                      if (invoice.discount > 0) ...[
+                      if (invoice.discount!= null && invoice.discount! > 0) ...[
                         SizedBox(height: 6),
                         _buildFinancialRow(
                           'Diskon (${invoice.discount}%)',
-                          '- ${formatRupiah.format(invoice.subtotal * invoice.discount / 100)}',
+                          '- ${formatRupiah.format(invoice.subtotal * invoice.discount! / 100)}',
                           Colors.green,
                         ),
                       ],

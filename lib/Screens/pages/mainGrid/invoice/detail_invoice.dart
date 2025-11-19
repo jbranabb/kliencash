@@ -65,22 +65,44 @@ class DetailInvoice extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                MyText(title: 'Invoice Number',  fontSize: 10,),
-                                MyText(title: invoice.invoiceNumber, fontWeight: FontWeight.bold,),
+                                MyText(title: 'Invoice Number', fontSize: 10),
+                                MyText(
+                                  title: invoice.invoiceNumber,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ],
                             ),
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: bgcolors(invoice.status)
+                                color: bgcolors(invoice.status),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                                child: MyText(title: invoice.status, color: colors(invoice.status),fontWeight: FontWeight.w600, fontSize: 12,),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 4,
+                                ),
+                                child: MyText(
+                                  title: invoice.status.toUpperCase(),
+                                  color: colors(invoice.status),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
                               ),
-                            )
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyText(title: 'Projects Title', fontSize: 10),
+                            MyText(
+                              title: invoice.title,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ],
                         ),
                         SizedBox(height: 16),
@@ -88,7 +110,7 @@ class DetailInvoice extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             projectsDate(
-                              invoice.createdAt,
+                              invoice.tanggal,
                               Colors.blue.shade100,
                               Colors.blue,
                               Icons.play_circle_outline_rounded,
@@ -96,7 +118,7 @@ class DetailInvoice extends StatelessWidget {
                             ),
                             Icon(Icons.arrow_forward),
                             projectsDate(
-                              invoice.createdAt,
+                              invoice.jatuhTempo,
                               Colors.red.shade100,
                               Colors.red,
                               Icons.event_busy,
@@ -104,14 +126,23 @@ class DetailInvoice extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16,),
+                        SizedBox(height: 16),
                         Row(
                           spacing: 2,
                           children: [
-                            Icon(Icons.date_range, color: Colors.grey,size: 12,),
-                            MyText(title: "Dibuat ${formatDateDetail(invoice.createdAt)}", color: Colors.grey, fontSize: 12,),
+                            Icon(
+                              Icons.date_range,
+                              color: Colors.grey,
+                              size: 12,
+                            ),
+                            MyText(
+                              title:
+                                  "Dibuat ${formatDateDetail(invoice.createdAt)}",
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -287,8 +318,9 @@ class DetailInvoice extends StatelessWidget {
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
-              print('object');
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Pdfviwer(),));
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => Pdfviwer()));
             },
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             icon: Icon(Icons.payment, color: Colors.white),
@@ -333,7 +365,13 @@ class DetailInvoice extends StatelessWidget {
                 ),
               ],
             ),
-            MyText(title: formatDateDetail(project)),
+            MyText(
+              title: formatDateDetail(project),
+              fontSize: 12,
+              fontWeight: title.toLowerCase().contains('jatuh tempo')
+                  ? FontWeight.w600
+                  : FontWeight.normal,
+            ),
           ],
         ),
       ),

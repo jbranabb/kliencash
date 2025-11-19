@@ -44,13 +44,15 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                         padding: pw.EdgeInsets.all(0),
                         child: pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          
                           children: [
                             MyTextPdf(
-                              title: 'Judul Invoice',
+                              title: invoice.title,
                               fontSize: 20,
                               color: onprimaryColor,
                               fontWeight: pw.FontWeight.bold,
                             ),
+                            pw.SizedBox(height: 12,),
                             MyTextPdf(
                               title: 'pinky wedding',
                               fontSize: 16,
@@ -59,12 +61,12 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                             MyTextPdf(
                               title: client.name,
                               fontWeight: pw.FontWeight.bold,
-                              textAlign: pw.TextAlign.end,
+                              textAlign: pw.TextAlign.start,
                               fontSize: 16,
                             ),
                             MyTextPdf(
                               title: client.alamat,
-                              textAlign: pw.TextAlign.end,
+                              textAlign: pw.TextAlign.start,
                             ),
                             MyTextPdf(
                               title:
@@ -223,7 +225,7 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                     child: pw.Padding(
                       padding: pw.EdgeInsets.all(8),
                       child: MyTextPdf(
-                        title: projects.status,
+                        title: projects.status.toUpperCase(),
                         color: pdfcolors(projects.status),
                         fontWeight: pw.FontWeight.bold,
                       ),
@@ -344,7 +346,7 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                   children: [
                     MyTextPdf(title: 'Bayar: '),
                     MyTextPdf(
-                      title: invoice.status,
+                      title: invoice.status.toUpperCase(),
                       color: invoice.status.toLowerCase() == 'lunas'
                           ? PdfColors.blue700
                           : PdfColors.orange600,
@@ -403,7 +405,7 @@ Future<Uint8List> generatePDF(BuildContext context) async {
               ),
             ),
           ],
-          pw.SizedBox(height: 32,),
+          pw.SizedBox(height: 20,),
           MyTextPdf(
             title: 'Invoice ini di buat otomatis oleh sistem KlienCash',
             fontSize: 12,

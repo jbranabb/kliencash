@@ -171,6 +171,7 @@ class InvoiceModel {
       'project_id': projectsId,
       'status': status,
       'subtotal': subtotal,
+      'title': title,
       'pajak': pajak,
       'discount': discount,
       'total_amount': totalAmount,
