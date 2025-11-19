@@ -1,3 +1,46 @@
+class User {
+  int? id;
+  String namaPerusahaaan;
+  String username;
+  String alamat;
+  String countryCode;
+  int phoneNumber;
+  String emaiil;
+  String? tagline;
+  User({
+    required this.namaPerusahaaan,
+    required this.username,
+    this.id,
+    required this.alamat,
+    required this.emaiil,
+    required this.countryCode,
+    required this.phoneNumber,
+    this.tagline,
+  });
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      username: json['username'],
+      namaPerusahaaan: json['nama_perusahaan'],
+      alamat: json['alamat'],
+      emaiil: json['email'],
+      countryCode: json['countryCode'],
+      phoneNumber: json['handphone'],
+      tagline: json['tagline'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      "username": username,
+      "nama_perusahaan": namaPerusahaaan,
+      "almat":alamat,
+      "email":emaiil,
+      "countryCode":countryCode,
+      "handphone":phoneNumber,
+      "tagline": tagline
+    };
+  }
+}
+
 class ClientModel {
   int? id;
   String name;
@@ -59,8 +102,8 @@ class ProjectsModel {
       clientId: json['client_id'] ?? 0,
       agenda: json['agenda'] ?? '',
       desc: json['desc'] ?? '',
-      price: json['estimatedValue'] ?? 0  ,
-      startAt: json['startAt'] ??  '',
+      price: json['estimatedValue'] ?? 0,
+      startAt: json['startAt'] ?? '',
       endAt: json['endAt'] ?? '',
       status: json['status'] ?? '',
       createdAt: json['createdAt'] ?? '',
