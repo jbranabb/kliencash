@@ -123,7 +123,8 @@ class MyTextFileds extends StatelessWidget {
       onEditingComplete: onEditingCom,
       keyboardType: textType ?? TextInputType.text,
       inputFormatters:textType == TextInputType.number ? [
-        FilteringTextInputFormatter.digitsOnly
+        FilteringTextInputFormatter.digitsOnly,
+        // LengthLimitingTextInputFormatter(maxLength)
       ] : [],
       onChanged: onChanged,
       decoration: InputDecoration(
