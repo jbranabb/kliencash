@@ -157,7 +157,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
         ],
       ),
       child: Container(
-        margin: EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -517,12 +516,12 @@ Widget editProjects(
                 },
               ),
               SizedBox(height: 12),
-              
               MyTextFileds(
                 controller: descC,
                 label: "Deskripsi",
                 icon: Icons.description,
                 focusNode: descF,
+                maxlines: 10,
                 isOtional: true,
                 onEditingCom: () {
                   FocusScope.of(context).requestFocus(priceF);

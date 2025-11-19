@@ -448,6 +448,7 @@ Dialog editDataClient(
                 label: "Alamat",
                 icon: Icons.home,
                 focusNode: alamatF,
+                maxlines: 10,
                 isOtional: false,
                 onEditingCom: () {
                   _handleSave(
