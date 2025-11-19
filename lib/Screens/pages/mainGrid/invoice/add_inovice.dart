@@ -38,6 +38,8 @@ class _AddInoviceState extends State<AddInovice> {
   var subtotalC = TextEditingController();
   var totalAmountC = TextEditingController();
   var notes = TextEditingController();
+  var titleC = TextEditingController();
+  var titleF = FocusNode();
   var notesF = FocusNode();
   var subtotalF = FocusNode();
   var pajakF = FocusNode();
@@ -110,6 +112,16 @@ class _AddInoviceState extends State<AddInovice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
+                    MyTextFileds(
+                      controller: titleC,
+                      label: 'Judul Invoice',
+                      icon: Icons.receipt,
+                      focusNode: titleF,
+                      isOtional: false,
+                      onEditingCom: () {
+                        FocusScope.of(context).requestFocus(subtotalF);
+                      },
+                    ),
                     MyText(title: 'Subtotal, Pajak & Discount', color: Colors.grey,),
                     MyTextFileds(
                       controller: subtotalC,
@@ -126,6 +138,9 @@ class _AddInoviceState extends State<AddInovice> {
                         var data = int.tryParse(subtotalC.text) ?? 0;
                         var formated = formatRupiah.format(data);
                         subtotalC.value = TextEditingValue(text: formated);
+                      },
+                      onEditingCom: () {
+                      FocusScope.of(context).requestFocus(pajakF);  
                       },
                     ),
                   ],
@@ -151,6 +166,9 @@ class _AddInoviceState extends State<AddInovice> {
                             int.tryParse(pajakC.text),
                           );
                         },
+                        onEditingCom: () {
+                      FocusScope.of(context).requestFocus(discountF);  
+                      },
                       ),
                     ),
                     Expanded(
@@ -170,7 +188,9 @@ class _AddInoviceState extends State<AddInovice> {
                           context.read<CountMount>().setDisc(
                             int.tryParse(discountC.text),
                           );
-                        },
+                        },onEditingCom: () {
+                      FocusScope.of(context).requestFocus(notesF);  
+                      },
                       ),
                     ),
                   ],
@@ -187,6 +207,9 @@ class _AddInoviceState extends State<AddInovice> {
                       focusNode: notesF,
                       isOtional: true,
                       maxlines: 10,
+                      onEditingCom: () {
+                      FocusScope.of(context).unfocus();  
+                      },
                     ),
                   ],
                 ),
@@ -229,6 +252,7 @@ class _AddInoviceState extends State<AddInovice> {
                       int.parse(subtotalFormated),
                       pajakC.text,
                       discountC.text,
+                      titleC.text,
                       notes.text,
                       datevalue[0].toIso8601String(),
                       datevalue[1].toIso8601String(),
@@ -263,6 +287,7 @@ void validatePost(
   int subtotal,
   String pajak,
   String discount,
+  String title,
   String notes,
   String startAt,
   String jatuhTempoAt,
@@ -275,6 +300,7 @@ void validatePost(
   if (id.isNotEmpty &&
       subtotal != 0 &&
       startAt.isNotEmpty &&
+      title.isNotEmpty &&
       jatuhTempoAt.isNotEmpty &&
       status != null) {
         var rawLegth = int.parse(statelist) + 1;
@@ -290,6 +316,7 @@ void validatePost(
           subtotal: subtotal,
           pajak: int.tryParse(pajak) ?? 0,
           discount: int.tryParse(discount) ?? 0 ,
+          title: title,
           notes: notes,
           totalAmount: totalAmout,
           tanggal: startAt,

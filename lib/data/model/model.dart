@@ -92,6 +92,7 @@ class InvoiceModel {
   int? id;
   int projectsId;
   String status;
+  String title;
   int subtotal;
   int? pajak;
   int? discount;
@@ -110,6 +111,7 @@ class InvoiceModel {
     required this.projectsId,
     required this.status,
     required this.subtotal,
+    required this.title,
     this.pajak,
     this.discount,
     required this.totalAmount,
@@ -128,6 +130,7 @@ class InvoiceModel {
       id: json['Id'] ?? 0,
       projectsId: json['project_id'] ?? 0,
       status: json['status'] ?? 'nope',
+      title: json['title'] ?? 'nope',
       subtotal: json['subtotal'] ?? 0,
       pajak: json['pajak'] ?? 0,
       discount: json['discount'] ?? 0,

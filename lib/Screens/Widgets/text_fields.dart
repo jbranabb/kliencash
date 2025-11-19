@@ -167,7 +167,7 @@ class MyTextFiledsForPhone extends StatelessWidget {
         enabled: true,
         icon: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
             border: BoxBorder.all(color: Colors.grey.shade300, width: 1.5),
           ),
           child: CountryCodePicker(
