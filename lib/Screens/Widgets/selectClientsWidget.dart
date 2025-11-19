@@ -7,14 +7,19 @@ import 'package:kliencash/state/cubit/SelectedClient.dart';
 class SelectClientsWidget extends StatelessWidget {
   SelectClientsWidget({super.key, required this.listener});
   void Function(BuildContext, Map<String, dynamic>) listener;
-  
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return BlocConsumer<Selectedclient, Map<String, dynamic>>(
       listener: listener,
       builder: (context, state) {
         var stateIsnotEmpty = state['name'] != null;
+        var rawName = state['name'].toString().trim().split(' ');
+        var displayedName = rawName.length == 1
+            ? state['name'].toString().characters.first
+            : "${rawName[0].characters.first}${rawName[1].characters.first}";
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
@@ -22,20 +27,29 @@ class SelectClientsWidget extends StatelessWidget {
           ),
           child: ListTile(
             title: MyText(
-              title: stateIsnotEmpty ? state['name'] : 'Pilih Client',
+              title: stateIsnotEmpty
+                  ? state['name'].toString()
+                  : 'Pilih Client',
             ),
             leading: stateIsnotEmpty
                 ? Container(
                     height: 40,
                     width: 40,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary,
+                          offset: Offset(-2, 2),
+                          blurRadius: 10,
+                        ),
+                      ],
                     ),
                     alignment: Alignment.center,
                     child: MyText(
-                      title: state['name'].toString().characters.first,
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      title: displayedName,
+                      color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -45,13 +59,30 @@ class SelectClientsWidget extends StatelessWidget {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MyText(
-                        title: "${state['countryCode']} ${state['handphone']}",
-                        color: Colors.grey,
+                      Row(
+                        spacing: 2,
+                        children: [
+                          Icon(Icons.phone, size: 14, color:Colors.grey,),
+                          MyText(
+                            title: "${state['countryCode']} ${state['handphone']}",
+                            color: Colors.grey,
+                          ),
+                        ],
                       ),
-                      MyText(
-                        title: state['almat'].toString(),
-                        color: Colors.grey,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only( top: 3.0),
+                            child: Icon(Icons.location_on_sharp, size: 14, color:Colors.grey,),
+                          ),
+                          Expanded(
+                            child: MyText(
+                              title: state['almat'].toString(),
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   )
@@ -70,7 +101,7 @@ class SelectClientsWidget extends StatelessWidget {
                       topLeft: Radius.circular(12),
                     ),
                   ),
-                  child: userstoAdd(context, height),
+                  child: userstoAdd(context, height,width),
                 ),
               );
             },

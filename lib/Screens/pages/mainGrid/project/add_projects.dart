@@ -106,7 +106,7 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Client in Projects', color: Colors.grey,),
+                    MyText(title: 'Client in Projects', color: Colors.grey),
                     SelectClientsWidget(
                       listener: (_, state) {
                         idC.text = state['Id'].toString();
@@ -118,7 +118,7 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Agenda & Deskripsi', color: Colors.grey,),
+                    MyText(title: 'Agenda & Deskripsi', color: Colors.grey),
                     MyTextFileds(
                       controller: agendaC,
                       label: "Agenda",
@@ -146,7 +146,7 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Harga & Info Lainya', color: Colors.grey,),
+                    MyText(title: 'Harga & Info Lainya', color: Colors.grey),
                     MyTextFileds(
                       controller: priceC,
                       label: "Harga Awal",
@@ -158,7 +158,9 @@ class _AddProjectsState extends State<AddProjects> {
                         FocusScope.of(context).unfocus();
                       },
                       onChanged: (value) {
-                        var formated = formatRupiah.format(int.parse(priceC.text));
+                        var formated = formatRupiah.format(
+                          int.parse(priceC.text),
+                        );
                         priceC.value = TextEditingValue(text: formated);
                       },
                     ),
@@ -252,7 +254,7 @@ void validatePost(
   }
 }
 
-Widget userstoAdd(BuildContext context, double height) {
+Widget userstoAdd(BuildContext context, double height, double width) {
   return BlocBuilder<ClientBloc, ClientState>(
     builder: (context, state) {
       if (state is ClientSucces) {
@@ -320,6 +322,13 @@ Widget userstoAdd(BuildContext context, double height) {
                   itemCount: state.list.length,
                   itemBuilder: (context, index) {
                     var list = state.list[index];
+                    var rawName = state.list[index].name
+                        .toString()
+                        .trim()
+                        .split(' ');
+                    var displayedName = rawName.length == 1
+                        ? state.list[index].name.toString().characters.first
+                        : "${rawName[0].characters.first}${rawName[1].characters.first}";
                     return Card(
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12),
@@ -334,13 +343,20 @@ Widget userstoAdd(BuildContext context, double height) {
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme.of(context).colorScheme.onPrimary,
                               shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(-2, 2),
+                                  blurRadius: 10,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ],
                             ),
                             alignment: Alignment.center,
                             child: MyText(
-                              title: list.name.characters.first,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              title: displayedName,
+                              color: Colors.white,
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                             ),
@@ -349,11 +365,41 @@ Widget userstoAdd(BuildContext context, double height) {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MyText(
-                                title: "${list.countryCode} ${list.handphone}",
-                                color: Colors.grey,
+                              Row(
+                                spacing: 2,
+                                children: [
+                                  Icon(
+                                    Icons.phone,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
+                                  MyText(
+                                    title:
+                                        "${list.countryCode} ${list.handphone}",
+                                    color: Colors.grey,
+                                  ),
+                                ],
                               ),
-                              MyText(title: list.alamat, color: Colors.grey),
+                              Row(
+                                spacing: 2,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top:3.0),
+                                    child: Icon(
+                                      Icons.location_on_sharp,
+                                      size: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: MyText(
+                                      title: list.alamat,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),

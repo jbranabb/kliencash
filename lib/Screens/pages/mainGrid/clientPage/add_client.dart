@@ -62,7 +62,7 @@ class _AddClientState extends State<AddClient> {
                   spacing: 10,
                   children: [
                     Column(
-                      spacing: 4,
+                      spacing: 10,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         MyText(title: 'Nama Client', color: Colors.grey,),
@@ -95,7 +95,7 @@ class _AddClientState extends State<AddClient> {
                       ],
                     ),
                     Column(
-                      spacing: 4,
+                      spacing: 10,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         MyText(title: 'Alamat Client', color: Colors.grey,),
