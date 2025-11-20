@@ -22,6 +22,16 @@ class OpenThemeToggle extends Cubit<bool> {
     emit(false);
   }
 }
+class TogglePaymentMethod extends Cubit<bool> {
+  TogglePaymentMethod() : super(false);
+  void toggle() {
+    emit(!state);
+  }
+
+  void reset() {
+    emit(false);
+  }
+}
 
 class ChangeTheme extends Cubit<int> {
   ChangeTheme() : super(0);

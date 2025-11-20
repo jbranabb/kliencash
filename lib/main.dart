@@ -45,9 +45,7 @@ void main() async {
         BlocProvider(create: (context) => StatusprojectrsCubit()),
         BlocProvider(create: (context) => Selectedclient()),
         BlocProvider(create: (context) => Selecteddatecubit()),
-        BlocProvider(
-          create: (context) => ProjectsBloc()..add(ReadDataProjects()),
-        ),
+        BlocProvider(create: (context) => ProjectsBloc()..add(ReadDataProjects()),),
         BlocProvider(create: (context) => SelectedProjects()),
         BlocProvider(create: (context) => CountMount()),
         BlocProvider(create: (context) => CheckbookPembulatan()),
@@ -60,6 +58,7 @@ void main() async {
         BlocProvider(create: (context) => ChangeTheme()..initialze()),
         BlocProvider(create: (context) => Onboardingcubit()),
         BlocProvider(create: (context) => UsersBloc()..add(ReadDataUsers())),
+        BlocProvider(create: (context) => TogglePaymentMethod()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
