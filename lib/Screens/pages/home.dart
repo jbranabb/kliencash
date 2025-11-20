@@ -3,6 +3,7 @@ import 'package:kliencash/Screens/Widgets/profile_data.dart';
 import 'package:kliencash/Screens/Widgets/main_grid.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
+import 'package:kliencash/Screens/pages/settings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,9 +30,15 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.w600,
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.settings, color: Colors.white, size: 30),
+              InkWell(
+                borderRadius: BorderRadius.circular(120),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(),));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.settings, color: Colors.white, size: 30),
+                ),
               ),
             ],
           ),

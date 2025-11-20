@@ -4,23 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/data/model/model.dart';
+import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/widgets.dart';
 
-Future<Uint8List> generatePDF(BuildContext context) async {
+Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async {
   var state = context.read<Selectedinvoice>().state;
   var invoice = state[0];
   var projects = invoice.projectsModel!;
   var client = invoice.clientModel!;
-  var primaryColor = PdfColor.fromInt(
-    Theme.of(context).colorScheme.primary.value,
-  );
   var onprimaryColor = PdfColor.fromInt(
     Theme.of(context).colorScheme.onPrimary.value,
   );
-
+  var user = userState[0];
   var pdf = pw.Document();
   pdf.addPage(
     pw.Page(
@@ -44,7 +43,6 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                         padding: pw.EdgeInsets.all(0),
                         child: pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          
                           children: [
                             MyTextPdf(
                               title: invoice.title,
@@ -52,25 +50,25 @@ Future<Uint8List> generatePDF(BuildContext context) async {
                               color: onprimaryColor,
                               fontWeight: pw.FontWeight.bold,
                             ),
-                            pw.SizedBox(height: 12,),
+                            // pw.SizedBox(height: 12,),
                             MyTextPdf(
-                              title: 'pinky wedding',
+                              title: user.username,
                               fontSize: 16,
-                              color: PdfColors.grey,
+                              color: PdfColors.grey700,
                             ),
                             MyTextPdf(
-                              title: client.name,
+                              title: user.namaPerusahaaan,
                               fontWeight: pw.FontWeight.bold,
                               textAlign: pw.TextAlign.start,
                               fontSize: 16,
                             ),
                             MyTextPdf(
-                              title: client.alamat,
+                              title: user.alamat,
                               textAlign: pw.TextAlign.start,
                             ),
                             MyTextPdf(
                               title:
-                                  '${client.countryCode} ${client.handphone}',
+                                  '${user.countryCode} ${user.phoneNumber}',
                             ),
                           ],
                         ),
