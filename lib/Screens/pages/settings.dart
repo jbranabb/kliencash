@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -33,8 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: height * 0.02),
-
-              // Profile Avatar with gradient
               Container(
                 height: 110,
                 width: 110,
@@ -81,52 +80,82 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with edit button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: BlocBuilder<UsersBloc, UsersState>(
+                    builder: (context, state) {
+                      if(state is UsersSucces){
+                        var data = state.list[0];
+                        return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          MyText(
-                            title: 'User Information',
-                            color: Colors.grey[600],
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              MyText(
+                                title: 'User Information',
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  Icons.edit_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  size: 18,
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(
-                              Icons.edit_rounded,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              size: 18,
-                            ),
+                          SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              MyText(
+                                title: 'Hallo, ',
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                                fontSize: 16,
+                              ),
+                              MyText(
+                                title: data.username,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade700,
+                                fontSize: 16,
+                              ),
+                            ],
+                          ),
+                          MyText(
+                            title: data.namaPerusahaaan,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 22,
+                          ),
+                          SizedBox(height: 16),
+                          _buildInfoRow(
+                            Icons.location_on_rounded,
+                            data.alamat,
+                          ),
+                          SizedBox(height: 12),
+                          _buildInfoRow(
+                            Icons.phone_rounded,
+                            '${data.countryCode} ${data.phoneNumber}',
+                          ),
+                          SizedBox(height: 12),
+                          _buildInfoRow(
+                            Icons.email_rounded,
+                            data.emaiil,
                           ),
                         ],
-                      ),
-                      SizedBox(height: 16),
-                      MyText(
-                        title: "Pinky Wedding",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
-                      SizedBox(height: 16),
-                      _buildInfoRow(
-                        Icons.location_on_rounded,
-                        'Jalan Jendral Sudirman, No.34',
-                      ),
-                      SizedBox(height: 12),
-                      _buildInfoRow(Icons.phone_rounded, '+62 819-2920-2112'),
-                      SizedBox(height: 12),
-                      _buildInfoRow(
-                        Icons.email_rounded,
-                        'contact@pinkywedding.com',
-                      ),
-                    ],
+                      );
+                      }
+                      return SizedBox.square();
+                    },
                   ),
                 ),
               ),
@@ -235,7 +264,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: state  == 1 ? Colors.grey[50] : Colors.white,
+                                              color: state == 1
+                                                  ? Colors.grey[50]
+                                                  : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(18),
                                             ),
@@ -258,7 +289,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                           ),
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: state == 2 ? Colors.grey[50] :Colors.white,
+                                              color: state == 2
+                                                  ? Colors.grey[50]
+                                                  : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(18),
                                             ),
@@ -281,7 +314,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                           ),
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: state == 0 ? Colors.grey[50] :Colors.white,
+                                              color: state == 0
+                                                  ? Colors.grey[50]
+                                                  : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(18),
                                             ),
@@ -302,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(height: 10,)
+                                          SizedBox(height: 10),
                                         ],
                                       );
                                     },

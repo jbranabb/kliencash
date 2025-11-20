@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/state/bloc/users/users_bloc.dart';
 
 class ProfileData extends StatelessWidget {
   const ProfileData({super.key});
@@ -28,25 +30,39 @@ class ProfileData extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText(title: 'Hallo, Pingnie', color: Colors.grey),
-                    MyText(
-                      title: "Pinky Weeding",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                    ),
-                    MyText(
-                      title: 'Jalan Jendral Sudirmal, No.34',
-                      color: Colors.grey,
-                    ),
-                    MyText(title: '+62 819-2920-2112', color: Colors.grey),
-                    MyText(
-                      title: 'contact@pinkywedding.com',
-                      color: Colors.grey,
-                    ),
-                  ],
+                BlocBuilder<UsersBloc, UsersState>(
+                  builder: (context, state) {
+                    if (state is UsersSucces) {
+                    var data = state.list[0];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            title: 'Hallo, ${data.username}',
+                            color: Colors.grey,
+                          ),
+                          MyText(
+                            title: data.namaPerusahaaan,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                          MyText(
+                            title: data.alamat,
+                            color: Colors.grey,
+                          ),
+                          MyText(
+                            title: '${data.countryCode} ${data.phoneNumber}',
+                            color: Colors.grey,
+                          ),
+                          MyText(
+                            title: data.emaiil,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      );
+                    }
+                    return Container();
+                  },
                 ),
                 CircleAvatar(
                   radius: 30,
