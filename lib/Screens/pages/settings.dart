@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
+import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -18,7 +20,25 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     context.read<OpenBahasaToggle>().reset();
     context.read<OpenBahasaToggle>().reset();
+    context.read<TogglePaymentMethod>().reset();
     super.initState();
+  }
+
+  var nameC = TextEditingController();
+  var nameF = FocusNode();
+  var numberC = TextEditingController();
+  var numberF = FocusNode();
+  var atasNamaC = TextEditingController();
+  var atasNamaF = FocusNode();
+  @override
+  void dispose() {
+    nameC.dispose();
+    nameF.dispose();
+    numberC.dispose();
+    numberF.dispose();
+    atasNamaC.dispose();
+    atasNamaF.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,83 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: BlocBuilder<UsersBloc, UsersState>(
-                    builder: (context, state) {
-                      if(state is UsersSucces){
-                        var data = state.list[0];
-                        return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              MyText(
-                                title: 'User Information',
-                                color: Colors.grey[600],
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Icon(
-                                  Icons.edit_rounded,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  size: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              MyText(
-                                title: 'Hallo, ',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey,
-                                fontSize: 16,
-                              ),
-                              MyText(
-                                title: data.username,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade700,
-                                fontSize: 16,
-                              ),
-                            ],
-                          ),
-                          MyText(
-                            title: data.namaPerusahaaan,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontSize: 22,
-                          ),
-                          SizedBox(height: 16),
-                          _buildInfoRow(
-                            Icons.location_on_rounded,
-                            data.alamat,
-                          ),
-                          SizedBox(height: 12),
-                          _buildInfoRow(
-                            Icons.phone_rounded,
-                            '${data.countryCode} ${data.phoneNumber}',
-                          ),
-                          SizedBox(height: 12),
-                          _buildInfoRow(
-                            Icons.email_rounded,
-                            data.emaiil,
-                          ),
-                        ],
-                      );
-                      }
-                      return SizedBox.square();
-                    },
-                  ),
+                  child: _userSection(),
                 ),
               ),
               SizedBox(height: 20),
@@ -175,180 +119,59 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 child: Column(
                   children: [
-                    BlocBuilder<OpenBahasaToggle, bool>(
-                      builder: (context, state) {
-                        return Column(
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(24),
-                              onTap: () {
-                                context.read<OpenBahasaToggle>().toggleBahasa();
-                              },
-                              child: _additionalInfo(
-                                Icons.language,
-                                'Bahasa',
-                                iconTrailing: state
-                                    ? Icons.arrow_drop_up_rounded
-                                    : Icons.arrow_drop_down_rounded,
-                              ),
-                            ),
-                            if (state) ...[
-                              AnimatedContainer(
-                                curve: Curves.easeInOut,
-                                duration: Durations.medium2,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[50],
-                                          borderRadius: BorderRadius.circular(
-                                            18,
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          leading: MyText(
-                                            title: 'ID',
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          title: MyText(title: 'Indonesia'),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () => context.read<TogglePaymentMethod>().toggle(),
+                      child: BlocBuilder<TogglePaymentMethod, bool>(
+                        builder: (context, state) {
+                          return Column(
+                            children: [
+                              _additionalInfo(Icons.payment, 'Payment Method'),
+                              if (state) ...[
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.grey.shade100,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () => showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) => _popUpBottomSheet(
+                                          nameC,
+                                          nameF,
+                                          numberC,
+                                          numberF,
+                                          atasNamaC,
+                                          atasNamaF,
                                         ),
                                       ),
-                                      ListTile(
-                                        leading: MyText(
-                                          title: 'EN',
-                                          fontWeight: FontWeight.bold,
+                                      child: ListTile(
+                                        subtitle: Column(
+                                          children: [
+                                            Icon(Icons.add, color: Colors.grey),
+                                            MyText(
+                                              title:
+                                                  'Tambahkan Metode Pembayaran',
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ],
                                         ),
-                                        title: MyText(title: 'English'),
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ],
-                          ],
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                    BlocBuilder<OpenThemeToggle, bool>(
-                      builder: (context, state) {
-                        return Column(
-                          children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(24),
-                              onTap: () {
-                                context.read<OpenThemeToggle>().toggleThm();
-                              },
-                              child: _additionalInfo(
-                                Icons.palette,
-                                'Theme',
-                                iconTrailing: state
-                                    ? Icons.arrow_drop_up_rounded
-                                    : Icons.arrow_drop_down_rounded,
-                              ),
-                            ),
-                            if (state) ...[
-                              AnimatedContainer(
-                                curve: Curves.easeInOut,
-                                duration: Durations.medium2,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                  ),
-                                  child: BlocBuilder<ChangeTheme, int>(
-                                    builder: (context, state) {
-                                      return Column(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: state == 1
-                                                  ? Colors.grey[50]
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(18),
-                                            ),
-                                            child: InkWell(
-                                              onTap: () => context
-                                                  .read<ChangeTheme>()
-                                                  .setTheme(1),
-                                              child: ListTile(
-                                                leading: Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue.shade900,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                title: MyText(title: 'Biru'),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: state == 2
-                                                  ? Colors.grey[50]
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(18),
-                                            ),
-                                            child: InkWell(
-                                              onTap: () => context
-                                                  .read<ChangeTheme>()
-                                                  .setTheme(2),
-                                              child: ListTile(
-                                                leading: Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.pink.shade400,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                title: MyText(title: 'Pink'),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: state == 0
-                                                  ? Colors.grey[50]
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(18),
-                                            ),
-                                            child: InkWell(
-                                              onTap: () => context
-                                                  .read<ChangeTheme>()
-                                                  .setTheme(0),
-                                              child: ListTile(
-                                                leading: Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                title: MyText(title: 'Black'),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        );
-                      },
-                    ),
+                    _langueSection(),
+                    _themeSection(),
                   ],
                 ),
               ),
@@ -358,6 +181,412 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Dialog _popUpBottomSheet(
+    TextEditingController nameC,
+    FocusNode nameF,
+    TextEditingController numberC,
+    FocusNode numberF,
+    TextEditingController atasNamaC,
+    FocusNode atasNamaF,
+  ) {
+    List items = ['BANK', 'E-Wallet'];
+    return Dialog(
+      insetPadding: EdgeInsets.all(10),
+      child: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText(
+                      title: 'Tambah Metode Pembayaran',
+                      fontWeight: FontWeight.bold,
+                    ),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(120),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        context.read<DropdownStatusinvoice>().reset();
+                      },
+                      child: Icon(Icons.close, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: BoxBorder.all(
+                      color: Colors.grey.shade300,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: DropdownButton(
+                    underline: SizedBox.shrink(),
+                    items: items
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyText(title: e),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      context.read<DropdownStatusinvoice>().setStatus(
+                        value.toString(),
+                      );
+                    },
+                    hint: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        spacing: 4,
+                        children: [
+                          Icon(Icons.account_balance, color: Colors.grey),
+                          BlocBuilder<DropdownStatusinvoice, String?>(
+                            builder: (context, state) {
+                              return MyText(
+                                title: state ?? 'Tipe: BANK atau E-Wallet',
+                                color: state != null
+                                    ? Colors.black
+                                    : Colors.grey,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                MyTextFileds(
+                  controller: nameC,
+                  label: 'Name',
+                  icon: Icons.credit_card,
+                  hint: MyText(
+                    title: 'Contoh: BCA,Dana DLL ',
+                    color: Colors.grey,
+                  ),
+                  focusNode: nameF,
+                  isOtional: false,
+                ),
+                MyTextFileds(
+                  controller: numberC,
+                  label: 'Number',
+                  icon: Icons.onetwothree,
+                  hint: MyText(
+                    title: 'No Rek atau no E-Wallet ',
+                    color: Colors.grey,
+                  ),
+                  focusNode: numberF,
+                  isOtional: false,
+                ),
+                MyTextFileds(
+                  controller: atasNamaC,
+                  label: 'Atas nama',
+                  icon: Icons.person,
+                  hint: MyText(title: 'Contoh: Yanto  ', color: Colors.grey),
+                  focusNode: atasNamaF,
+                  isOtional: false,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      var typeState = context
+                          .read<DropdownStatusinvoice>()
+                          .state;
+                      if (typeState != null &&
+                          nameC.text.isNotEmpty &&
+                          numberC.text.isNotEmpty &&
+                          atasNamaC.text.isNotEmpty) {
+                        //exutre
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: MyText(title: 'Terjadi Kesalahan'),
+                            content: MyText(
+                              title:
+                                  'Silahkan isi semua fileds terlebih dahulu',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: MyText(title: 'Ok'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    child: MyText(
+                      title: 'Selesai',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _userSection() {
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state is UsersSucces) {
+          var data = state.list[0];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyText(
+                    title: 'User Information',
+                    color: Colors.grey[600],
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.edit_rounded,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  MyText(
+                    title: 'Hallo, ',
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                  MyText(
+                    title: data.username,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade700,
+                    fontSize: 16,
+                  ),
+                ],
+              ),
+              MyText(
+                title: data.namaPerusahaaan,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontSize: 22,
+              ),
+              SizedBox(height: 16),
+              _buildInfoRow(Icons.location_on_rounded, data.alamat),
+              SizedBox(height: 12),
+              _buildInfoRow(
+                Icons.phone_rounded,
+                '${data.countryCode} ${data.phoneNumber}',
+              ),
+              SizedBox(height: 12),
+              _buildInfoRow(Icons.email_rounded, data.emaiil),
+            ],
+          );
+        }
+        return SizedBox.square();
+      },
+    );
+  }
+
+  Widget _langueSection() {
+    return BlocBuilder<OpenBahasaToggle, bool>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(24),
+              onTap: () {
+                context.read<OpenBahasaToggle>().toggleBahasa();
+              },
+              child: _additionalInfo(
+                Icons.language,
+                'Bahasa',
+                iconTrailing: state
+                    ? Icons.arrow_drop_up_rounded
+                    : Icons.arrow_drop_down_rounded,
+              ),
+            ),
+            if (state) ...[
+              AnimatedContainer(
+                curve: Curves.easeInOut,
+                duration: Durations.medium2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: ListTile(
+                          leading: MyText(
+                            title: 'ID',
+                            fontWeight: FontWeight.bold,
+                          ),
+                          title: MyText(title: 'Indonesia'),
+                        ),
+                      ),
+                      ListTile(
+                        leading: MyText(
+                          title: 'EN',
+                          fontWeight: FontWeight.bold,
+                        ),
+                        title: MyText(title: 'English'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _themeSection() {
+    return BlocBuilder<OpenThemeToggle, bool>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(24),
+              onTap: () {
+                context.read<OpenThemeToggle>().toggleThm();
+              },
+              child: _additionalInfo(
+                Icons.palette,
+                'Theme',
+                iconTrailing: state
+                    ? Icons.arrow_drop_up_rounded
+                    : Icons.arrow_drop_down_rounded,
+              ),
+            ),
+            if (state) ...[
+              AnimatedContainer(
+                curve: Curves.easeInOut,
+                duration: Durations.medium2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: BlocBuilder<ChangeTheme, int>(
+                    builder: (context, state) {
+                      return Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: state == 1
+                                  ? Colors.grey[50]
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: InkWell(
+                              onTap: () =>
+                                  context.read<ChangeTheme>().setTheme(1),
+                              child: ListTile(
+                                leading: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade900,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                title: MyText(title: 'Biru'),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: state == 2
+                                  ? Colors.grey[50]
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: InkWell(
+                              onTap: () =>
+                                  context.read<ChangeTheme>().setTheme(2),
+                              child: ListTile(
+                                leading: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.pink.shade400,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                title: MyText(title: 'Pink'),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: state == 0
+                                  ? Colors.grey[50]
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: InkWell(
+                              onTap: () =>
+                                  context.read<ChangeTheme>().setTheme(0),
+                              child: ListTile(
+                                leading: Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                title: MyText(title: 'Black'),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 
