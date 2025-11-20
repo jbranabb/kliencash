@@ -32,11 +32,11 @@ class User {
     return {
       "username": username,
       "nama_perusahaan": namaPerusahaaan,
-      "almat":alamat,
-      "email":emaiil,
-      "countryCode":countryCode,
-      "handphone":phoneNumber,
-      "tagline": tagline
+      "alamat": alamat,
+      "email": emaiil,
+      "countryCode": countryCode,
+      "handphone": phoneNumber,
+      "tagline": tagline,
     };
   }
 }
@@ -225,6 +225,41 @@ class InvoiceModel {
       'createdAt': createdAt,
       'notes': notes,
       'invoice_number': invoiceNumber,
+    };
+  }
+}
+
+class PaymentMethodModel {
+  int? id;
+  String type;
+  String name;
+  String? number;
+  String? accountName;
+  int isActive;
+  PaymentMethodModel({
+    required this.name,
+    required this.type,
+    this.accountName,
+    this.number,
+    required this.isActive,
+  });
+  factory PaymentMethodModel.fromJson(Map<String, dynamic> json) {
+    return PaymentMethodModel(
+      name: json['name'],
+      type: json['type'],
+      number: json['number'],
+      accountName: json['account_name'],
+      isActive: json['isActive'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'type': type,
+      'number': number,
+      'account_name': accountName,
+      'isActive': isActive,
     };
   }
 }
