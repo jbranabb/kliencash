@@ -102,6 +102,7 @@ class MyTextFileds extends StatelessWidget {
     this.onChanged,
     this.suffix,
   this.maxlines
+  ,this.hint
   });
   TextEditingController controller;
   IconData icon;
@@ -110,7 +111,8 @@ class MyTextFileds extends StatelessWidget {
   FocusNode focusNode;
   int? maxlines;
   TextInputType? textType;
-  Widget? suffix; 
+  Widget? suffix;
+  Widget? hint;
   void Function()? onEditingCom;
   void Function(String)? onChanged;
   @override
@@ -128,6 +130,7 @@ class MyTextFileds extends StatelessWidget {
       ] : [],
       onChanged: onChanged,
       decoration: InputDecoration(
+        hint: hint ,
         enabled: true,
         prefixIcon: Icon(icon, color: Colors.grey),
         suffix: suffix ?? MyText(title: isOtional ? "" : "*", color: Colors.red),
