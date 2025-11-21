@@ -48,6 +48,7 @@ class DatabaseHelper {
     CREATE TABLE INVOICE(
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
+    payement_method_id INTEGER NOT NULL,
     status TEXT NOT NULL,
     title TEXT NOT NULL,
     subtotal INTEGER NOT NULL,
@@ -62,6 +63,7 @@ class DatabaseHelper {
     invoice_number TEXT NOT NULL UNIQUE,
     notes TEXT,
     FOREIGN KEY (project_id) REFERENCES PROJECTS(Id) ON DELETE CASCADE
+    FOREIGN KEY (payement_method_id) REFERENCES PAYMENT_METHOD(id) ON DELETE CASCADE
     )
       ''');
 
