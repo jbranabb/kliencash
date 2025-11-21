@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
@@ -24,7 +25,6 @@ class _SettingsPageState extends State<SettingsPage> {
     context.read<OpenBahasaToggle>().reset();
     context.read<OpenBahasaToggle>().reset();
     context.read<TogglePaymentMethod>().reset();
-    context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
     context.read<DropdownStatusinvoice>().reset();
     super.initState();
   }
@@ -59,6 +59,24 @@ class _SettingsPageState extends State<SettingsPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
                 'Berhasil Menambahkan Payment Method',
+                Theme.of(context).colorScheme.onPrimary,
+              ),
+            );
+            context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
+          } else if (state is PaymentMethodEditSucces) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              mySnakcbar(
+                'Berhasil Mengedit Payment Method',
+                Theme.of(context).colorScheme.onPrimary,
+              ),
+            );
+            context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
+          } else if (state is PaymentMethodDeleteSucces) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              mySnakcbar(
+                'Berhasil Menghapus Payment Method',
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -168,27 +186,132 @@ class _SettingsPageState extends State<SettingsPage> {
                                                 itemCount: state.list.length,
                                                 itemBuilder: (context, index) {
                                                   var data = state.list[index];
-                                                  return ListTile(
-                                                    leading: Icon(
-                                                      data.type.toLowerCase() ==
-                                                              'bank'
-                                                          ? Icons
-                                                                .account_balance
-                                                          : Icons.account_balance_wallet_rounded,
-                                                          color: Colors.grey,
-                                                    ),
-                                                    title: MyText(
-                                                      title: data.name,
-                                                    ),
-                                                    trailing: MyText(title: data.type, color: Colors.grey, fontSize: 10,),
-                                                    subtitle: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      MyText(title: '${
-                                                      data.type.toLowerCase() ==
-                                                              'bank' ? 'Rek' :  'Num'}: ${data.number}',color: Colors.grey,fontSize: 12,),
-                                                          MyText(title: 'A.n: ${data.accountName}',color: Colors.grey,fontSize: 12,),
-                                                    ],
+                                                  return SizedBox(
+                                                    child: ClipRRect(
+                                                      child: Slidable(
+                                                        key: Key(
+                                                          index.toString(),
+                                                        ),
+                                                        endActionPane: ActionPane(
+                                                          motion:
+                                                              DrawerMotion(),
+                                                          extentRatio: 0.45,
+                                                          children: [
+                                                            SlidableAction(
+                                                              onPressed: (context) {
+                                                                nameC.text =
+                                                                    data.name;
+                                                                numberC
+                                                                    .text = data
+                                                                    .number!;
+                                                                context
+                                                                    .read<
+                                                                      DropdownStatusinvoice
+                                                                    >()
+                                                                    .setStatus(
+                                                                      data.type,
+                                                                    );
+                                                                atasNamaC
+                                                                    .text = data
+                                                                    .accountName!;
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder: (context) => _popUpBottomSheet(
+                                                                    nameC,
+                                                                    nameF,
+                                                                    numberC,
+                                                                    numberF,
+                                                                    atasNamaC,
+                                                                    atasNamaF,
+                                                                    'Edit',
+                                                                    onpresed: () {
+                                                                      var stateType = context
+                                                                          .read<
+                                                                            DropdownStatusinvoice
+                                                                          >()
+                                                                          .state;
+                                                                      context
+                                                                          .read<
+                                                                            PaymentMethodBloc
+                                                                          >()
+                                                                          .add(
+                                                                            EditPaymentMethod(
+                                                                              id: data.id!,
+                                                                              model: PaymentMethodModel(
+                                                                                name: nameC.text,
+                                                                                accountName: atasNamaC.text,
+                                                                                number: numberC.text,
+                                                                                type: stateType!,
+                                                                                isActive: 0,
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              },
+                                                              backgroundColor:
+                                                                  Colors.orange,
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              icon: Icons.edit,
+                                                              label: 'Edit',
+                                                            ),
+                                                            SlidableAction(
+                                                              onPressed: (context) {
+                                                              _deleteMetodPayment(data.id!);
+                                                              },
+                                                              backgroundColor:
+                                                                  Colors.red,
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              icon: Icons
+                                                                  .delete_outline,
+                                                              label: 'Hapus',
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: ListTile(
+                                                          leading: Icon(
+                                                            data.type.toLowerCase() ==
+                                                                    'bank'
+                                                                ? Icons
+                                                                      .account_balance
+                                                                : Icons.account_balance_wallet_rounded,
+                                                            color: Colors.grey,
+                                                          ),
+                                                          title: MyText(
+                                                            title: data.name,
+                                                          ),
+                                                          trailing: MyText(
+                                                            title: data.type,
+                                                            color: Colors.grey,
+                                                            fontSize: 10,
+                                                          ),
+                                                          subtitle: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              MyText(
+                                                                title:
+                                                                    '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 12,
+                                                              ),
+                                                              MyText(
+                                                                title:
+                                                                    'A.n: ${data.accountName}',
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 12,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
                                                   );
                                                 },
@@ -224,6 +347,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                                                 numberF,
                                                                 atasNamaC,
                                                                 atasNamaF,
+                                                                'Tambah'
                                                               ),
                                                         ),
                                                         child: ListTile(
@@ -277,6 +401,35 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _deleteMetodPayment(int id) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: MyText(title: 'Hapus Payment Method ini?'),
+        content: MyText(title: 'Apakah kamu yakin ingin menghapus payment method ini?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: MyText(title: 'Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<PaymentMethodBloc>().add(DeletePaymentMethod(id: id));
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: MyText(
+              title: 'Ya, Yakin',
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Dialog _popUpBottomSheet(
     TextEditingController nameC,
     FocusNode nameF,
@@ -284,7 +437,10 @@ class _SettingsPageState extends State<SettingsPage> {
     FocusNode numberF,
     TextEditingController atasNamaC,
     FocusNode atasNamaF,
-  ) {
+    String? title,
+     {
+    void Function()? onpresed,
+  }) {
     List items = ['BANK', 'E-Wallet'];
     return Dialog(
       insetPadding: EdgeInsets.all(10),
@@ -302,7 +458,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MyText(
-                      title: 'Tambah Metode Pembayaran',
+                      title: '$title Metode Pembayaran',
                       fontWeight: FontWeight.bold,
                     ),
                     InkWell(
@@ -395,46 +551,48 @@ class _SettingsPageState extends State<SettingsPage> {
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
-                    onPressed: () {
-                      var typeState = context
-                          .read<DropdownStatusinvoice>()
-                          .state;
-                      if (typeState != null &&
-                          nameC.text.isNotEmpty &&
-                          numberC.text.isNotEmpty &&
-                          atasNamaC.text.isNotEmpty) {
-                        context.read<PaymentMethodBloc>().add(
-                          PostPaymentMethod(
-                            model: PaymentMethodModel(
-                              name: nameC.text,
-                              type: typeState,
-                              number: numberC.text,
-                              accountName: atasNamaC.text,
-                              isActive: 0,
-                            ),
-                          ),
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: MyText(title: 'Terjadi Kesalahan'),
-                            content: MyText(
-                              title:
-                                  'Silahkan isi semua fileds terlebih dahulu',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: MyText(title: 'Ok'),
+                    onPressed:
+                        onpresed ??
+                        () {
+                          var typeState = context
+                              .read<DropdownStatusinvoice>()
+                              .state;
+                          if (typeState != null &&
+                              nameC.text.isNotEmpty &&
+                              numberC.text.isNotEmpty &&
+                              atasNamaC.text.isNotEmpty) {
+                            context.read<PaymentMethodBloc>().add(
+                              PostPaymentMethod(
+                                model: PaymentMethodModel(
+                                  name: nameC.text,
+                                  type: typeState,
+                                  number: numberC.text,
+                                  accountName: atasNamaC.text,
+                                  isActive: 0,
+                                ),
                               ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: MyText(title: 'Terjadi Kesalahan'),
+                                content: MyText(
+                                  title:
+                                      'Silahkan isi semua fileds terlebih dahulu',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: MyText(title: 'Ok'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),

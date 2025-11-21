@@ -60,7 +60,7 @@ void main() async {
         BlocProvider(create: (context) => Onboardingcubit()),
         BlocProvider(create: (context) => UsersBloc()..add(ReadDataUsers())),
         BlocProvider(create: (context) => TogglePaymentMethod()),
-        BlocProvider(create: (context) => PaymentMethodBloc()),
+        BlocProvider(create: (context) => PaymentMethodBloc()..add(ReadPaymentMethod())),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
