@@ -7,6 +7,7 @@ import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/Screens/pages/intialpage/onBorading.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
@@ -59,6 +60,7 @@ void main() async {
         BlocProvider(create: (context) => Onboardingcubit()),
         BlocProvider(create: (context) => UsersBloc()..add(ReadDataUsers())),
         BlocProvider(create: (context) => TogglePaymentMethod()),
+        BlocProvider(create: (context) => PaymentMethodBloc()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
