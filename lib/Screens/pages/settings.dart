@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/data/model/model.dart';
+import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
@@ -21,6 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
     context.read<OpenBahasaToggle>().reset();
     context.read<OpenBahasaToggle>().reset();
     context.read<TogglePaymentMethod>().reset();
+    context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
+    context.read<DropdownStatusinvoice>().reset();
     super.initState();
   }
 
@@ -47,137 +52,225 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: myAppBar(context, 'Settings'),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: height * 0.02),
-              Container(
-                height: 110,
-                width: 110,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.onPrimary,
-                      Theme.of(context).colorScheme.primary,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.business_rounded,
-                  color: Colors.white,
-                  size: 50,
-                ),
+      body: BlocListener<PaymentMethodBloc, PaymentMethodState>(
+        listener: (context, state) {
+          if (state is PaymentMethodPostSucces) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              mySnakcbar(
+                'Berhasil Menambahkan Payment Method',
+                Theme.of(context).colorScheme.onPrimary,
               ),
-
-              SizedBox(height: height * 0.04),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      blurRadius: 20,
-                      color: Colors.black.withOpacity(0.06),
+            );
+            context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 24.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: height * 0.02),
+                Container(
+                  height: 110,
+                  width: 110,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.onPrimary,
+                        Theme.of(context).colorScheme.primary,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: _userSection(),
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      blurRadius: 20,
-                      color: Colors.black.withOpacity(0.06),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(24),
-                      onTap: () => context.read<TogglePaymentMethod>().toggle(),
-                      child: BlocBuilder<TogglePaymentMethod, bool>(
-                        builder: (context, state) {
-                          return Column(
-                            children: [
-                              _additionalInfo(Icons.payment, 'Payment Method'),
-                              if (state) ...[
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.grey.shade100,
-                                    ),
-                                    child: InkWell(
-                                      onTap: () => showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (context) => _popUpBottomSheet(
-                                          nameC,
-                                          nameF,
-                                          numberC,
-                                          numberF,
-                                          atasNamaC,
-                                          atasNamaF,
-                                        ),
-                                      ),
-                                      child: ListTile(
-                                        subtitle: Column(
-                                          children: [
-                                            Icon(Icons.add, color: Colors.grey),
-                                            MyText(
-                                              title:
-                                                  'Tambahkan Metode Pembayaran',
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          );
-                        },
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: Offset(0, 8),
                       ),
-                    ),
-                    _langueSection(),
-                    _themeSection(),
-                  ],
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.business_rounded,
+                    color: Colors.white,
+                    size: 50,
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-              MyText(title: 'Build by J With Love', color: Colors.grey),
-            ],
+
+                SizedBox(height: height * 0.04),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 20,
+                        color: Colors.black.withOpacity(0.06),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: _userSection(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 20,
+                        color: Colors.black.withOpacity(0.06),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        onTap: () =>
+                            context.read<TogglePaymentMethod>().toggle(),
+                        child: BlocBuilder<TogglePaymentMethod, bool>(
+                          builder: (context, state) {
+                            return Column(
+                              children: [
+                                _additionalInfo(
+                                  Icons.credit_card,
+                                  'Payment Method',
+                                ),
+                                if (state) ...[
+                                  BlocBuilder<
+                                    PaymentMethodBloc,
+                                    PaymentMethodState
+                                  >(
+                                    builder: (context, state) {
+                                      return Column(
+                                        children: [
+                                          if (state
+                                              is PaymentMethodSReaducces) ...[
+                                            Container(
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: state.list.length,
+                                                itemBuilder: (context, index) {
+                                                  var data = state.list[index];
+                                                  return ListTile(
+                                                    leading: Icon(
+                                                      data.type.toLowerCase() ==
+                                                              'bank'
+                                                          ? Icons
+                                                                .account_balance
+                                                          : Icons.account_balance_wallet_rounded,
+                                                          color: Colors.grey,
+                                                    ),
+                                                    title: MyText(
+                                                      title: data.name,
+                                                    ),
+                                                    trailing: MyText(title: data.type, color: Colors.grey, fontSize: 10,),
+                                                    subtitle: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      MyText(title: '${
+                                                      data.type.toLowerCase() ==
+                                                              'bank' ? 'Rek' :  'Num'}: ${data.number}',color: Colors.grey,fontSize: 12,),
+                                                          MyText(title: 'A.n: ${data.accountName}',color: Colors.grey,fontSize: 12,),
+                                                    ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            state.list.length >= 10
+                                                ? SizedBox.shrink()
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          16.0,
+                                                        ),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                        color: Colors
+                                                            .grey
+                                                            .shade100,
+                                                      ),
+                                                      child: InkWell(
+                                                        onTap: () => showDialog(
+                                                          context: context,
+                                                          barrierDismissible:
+                                                              false,
+                                                          builder: (context) =>
+                                                              _popUpBottomSheet(
+                                                                nameC,
+                                                                nameF,
+                                                                numberC,
+                                                                numberF,
+                                                                atasNamaC,
+                                                                atasNamaF,
+                                                              ),
+                                                        ),
+                                                        child: ListTile(
+                                                          subtitle: Column(
+                                                            children: [
+                                                              Icon(
+                                                                Icons.add,
+                                                                color:
+                                                                    Colors.grey,
+                                                                size: 16,
+                                                              ),
+                                                              MyText(
+                                                                title:
+                                                                    'Tambahkan Metode Pembayaran',
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                          ],
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      _langueSection(),
+                      _themeSection(),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                MyText(title: 'Build by J With Love', color: Colors.grey),
+              ],
+            ),
           ),
         ),
       ),
@@ -310,7 +403,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           nameC.text.isNotEmpty &&
                           numberC.text.isNotEmpty &&
                           atasNamaC.text.isNotEmpty) {
-                        //exutre
+                        context.read<PaymentMethodBloc>().add(
+                          PostPaymentMethod(
+                            model: PaymentMethodModel(
+                              name: nameC.text,
+                              type: typeState,
+                              number: numberC.text,
+                              accountName: atasNamaC.text,
+                              isActive: 0,
+                            ),
+                          ),
+                        );
                       } else {
                         showDialog(
                           context: context,
