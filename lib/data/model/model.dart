@@ -134,6 +134,7 @@ class ProjectsModel {
 class InvoiceModel {
   int? id;
   int projectsId;
+  int paymentMethodId;
   String status;
   String title;
   int subtotal;
@@ -149,9 +150,11 @@ class InvoiceModel {
   String createdAt;
   ProjectsModel? projectsModel;
   ClientModel? clientModel;
+  PaymentMethodModel? paymentMethod;
   InvoiceModel({
     this.id,
     required this.projectsId,
+    required this.paymentMethodId,
     required this.status,
     required this.subtotal,
     required this.title,
@@ -167,11 +170,13 @@ class InvoiceModel {
     required this.createdAt,
     this.projectsModel,
     this.clientModel,
+    this.paymentMethod,
   });
   factory InvoiceModel.fromJson(Map<String, dynamic> json) {
     return InvoiceModel(
       id: json['Id'] ?? 0,
       projectsId: json['project_id'] ?? 0,
+      paymentMethodId: json['payement_method_id'] ?? 0,
       status: json['status'] ?? 'nope',
       title: json['title'] ?? 'nope',
       subtotal: json['subtotal'] ?? 0,
@@ -205,6 +210,16 @@ class InvoiceModel {
               'handphone': json['client_phone'] ?? '',
               'country_code': json['client_cc'] ?? '',
               'alamat': json['client_alamat'] ?? '',
+            })
+          : null,
+      paymentMethod: json['payementMethod_id'] != null
+          ? PaymentMethodModel.fromJson({
+              'id': json['payementMethod_id'],
+              'name': json['paymn_name'],
+              'type': json['paymn_type'],
+              'number': json['paymn_number'],
+              'account_name': json['paymn_accountName'],
+              'isActive': json['paymn_isActive'],
             })
           : null,
     );
