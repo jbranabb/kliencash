@@ -93,7 +93,7 @@ class DatabaseHelper {
 
     await db.execute('''
    CREATE TABLE PAYMENT_METHOD(
-   id INETEGER PRIMARY KEY AUTOINCREMENT,
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
    type TEXT NOT NULL,
    name TEXT NOT NULL,
    number TEXT,
