@@ -240,6 +240,7 @@ class InvoiceModel {
       'createdAt': createdAt,
       'notes': notes,
       'invoice_number': invoiceNumber,
+      'payement_method_id': paymentMethodId
     };
   }
 }
