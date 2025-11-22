@@ -8,6 +8,7 @@ import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/data/model/model.dart';
+import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
 
@@ -39,7 +40,8 @@ class _AddUserState extends State<AddUser> {
           if (state is UsersPostSucces) {
             context.read<UsersBloc>().add(ReadDataUsers());
             Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => HomePage()), (route) => false,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              (route) => false,
             );
           }
         },
@@ -86,6 +88,7 @@ class _AddUserState extends State<AddUser> {
                   icon: Icons.home,
                   focusNode: alamatF,
                   isOtional: false,
+                  maxlines: 10,
                   onEditingCom: () {
                     FocusScope.of(context).requestFocus(phoneF);
                   },
@@ -159,7 +162,6 @@ void _validatePost(
   String phoneNumber,
   String email,
 ) {
-
   if (username.isNotEmpty &&
       nameUsaha.isNotEmpty &&
       alamat.isNotEmpty &&
@@ -178,6 +180,8 @@ void _validatePost(
         ),
       ),
     );
+    context.read<PaymentMethodBloc>().add(GenerateCashPaymentMethod());
+    context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar('Silahkan isi semua fields terlebih dahulu', null),
