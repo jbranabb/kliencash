@@ -18,6 +18,7 @@ import 'package:kliencash/state/cubit/count_amount.dart';
 import 'package:kliencash/state/cubit/drop_down_rounded.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
+import 'package:kliencash/state/cubit/selectedpaymentMethod.dart';
 
 class AddInovice extends StatefulWidget {
   AddInovice({super.key});
@@ -53,6 +54,7 @@ class _AddInoviceState extends State<AddInovice> {
     context.read<DropdownStatusinvoice>().setStatus(null);
     pajakC.text = '11';
     context.read<CountMount>().setpajak(int.parse(pajakC.text));
+    context.read<SelectedPaymentMethod>().reset();
   }
 
   @override
@@ -249,10 +251,41 @@ class _AddInoviceState extends State<AddInovice> {
                       context: context,
                       builder: (context) => selectedPayementMethod(),
                     ),
-                    child: ListTile(
-                      leading: Icon(Icons.credit_card),
-                      title: MyText(title: 'Select Payement Method'),
-                      trailing: Icon(Icons.arrow_drop_down_rounded),
+                    child: BlocBuilder<SelectedPaymentMethod, Map<String, dynamic>>(
+                      builder: (context, state) {
+                        return ListTile(
+                          leading: Icon(
+                            state['type'] == null
+                                ? Icons.credit_card
+                                : state['type'].toString().toLowerCase() ==
+                                      'bank'
+                                ? Icons.account_balance
+                                : Icons.credit_card,
+                          ),
+                          title: MyText(
+                            title: state['name'] ?? 'Select Payement Method',
+                          ),
+                          subtitle: state['name'] != null
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MyText(
+                                      title:
+                                          '${state['type'].toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${state['number']}',
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                    MyText(
+                                      title: "A.n: ${state['accountName']}",
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ],
+                                )
+                              : null,
+                          trailing: Icon(Icons.arrow_drop_down_rounded),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -328,7 +361,7 @@ Widget selectedPayementMethod() {
               if (state.list.isEmpty) {
                 return Column(
                   children: [
-                    Icon(Icons.payment, size: 40,color: Colors.grey,),
+                    Icon(Icons.payment, size: 40, color: Colors.grey),
                     MyText(
                       title:
                           'Tidak ada Payment Method\nSilahkan tambahkan terlebih dahulu',
@@ -344,8 +377,11 @@ Widget selectedPayementMethod() {
                   itemBuilder: (context, index) {
                     var data = state.list[index];
                     return ListTile(
-                      onTap: (){
-                        print('object');
+                      onTap: () {
+                        context.read<SelectedPaymentMethod>().selectablePayment(
+                          data.id!,
+                        );
+                        Navigator.of(context).pop();
                       },
                       leading: Icon(
                         data.type.toLowerCase() == 'bank'
@@ -404,10 +440,12 @@ void validatePost(
   int roundedValue,
   String statelist,
 ) {
+  var paymentId = context.read<SelectedPaymentMethod>().state['id'];
   if (id.isNotEmpty &&
       subtotal != 0 &&
       startAt.isNotEmpty &&
       title.isNotEmpty &&
+      paymentId != null &&
       jatuhTempoAt.isNotEmpty &&
       status != null) {
     var rawLegth = int.parse(statelist) + 1;
@@ -430,7 +468,7 @@ void validatePost(
           jatuhTempo: jatuhTempoAt,
           isRounded: isrounded ? 1 : 0,
           roundedValue: isrounded ? roundedValue : 0,
-          paymentMethodId: 2,
+          paymentMethodId: paymentId,
           invoiceNumber: 'INV-$date-$listlength',
           createdAt: DateTime.now().toIso8601String(),
         ),
