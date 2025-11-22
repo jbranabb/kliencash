@@ -16,6 +16,7 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
   var invoice = state[0];
   var projects = invoice.projectsModel!;
   var client = invoice.clientModel!;
+  var paymentM = invoice.paymentMethod!;
   var onprimaryColor = PdfColor.fromInt(
     Theme.of(context).colorScheme.onPrimary.value,
   );
@@ -225,6 +226,7 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                       child: MyTextPdf(
                         title: projects.status.toUpperCase(),
                         color: pdfcolors(projects.status),
+                        fontSize: 12,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
@@ -353,20 +355,24 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                   ],
                 ),
                 MyTextPdf(
-                  title: 'Transfer BANK: ',
+                  title: 'Metode Pembayaran: ',
                   fontWeight: pw.FontWeight.bold,
                 ),
+                if(paymentM.type.toString().toLowerCase() == 'cash') ...[
+                  MyTextPdf(title: 'Cash')
+                ],
+                if(paymentM.type.toString().toLowerCase() != 'cash' && paymentM.number !=null && paymentM.accountName !=null) ...[
                 pw.Row(
                   children: [
-                    MyTextPdf(title: 'BANK: '),
-                    MyTextPdf(title: 'BCA', fontWeight: pw.FontWeight.bold),
+                    MyTextPdf(title: '${paymentM.type}: '),
+                    MyTextPdf(title: paymentM.name, fontWeight: pw.FontWeight.bold),
                   ],
                 ),
                 pw.Row(
                   children: [
-                    MyTextPdf(title: 'No. Rekening: '),
+                    MyTextPdf(title: paymentM.type.toString() == 'BANK' ? 'No. Rekening: ' : 'Number: '),
                     MyTextPdf(
-                      title: '12345678',
+                      title: paymentM.number!,
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ],
@@ -375,11 +381,12 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                   children: [
                     MyTextPdf(title: 'A.n: '),
                     MyTextPdf(
-                      title: 'pinkweeding',
+                      title: paymentM.accountName!,
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ],
                 ),
+                ],
               ],
             ),
           ),
