@@ -9,6 +9,7 @@ import 'package:kliencash/Screens/Widgets/statusInvoice.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
@@ -86,12 +87,11 @@ class _AddInoviceState extends State<AddInovice> {
       ),
       body: BlocListener<InvoiceBloc, InvoiceState>(
         listener: (context, state) {
-          if(state is InvoicePostSucces){
+          if (state is InvoicePostSucces) {
             Navigator.of(context).pop();
             context.read<InvoiceBloc>().add(ReadInvoice());
             context.read<CountMount>().reset();
             context.read<SelectedProjects>().reset();
-          
           }
         },
         child: SingleChildScrollView(
@@ -104,7 +104,7 @@ class _AddInoviceState extends State<AddInovice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Client Projects', color: Colors.grey,),
+                    MyText(title: 'Client Projects', color: Colors.grey),
                     SelectProjecstWidget(),
                   ],
                 ),
@@ -122,7 +122,10 @@ class _AddInoviceState extends State<AddInovice> {
                         FocusScope.of(context).requestFocus(subtotalF);
                       },
                     ),
-                    MyText(title: 'Subtotal, Pajak & Discount', color: Colors.grey,),
+                    MyText(
+                      title: 'Subtotal, Pajak & Discount',
+                      color: Colors.grey,
+                    ),
                     MyTextFileds(
                       controller: subtotalC,
                       label: 'Subtotal',
@@ -140,7 +143,7 @@ class _AddInoviceState extends State<AddInovice> {
                         subtotalC.value = TextEditingValue(text: formated);
                       },
                       onEditingCom: () {
-                      FocusScope.of(context).requestFocus(pajakF);  
+                        FocusScope.of(context).requestFocus(pajakF);
                       },
                     ),
                   ],
@@ -167,8 +170,8 @@ class _AddInoviceState extends State<AddInovice> {
                           );
                         },
                         onEditingCom: () {
-                      FocusScope.of(context).requestFocus(discountF);  
-                      },
+                          FocusScope.of(context).requestFocus(discountF);
+                        },
                       ),
                     ),
                     Expanded(
@@ -188,9 +191,10 @@ class _AddInoviceState extends State<AddInovice> {
                           context.read<CountMount>().setDisc(
                             int.tryParse(discountC.text),
                           );
-                        },onEditingCom: () {
-                      FocusScope.of(context).requestFocus(notesF);  
-                      },
+                        },
+                        onEditingCom: () {
+                          FocusScope.of(context).requestFocus(notesF);
+                        },
                       ),
                     ),
                   ],
@@ -199,7 +203,7 @@ class _AddInoviceState extends State<AddInovice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Catatan & DLL ', color: Colors.grey,),
+                    MyText(title: 'Catatan & DLL ', color: Colors.grey),
                     MyTextFileds(
                       controller: notes,
                       label: "Catatan",
@@ -208,7 +212,7 @@ class _AddInoviceState extends State<AddInovice> {
                       isOtional: true,
                       maxlines: 10,
                       onEditingCom: () {
-                      FocusScope.of(context).unfocus();  
+                        FocusScope.of(context).unfocus();
                       },
                     ),
                   ],
@@ -234,9 +238,26 @@ class _AddInoviceState extends State<AddInovice> {
                     CheckboxPembulatan(),
                   ],
                 ),
+                // payment method select by id
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: InkWell(
+                    onTap: () => showModalBottomSheet(
+                      context: context,
+                      builder: (context) => selectedPayementMethod(),
+                    ),
+                    child: ListTile(
+                      leading: Icon(Icons.credit_card),
+                      title: MyText(title: 'Select Payement Method'),
+                      trailing: Icon(Icons.arrow_drop_down_rounded),
+                    ),
+                  ),
+                ),
                 ElevatedButton(
                   onPressed: () {
-
                     var subtotalFormated = subtotalC.text.replaceAll(
                       RegExp(r'[Rp\s.]'),
                       '',
@@ -245,7 +266,10 @@ class _AddInoviceState extends State<AddInovice> {
                       RegExp(r'[Rp\s.]'),
                       '',
                     );
-                    var totalAmoutFormated =  rawtotalAmoutFormated.toLowerCase().contains('gratis') ? 0 : int.parse(rawtotalAmoutFormated);
+                    var totalAmoutFormated =
+                        rawtotalAmoutFormated.toLowerCase().contains('gratis')
+                        ? 0
+                        : int.parse(rawtotalAmoutFormated);
                     validatePost(
                       context,
                       idC.text,
@@ -260,7 +284,9 @@ class _AddInoviceState extends State<AddInovice> {
                       inoviceState,
                       checkbooxRoundedValue,
                       int.parse(roundedValue),
-                      stateList is InvoiceReadSucces ? stateList.list.length.toString() : stateList.toString()
+                      stateList is InvoiceReadSucces
+                          ? stateList.list.length.toString()
+                          : stateList.toString(),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -279,6 +305,87 @@ class _AddInoviceState extends State<AddInovice> {
       ),
     );
   }
+}
+
+Widget selectedPayementMethod() {
+  return Container(
+    width: double.maxFinite,
+    child: Column(
+      children: [
+        SizedBox(height: 10),
+        Container(
+          width: 130,
+          height: 5,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        SizedBox(height: 30),
+        BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
+          builder: (context, state) {
+            if (state is PaymentMethodSReaducces) {
+              if (state.list.isEmpty) {
+                return Column(
+                  children: [
+                    Icon(Icons.payment, size: 40,color: Colors.grey,),
+                    MyText(
+                      title:
+                          'Tidak ada Payment Method\nSilahkan tambahkan terlebih dahulu',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                );
+              }
+              return Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.list.length,
+                  itemBuilder: (context, index) {
+                    var data = state.list[index];
+                    return ListTile(
+                      onTap: (){
+                        print('object');
+                      },
+                      leading: Icon(
+                        data.type.toLowerCase() == 'bank'
+                            ? Icons.account_balance
+                            : Icons.account_balance_wallet_rounded,
+                        color: Colors.grey,
+                      ),
+                      title: MyText(title: data.name),
+                      trailing: MyText(
+                        title: data.type,
+                        color: Colors.grey,
+                        fontSize: 10,
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            title:
+                                '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          MyText(
+                            title: 'A.n: ${data.accountName}',
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+            return Container();
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 void validatePost(
@@ -303,19 +410,19 @@ void validatePost(
       title.isNotEmpty &&
       jatuhTempoAt.isNotEmpty &&
       status != null) {
-        var rawLegth = int.parse(statelist) + 1;
-        var seprated =  rawLegth / 100;
-        var listlength = seprated.toString().replaceAll('.', '');
-        var date =   DateFormat('ddMMyyyy').format(DateTime.now());
-        print(date);
-        context.read<InvoiceBloc>().add(
+    var rawLegth = int.parse(statelist) + 1;
+    var seprated = rawLegth / 100;
+    var listlength = seprated.toString().replaceAll('.', '');
+    var date = DateFormat('ddMMyyyy').format(DateTime.now());
+    print(date);
+    context.read<InvoiceBloc>().add(
       PostInvoice(
         invoiceModel: InvoiceModel(
           projectsId: int.parse(id),
           status: status,
           subtotal: subtotal,
           pajak: int.tryParse(pajak) ?? 0,
-          discount: int.tryParse(discount) ?? 0 ,
+          discount: int.tryParse(discount) ?? 0,
           title: title,
           notes: notes,
           totalAmount: totalAmout,
@@ -323,6 +430,7 @@ void validatePost(
           jatuhTempo: jatuhTempoAt,
           isRounded: isrounded ? 1 : 0,
           roundedValue: isrounded ? roundedValue : 0,
+          paymentMethodId: 2,
           invoiceNumber: 'INV-$date-$listlength',
           createdAt: DateTime.now().toIso8601String(),
         ),
