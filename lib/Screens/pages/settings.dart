@@ -289,7 +289,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                                             color: Colors.grey,
                                                             fontSize: 10,
                                                           ),
-                                                          subtitle: Column(
+                                                          subtitle: data.type.toLowerCase() != 'cash'?  Column(
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
@@ -309,7 +309,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                                                 fontSize: 12,
                                                               ),
                                                             ],
-                                                          ),
+                                                          ) : null,
                                                         ),
                                                       ),
                                                     ),

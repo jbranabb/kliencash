@@ -8,6 +8,7 @@ class ProfileData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -46,9 +47,12 @@ class ProfileData extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                           ),
-                          MyText(
-                            title: data.alamat,
-                            color: Colors.grey,
+                          Container(
+                            width: width * 0.6,
+                            child: MyText(
+                              title: data.alamat,
+                              color: Colors.grey,
+                            ),
                           ),
                           MyText(
                             title: '${data.countryCode} ${data.phoneNumber}',

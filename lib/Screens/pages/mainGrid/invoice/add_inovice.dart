@@ -260,12 +260,13 @@ class _AddInoviceState extends State<AddInovice> {
                                 : state['type'].toString().toLowerCase() ==
                                       'bank'
                                 ? Icons.account_balance
-                                : Icons.credit_card,
+                                : Icons.account_balance_wallet,
+                                color: Colors.grey,
                           ),
                           title: MyText(
                             title: state['name'] ?? 'Select Payement Method',
                           ),
-                          subtitle: state['name'] != null
+                          subtitle: state['name'] != null && state['type'].toLowerCase() != 'cash' 
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -395,7 +396,7 @@ Widget selectedPayementMethod() {
                         color: Colors.grey,
                         fontSize: 10,
                       ),
-                      subtitle: Column(
+                      subtitle:  data.type.toLowerCase() != 'cash' ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           MyText(
@@ -410,7 +411,7 @@ Widget selectedPayementMethod() {
                             fontSize: 12,
                           ),
                         ],
-                      ),
+                      ) : null,
                     );
                   },
                 ),
