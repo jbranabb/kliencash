@@ -3,6 +3,7 @@ part of 'payment_method_bloc.dart';
 @immutable
 sealed class PaymentMethodEvent {}
 class ReadPaymentMethod  extends PaymentMethodEvent {}
+class GenerateCashPaymentMethod  extends PaymentMethodEvent {}
 class PostPaymentMethod  extends PaymentMethodEvent {
   PaymentMethodModel model;
   PostPaymentMethod({required this.model});

@@ -17,12 +17,12 @@ class PaymentMethodBloc extends Bloc<PaymentMethodEvent, PaymentMethodState> {
     });
     on<PostPaymentMethod>((event, emit) async {
       var db = await database.getDatabase;
-        await db.insert('PAYMENT_METHOD', event.model.toJson());
+      await db.insert('PAYMENT_METHOD', event.model.toJson());
       emit(PaymentMethodPostSucces());
     });
     on<EditPaymentMethod>((event, emit) async {
       var db = await database.getDatabase;
-        await db.update(
+      await db.update(
         'PAYMENT_METHOD',
         event.model.toJson(),
         where: 'id = ?',
@@ -30,13 +30,17 @@ class PaymentMethodBloc extends Bloc<PaymentMethodEvent, PaymentMethodState> {
       );
       emit(PaymentMethodEditSucces());
     });
-    on<DeletePaymentMethod>((event, emit)async {
+    on<DeletePaymentMethod>((event, emit) async {
       var db = await database.getDatabase;
-      await db.delete('PAYMENT_METHOD',
-        where: 'id = ?',
-        whereArgs: [event.id],
-      );
+      await db.delete('PAYMENT_METHOD', where: 'id = ?', whereArgs: [event.id]);
       emit(PaymentMethodDeleteSucces());
-    },);
+    });
+    on<GenerateCashPaymentMethod>((event, emit) async {
+      var db = await database.getDatabase;
+      await db.insert(
+        'PAYMENT_METHOD',
+        PaymentMethodModel(name: 'cash', type: "CASH", isActive: 0).toJson(),
+      );
+    });
   }
 }
