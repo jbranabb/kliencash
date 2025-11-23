@@ -48,7 +48,7 @@ class SelectClientsWidget extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: MyText(
-                      title: displayedName,
+                      title: displayedName.toUpperCase(),
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

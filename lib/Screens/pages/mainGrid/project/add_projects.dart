@@ -355,7 +355,7 @@ Widget userstoAdd(BuildContext context, double height, double width) {
                             ),
                             alignment: Alignment.center,
                             child: MyText(
-                              title: displayedName,
+                              title: displayedName.toUpperCase(),
                               color: Colors.white,
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
