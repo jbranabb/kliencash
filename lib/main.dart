@@ -13,6 +13,7 @@ import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
+import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 import 'package:kliencash/state/cubit/checkbook_pembulatan.dart';
 import 'package:kliencash/state/cubit/count_amount.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
@@ -63,6 +64,7 @@ void main() async {
         BlocProvider(create: (context) => TogglePaymentMethod()),
         BlocProvider(create: (context) => PaymentMethodBloc()..add(ReadPaymentMethod())),
         BlocProvider(create: (context) => SelectedPaymentMethod()),
+        BlocProvider(create: (context) => BookstatuslengthCubit()..getlength()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
