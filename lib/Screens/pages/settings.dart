@@ -158,234 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   child: Column(
                     children: [
-                      InkWell(
-                        borderRadius: BorderRadius.circular(24),
-                        onTap: () =>
-                            context.read<TogglePaymentMethod>().toggle(),
-                        child: BlocBuilder<TogglePaymentMethod, bool>(
-                          builder: (context, state) {
-                            return Column(
-                              children: [
-                                _additionalInfo(
-                                  Icons.credit_card,
-                                  'Payment Method',
-                                ),
-                                if (state) ...[
-                                  BlocBuilder<
-                                    PaymentMethodBloc,
-                                    PaymentMethodState
-                                  >(
-                                    builder: (context, state) {
-                                      return Column(
-                                        children: [
-                                          if (state
-                                              is PaymentMethodSReaducces) ...[
-                                            Container(
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount: state.list.length,
-                                                itemBuilder: (context, index) {
-                                                  var data = state.list[index];
-                                                  return SizedBox(
-                                                    child: ClipRRect(
-                                                      child: Slidable(
-                                                        key: Key(
-                                                          index.toString(),
-                                                        ),
-                                                        endActionPane: ActionPane(
-                                                          motion:
-                                                              DrawerMotion(),
-                                                          extentRatio: 0.45,
-                                                          children: [
-                                                            SlidableAction(
-                                                              onPressed: (context) {
-                                                                nameC.text =
-                                                                    data.name;
-                                                                numberC
-                                                                    .text = data
-                                                                    .number!;
-                                                                context
-                                                                    .read<
-                                                                      DropdownStatusinvoice
-                                                                    >()
-                                                                    .setStatus(
-                                                                      data.type,
-                                                                    );
-                                                                atasNamaC
-                                                                    .text = data
-                                                                    .accountName!;
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder: (context) => _popUpBottomSheet(
-                                                                    nameC,
-                                                                    nameF,
-                                                                    numberC,
-                                                                    numberF,
-                                                                    atasNamaC,
-                                                                    atasNamaF,
-                                                                    'Edit',
-                                                                    onpresed: () {
-                                                                      var stateType = context
-                                                                          .read<
-                                                                            DropdownStatusinvoice
-                                                                          >()
-                                                                          .state;
-                                                                      context
-                                                                          .read<
-                                                                            PaymentMethodBloc
-                                                                          >()
-                                                                          .add(
-                                                                            EditPaymentMethod(
-                                                                              id: data.id!,
-                                                                              model: PaymentMethodModel(
-                                                                                name: nameC.text,
-                                                                                accountName: atasNamaC.text,
-                                                                                number: numberC.text,
-                                                                                type: stateType!,
-                                                                                isActive: 0,
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              },
-                                                              backgroundColor:
-                                                                  Colors.orange,
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              icon: Icons.edit,
-                                                              label: 'Edit',
-                                                            ),
-                                                            SlidableAction(
-                                                              onPressed: (context) {
-                                                              _deleteMetodPayment(data.id!);
-                                                              },
-                                                              backgroundColor:
-                                                                  Colors.red,
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              icon: Icons
-                                                                  .delete_outline,
-                                                              label: 'Hapus',
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: ListTile(
-                                                          leading: Icon(
-                                                            data.type.toLowerCase() ==
-                                                                    'bank'
-                                                                ? Icons
-                                                                      .account_balance
-                                                                : Icons.account_balance_wallet_rounded,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          title: MyText(
-                                                            title: data.name,
-                                                          ),
-                                                          trailing: MyText(
-                                                            title: data.type,
-                                                            color: Colors.grey,
-                                                            fontSize: 10,
-                                                          ),
-                                                          subtitle: data.type.toLowerCase() != 'cash'?  Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              MyText(
-                                                                title:
-                                                                    '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontSize: 12,
-                                                              ),
-                                                              MyText(
-                                                                title:
-                                                                    'A.n: ${data.accountName}',
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontSize: 12,
-                                                              ),
-                                                            ],
-                                                          ) : null,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            state.list.length >= 10
-                                                ? SizedBox.shrink()
-                                                : Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          16.0,
-                                                        ),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              12,
-                                                            ),
-                                                        color: Colors
-                                                            .grey
-                                                            .shade100,
-                                                      ),
-                                                      child: InkWell(
-                                                        onTap: () => showDialog(
-                                                          context: context,
-                                                          barrierDismissible:
-                                                              false,
-                                                          builder: (context) =>
-                                                              _popUpBottomSheet(
-                                                                nameC,
-                                                                nameF,
-                                                                numberC,
-                                                                numberF,
-                                                                atasNamaC,
-                                                                atasNamaF,
-                                                                'Tambah'
-                                                              ),
-                                                        ),
-                                                        child: ListTile(
-                                                          subtitle: Column(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.add,
-                                                                color:
-                                                                    Colors.grey,
-                                                                size: 16,
-                                                              ),
-                                                              MyText(
-                                                                title:
-                                                                    'Tambahkan Metode Pembayaran',
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                          ],
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ],
-                            );
-                          },
-                        ),
-                      ),
+                      _paymentMethod(),
                       _langueSection(),
                       _themeSection(),
                     ],
@@ -401,12 +174,211 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Widget _paymentMethod() {
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      onTap: () => context.read<TogglePaymentMethod>().toggle(),
+      child: BlocBuilder<TogglePaymentMethod, bool>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              _additionalInfo(Icons.credit_card, 'Payment Method'),
+              if (state) ...[
+                BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        if (state is PaymentMethodSReaducces) ...[
+                          Container(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: state.list.length,
+                              itemBuilder: (context, index) {
+                                var data = state.list[index];
+                                return SizedBox(
+                                  child: ClipRRect(
+                                    child: Slidable(
+                                      key: Key(index.toString()),
+                                      endActionPane: ActionPane(
+                                        motion: DrawerMotion(),
+                                        extentRatio: 0.45,
+                                        children: [
+                                          SlidableAction(
+                                            onPressed: (context) {
+                                              nameC.text = data.name;
+                                              numberC.text = data.number!;
+                                              context
+                                                  .read<DropdownStatusinvoice>()
+                                                  .setStatus(data.type);
+                                              atasNamaC.text =
+                                                  data.accountName!;
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => _popUpBottomSheet(
+                                                  nameC,
+                                                  nameF,
+                                                  numberC,
+                                                  numberF,
+                                                  atasNamaC,
+                                                  atasNamaF,
+                                                  'Edit',
+                                                  onpresed: () {
+                                                    var stateType = context
+                                                        .read<
+                                                          DropdownStatusinvoice
+                                                        >()
+                                                        .state;
+                                                    context
+                                                        .read<
+                                                          PaymentMethodBloc
+                                                        >()
+                                                        .add(
+                                                          EditPaymentMethod(
+                                                            id: data.id!,
+                                                            model:
+                                                                PaymentMethodModel(
+                                                                  name: nameC
+                                                                      .text,
+                                                                  accountName:
+                                                                      atasNamaC
+                                                                          .text,
+                                                                  number:
+                                                                      numberC
+                                                                          .text,
+                                                                  type:
+                                                                      stateType!,
+                                                                  isActive: 0,
+                                                                ),
+                                                          ),
+                                                        );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                            backgroundColor: Colors.orange,
+                                            foregroundColor: Colors.white,
+                                            icon: Icons.edit,
+                                            label: 'Edit',
+                                          ),
+                                          SlidableAction(
+                                            onPressed: (context) {
+                                              _deleteMetodPayment(data.id!);
+                                            },
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white,
+                                            icon: Icons.delete_outline,
+                                            label: 'Hapus',
+                                          ),
+                                        ],
+                                      ),
+                                      child: ListTile(
+                                        leading: Icon(
+                                          data.type.toLowerCase() == 'bank'
+                                              ? Icons.account_balance
+                                              : Icons
+                                                    .account_balance_wallet_rounded,
+                                          color: Colors.grey,
+                                        ),
+                                        title: MyText(title: data.name),
+                                        trailing: MyText(
+                                          title: data.type,
+                                          color: Colors.grey,
+                                          fontSize: 10,
+                                        ),
+                                        subtitle:
+                                            data.type.toLowerCase() != 'cash'
+                                            ? Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  MyText(
+                                                    title:
+                                                        '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
+                                                    color: Colors.grey,
+                                                    fontSize: 12,
+                                                  ),
+                                                  MyText(
+                                                    title:
+                                                        'A.n: ${data.accountName}',
+                                                    color: Colors.grey,
+                                                    fontSize: 12,
+                                                  ),
+                                                ],
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          state.list.length >= 10
+                              ? SizedBox.shrink()
+                              : Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.grey.shade100,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () => showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) => _popUpBottomSheet(
+                                          nameC,
+                                          nameF,
+                                          numberC,
+                                          numberF,
+                                          atasNamaC,
+                                          atasNamaF,
+                                          'Tambah',
+                                        ),
+                                      ),
+                                      child: ListTile(
+                                        subtitle: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.add,
+                                              color: Colors.grey,
+                                              size: 16,
+                                            ),
+                                            MyText(
+                                              title:
+                                                  'Tambahkan Metode Pembayaran',
+                                              color: Colors.grey,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   void _deleteMetodPayment(int id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: MyText(title: 'Hapus Payment Method ini?'),
-        content: MyText(title: 'Apakah kamu yakin ingin menghapus payment method ini?'),
+        content: MyText(
+          title: 'Apakah kamu yakin ingin menghapus payment method ini?',
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -416,7 +388,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              context.read<PaymentMethodBloc>().add(DeletePaymentMethod(id: id));
+              context.read<PaymentMethodBloc>().add(
+                DeletePaymentMethod(id: id),
+              );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: MyText(
@@ -437,8 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
     FocusNode numberF,
     TextEditingController atasNamaC,
     FocusNode atasNamaF,
-    String? title,
-     {
+    String? title, {
     void Function()? onpresed,
   }) {
     List items = ['BANK', 'E-Wallet'];
