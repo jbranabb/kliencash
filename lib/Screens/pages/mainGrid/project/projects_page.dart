@@ -138,216 +138,219 @@ class _ProjectsPageState extends State<ProjectsPage> {
     final formattedEnd = DateFormat('dd MMM yyyy').format(endDate);
     final formattedCreated = DateFormat('dd MMM yyyy, HH:mm').format(createdAt);
 
-    return Slidable(
-      key: Key(index.toString()),
-      endActionPane: ActionPane(
-        motion: DrawerMotion(),
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            onPressed: (context) {
-              validateDeleteProjects(project.agenda, project.id!, context);
-            },
-            icon: Icons.delete_outline,
-            label: "Hapus",
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: Offset(0, 2),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Slidable(
+        key: Key(index.toString()),
+        endActionPane: ActionPane(
+          motion: DrawerMotion(),
+          extentRatio: 0.25,
+          children: [
+            SlidableAction(
+              onPressed: (context) {
+                validateDeleteProjects(project.agenda, project.id!, context);
+              },
+              icon: Icons.delete_outline,
+              label: "Hapus",
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              borderRadius: BorderRadius.circular(16),
             ),
           ],
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            onLongPress: () {
-              _showEditDialog(context, project);
-            },
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText(
-                              title: project.agenda,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Icon(Icons.person, 
-                                  size: 14, 
-                                  color: Colors.grey[600]
-                                ),
-                                SizedBox(width: 4),
-                                MyText(
-                                  title: project.client!.name,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey[600]!,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12, 
-                          vertical: 6
-                        ),
-                        decoration: BoxDecoration(
-                          color: bgcolors(project.status),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: MyText(
-                          title: project.status,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: colors(project.status),
-                        ),
-                      ),
-                    ],
-                  ),
-    
-                  SizedBox(height: 12),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onLongPress: () {
+                _showEditDialog(context, project);
+              },
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.attach_money, 
-                          size: 16,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText(
+                                title: project.agenda,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.person, 
+                                    size: 14, 
+                                    color: Colors.grey[600]
+                                  ),
+                                  SizedBox(width: 4),
+                                  MyText(
+                                    title: project.client!.name,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[600]!,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: 4),
-                        MyText(
-                          title: formatRupiah.format(project.price),
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        SizedBox(width: 8),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12, 
+                            vertical: 6
+                          ),
+                          decoration: BoxDecoration(
+                            color: bgcolors(project.status),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: MyText(
+                            title: project.status,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: colors(project.status),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-    
-                  // Description
-                  if (project.desc != null && project.desc!.isNotEmpty) ...[
+      
                     SizedBox(height: 12),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.grey[50],
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey[200]!),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.description_outlined,
-                            size: 14,
-                            color: Colors.grey[600],
+                            Icons.attach_money, 
+                            size: 16,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: MyText(
-                              title: project.desc!,
-                              fontSize: 13,
-                              color: Colors.grey[700]!,
-                            ),
+                          SizedBox(width: 4),
+                          MyText(
+                            title: formatRupiah.format(project.price),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ],
                       ),
                     ),
+      
+                    // Description
+                    if (project.desc != null && project.desc!.isNotEmpty) ...[
+                      SizedBox(height: 12),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.description_outlined,
+                              size: 14,
+                              color: Colors.grey[600],
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: MyText(
+                                title: project.desc!,
+                                fontSize: 13,
+                                color: Colors.grey[700]!,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+      
+                    SizedBox(height: 12),
+                    Divider(height: 1, color: Colors.grey[200]),
+                    SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildDateInfo(
+                            'Mulai',
+                            formattedStart,
+                            Icons.play_circle_outline,
+                            Colors.green,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(Icons.arrow_forward, 
+                          size: 16, 
+                          color: Colors.grey[400]
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: _buildDateInfo(
+                            'Selesai',
+                            formattedEnd,
+                            Icons.check_circle_outline,
+                            Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+      
+                    SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(Icons.schedule, size: 12, color: Colors.grey[500]),
+                        SizedBox(width: 4),
+                        MyText(
+                          title: 'Dibuat: $formattedCreated',
+                          fontSize: 11,
+                          color: Colors.grey[500]!,
+                        ),
+                      ],
+                    ),
+      
+                    // Long Press Hint
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.touch_app, size: 11, color: Colors.grey[400]),
+                        SizedBox(width: 4),
+                        MyText(
+                          title: 'Tahan untuk edit',
+                          fontSize: 10,
+                          color: Colors.grey[400]!,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ],
+                    ),
                   ],
-    
-                  SizedBox(height: 12),
-                  Divider(height: 1, color: Colors.grey[200]),
-                  SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildDateInfo(
-                          'Mulai',
-                          formattedStart,
-                          Icons.play_circle_outline,
-                          Colors.green,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, 
-                        size: 16, 
-                        color: Colors.grey[400]
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: _buildDateInfo(
-                          'Selesai',
-                          formattedEnd,
-                          Icons.check_circle_outline,
-                          Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-    
-                  SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.schedule, size: 12, color: Colors.grey[500]),
-                      SizedBox(width: 4),
-                      MyText(
-                        title: 'Dibuat: $formattedCreated',
-                        fontSize: 11,
-                        color: Colors.grey[500]!,
-                      ),
-                    ],
-                  ),
-    
-                  // Long Press Hint
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.touch_app, size: 11, color: Colors.grey[400]),
-                      SizedBox(width: 4),
-                      MyText(
-                        title: 'Tahan untuk edit',
-                        fontSize: 10,
-                        color: Colors.grey[400]!,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
