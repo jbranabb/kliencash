@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
 class BookingStatues extends StatelessWidget {
   const BookingStatues({super.key});
@@ -54,18 +57,24 @@ class BookingStatues extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyText(title: cardData[index]['title'],
-                        color: cardData[index]['color'] as Color,
-                        ),
-                        MyText(title: cardData[index]['value'], 
-                        fontWeight: FontWeight.bold, 
-                        color: cardData[index]['color'] as Color,
-                        ),
-                      ],
+                    child: BlocBuilder<BookstatuslengthCubit, List<Map<String,dynamic>>>(
+                      builder: (context, cardData) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // MyText(
+                            //   title: cardData[0]['title'],
+                            //   color: cardData[0]['color'] as Color,
+                            // ),
+                            // MyText(
+                            //   title: cardData[0]['value'].toString(),
+                            //   fontWeight: FontWeight.bold,
+                            //   color: cardData[0]['color'] as Color,
+                            // ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -77,30 +86,3 @@ class BookingStatues extends StatelessWidget {
     );
   }
 }
-
-final List<Map<String, dynamic>> cardData = [
-  {
-    'title': 'Active Clients',
-    'value': '24',
-    'icon': Icons.people_outline,
-    'color': Colors.blue,
-  },
-  {
-    'title': 'DP - Partial',
-    'value': '18',
-    'icon': Icons.check_circle_outline,
-    'color': Colors.orange,
-  },
-  {
-    'title': 'Payments Done',
-    'value': '3',
-    'icon': Icons.pending_actions,
-    'color': Colors.green,
-  },
-  {
-    'title': 'Outsanding',
-    'value': '4',
-    'icon': Icons.payments,
-    'color': Colors.red,
-  },
-];
