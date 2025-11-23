@@ -83,7 +83,7 @@ class SelectProjecstWidget extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                           MyText(
-                            title:  formatRupiah.format(state['estimatedValue']),
+                            title: formatRupiah.format(state['estimatedValue']),
                             fontSize: 12,
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.w600,
@@ -92,22 +92,21 @@ class SelectProjecstWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             spacing: 4,
                             children: [
-                              MyText(
-                                title: startAt,
-                                fontSize: 10,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
+                              _projectsDate(
+                                startAt,
+                                Colors.green.shade100,
+                                Colors.green,
                               ),
-                              MyText(
-                                title: "Sd",
-                                fontSize: 10,
-                                color: Colors.grey.shade400,
-                              ),
-                              MyText(
-                                title: endAt,
-                                fontSize: 10,
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 8,
                                 color: Colors.grey,
-                                fontWeight: FontWeight.w600,
+                              ),
+                              _projectsDate(
+                                endAt,
+                                Colors.blue.shade100,
+                                Colors.blue,
+                                icon: Icons.done,
                               ),
                             ],
                           ),
@@ -138,6 +137,40 @@ class SelectProjecstWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _projectsDate(
+  String title,
+  Color bgColor,
+  Color color, {
+  IconData? icon,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      // color: bgColor,
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        spacing: 2,
+        children: [
+          Icon(
+            icon ?? Icons.play_circle_outline_rounded,
+            size: 8,
+            color: color,
+          ),
+          MyText(
+            title: title,
+            fontSize: 10,
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 Widget projectsToAdd(double height) {
@@ -232,27 +265,27 @@ Widget projectsToAdd(double height) {
                                   title: formatRupiah.format(list.price),
                                   fontSize: 12,
                                   color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w600,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   spacing: 4,
                                   children: [
-                                    MyText(
-                                      title: startAt,
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w600,
+                                    _projectsDate(
+                                      startAt,
+                                      Colors.green.shade100,
+                                      Colors.green,
                                     ),
-                                    MyText(
-                                      title: "Sd",
-                                      fontSize: 10,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    MyText(
-                                      title: endAt,
-                                      fontSize: 10,
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 8,
                                       color: Colors.grey,
-                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    _projectsDate(
+                                      endAt,
+                                      Colors.blue.shade100,
+                                      Colors.blue,
+                                      icon: Icons.done,
                                     ),
                                   ],
                                 ),
