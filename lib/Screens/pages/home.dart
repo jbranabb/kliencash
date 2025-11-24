@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/profile_data.dart';
 import 'package:kliencash/Screens/Widgets/main_grid.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 import 'package:kliencash/Screens/pages/settings.dart';
-import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,14 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<BookstatuslengthCubit>().getlength();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
+    print('rebuild home');
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
