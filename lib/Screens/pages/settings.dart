@@ -202,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       key: Key(index.toString()),
                                       endActionPane: ActionPane(
                                         motion: DrawerMotion(),
-                                        extentRatio: 0.45,
+                                        extentRatio: 0.25,
                                         children: [
                                           SlidableAction(
                                             onPressed: (context) {
@@ -224,30 +224,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                                   atasNamaF,
                                                   'Edit',
                                                   onpresed: () {
-                                                    var stateType = context
-                                                        .read<
-                                                          DropdownStatusinvoice
-                                                        >()
-                                                        .state;
-                                                    context
-                                                        .read<
-                                                          PaymentMethodBloc
-                                                        >()
-                                                        .add(
-                                                          EditPaymentMethod(
-                                                            id: data.id!,
-                                                            model:
-                                                                PaymentMethodModel(
-                                                                  name: nameC
-                                                                      .text,
-                                                                  accountName:
-                                                                      atasNamaC
-                                                                          .text,
-                                                                  number:
-                                                                      numberC
-                                                                          .text,
-                                                                  type:
-                                                                      stateType!,
+                                                    var stateType = context.read<DropdownStatusinvoice>().state;
+                                                        context.read<PaymentMethodBloc
+                                                        >().add(EditPaymentMethod(id: data.id!,
+                                                            model:PaymentMethodModel(
+                                                                  name: nameC.text,
+                                                                  accountName:atasNamaC.text,
+                                                                  number:numberC.text,
+                                                                  type:stateType!,
                                                                   isActive: 0,
                                                                 ),
                                                           ),
@@ -260,15 +244,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                             foregroundColor: Colors.white,
                                             icon: Icons.edit,
                                             label: 'Edit',
-                                          ),
-                                          SlidableAction(
-                                            onPressed: (context) {
-                                              _deleteMetodPayment(data.id!);
-                                            },
-                                            backgroundColor: Colors.red,
-                                            foregroundColor: Colors.white,
-                                            icon: Icons.delete_outline,
-                                            label: 'Hapus',
                                           ),
                                         ],
                                       ),
@@ -371,38 +346,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _deleteMetodPayment(int id) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: MyText(title: 'Hapus Payment Method ini?'),
-        content: MyText(
-          title: 'Apakah kamu yakin ingin menghapus payment method ini?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: MyText(title: 'Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<PaymentMethodBloc>().add(
-                DeletePaymentMethod(id: id),
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: MyText(
-              title: 'Ya, Yakin',
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Dialog _popUpBottomSheet(
     TextEditingController nameC,
