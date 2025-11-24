@@ -4,8 +4,19 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
-class BookingStatues extends StatelessWidget {
+class BookingStatues extends StatefulWidget {
   const BookingStatues({super.key});
+
+  @override
+  State<BookingStatues> createState() => _BookingStatuesState();
+}
+
+class _BookingStatuesState extends State<BookingStatues> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<BookstatuslengthCubit>().getlength();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,41 +51,54 @@ class BookingStatues extends StatelessWidget {
                 mainAxisSpacing: 0,
                 mainAxisExtent: height * 0.1,
               ),
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade100,
-                        blurRadius: 10,
-                        offset: Offset(0.2, 4),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: BlocBuilder<BookstatuslengthCubit, List<Map<String,dynamic>>>(
-                      builder: (context, cardData) {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // MyText(
-                            //   title: cardData[0]['title'],
-                            //   color: cardData[0]['color'] as Color,
-                            // ),
-                            // MyText(
-                            //   title: cardData[0]['value'].toString(),
-                            //   fontWeight: FontWeight.bold,
-                            //   color: cardData[0]['color'] as Color,
-                            // ),
-                          ],
-                        );
-                      },
+              itemBuilder: (context, index) => InkWell(
+                onTap: () {
+                  context.read<BookstatuslengthCubit>().getlength();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade100,
+                          blurRadius: 10,
+                          offset: Offset(0.2, 4),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child:
+                          BlocBuilder<
+                            BookstatuslengthCubit,
+                            List<Map<String, dynamic>>
+                          >(
+                            builder: (context, cardData) {
+                              if(cardData.isEmpty){
+                                return MyText(title: 'Loading...');
+                              }
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MyText(
+                                    title:  cardData[index]['title'].toString(),
+                                    color: cardData[index]['color'] as Color,
+                                  ),
+                                  MyText(
+                                    title:  cardData[index]['value'].toString(),
+                                    fontWeight: FontWeight.bold,
+                                    color: cardData[index]['color'] as Color,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                     ),
                   ),
                 ),
