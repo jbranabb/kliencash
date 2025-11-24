@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kliencash/Screens/Widgets/picked_pict.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/Screens/pages/intialpage/onBorading.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
@@ -65,6 +67,7 @@ void main() async {
         BlocProvider(create: (context) => PaymentMethodBloc()..add(ReadPaymentMethod())),
         BlocProvider(create: (context) => SelectedPaymentMethod()),
         BlocProvider(create: (context) => BookstatuslengthCubit()..getlength()),
+        BlocProvider(create: (context) => PickedPict()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),

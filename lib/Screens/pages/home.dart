@@ -16,7 +16,6 @@ class _HomePageState extends State<HomePage> {
   
   @override
   Widget build(BuildContext context) {
-    print('rebuild home');
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
