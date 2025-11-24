@@ -20,6 +20,31 @@ class DatabaseHelper {
   }
 
   Future<void> _createDb(Database db, int version) async {
+
+    await db.execute('''
+    CREATE TABLE USERS(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    nama_perusahaan TEXT NOT NULL,
+    alamat TETX NOT NULL,
+    countryCode TEXT NOT NULL,
+    handphone INTEGER NOT NULL,
+    email TEXT NOT NULL,
+    tagline TEXT
+    )
+    ''');
+
+    await db.execute('''
+   CREATE TABLE PAYMENT_METHOD(
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   type TEXT NOT NULL,
+   name TEXT NOT NULL,
+   number TEXT,
+   account_name TEXT,
+   isActive INTEGER NOT NULL
+   ) 
+    ''');
+
     await db.execute('''
       CREATE TABLE CLIENT(
       Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,42 +91,19 @@ class DatabaseHelper {
     FOREIGN KEY (payement_method_id) REFERENCES PAYMENT_METHOD(id) ON DELETE CASCADE
     )
       ''');
-
     await db.execute('''
     CREATE TABLE PAYMENT(
-    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     invoice_id INTEGER NOT NULL,
+    payment_method_id INTEGER NOT NULL,
     amount INTEGER NOT NULL,
     tanggal_bayar TEXT NOT NULL,
-    payment_method TEXT NOT NULL,
     bukti_payment TEXT NOT NULL,
     notes TEXT,
     FOREIGN KEY (invoice_id) REFERENCES INVOICE(Id) ON DELETE CASCADE
+    FOREIGN KEY (payment_method_id) REFERENCES PAYMENT_METHOD(id) ON DELETE CASCADE
     )
     ''');
 
-    await db.execute('''
-    CREATE TABLE USERS(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    nama_perusahaan TEXT NOT NULL,
-    alamat TETX NOT NULL,
-    countryCode TEXT NOT NULL,
-    handphone INTEGER NOT NULL,
-    email TEXT NOT NULL,
-    tagline TEXT
-    )
-    ''');
-
-    await db.execute('''
-   CREATE TABLE PAYMENT_METHOD(
-   id INTEGER PRIMARY KEY AUTOINCREMENT,
-   type TEXT NOT NULL,
-   name TEXT NOT NULL,
-   number TEXT,
-   account_name TEXT,
-   isActive INTEGER NOT NULL
-   ) 
-    ''');
   }
 }

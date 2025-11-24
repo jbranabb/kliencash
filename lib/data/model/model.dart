@@ -240,7 +240,7 @@ class InvoiceModel {
       'createdAt': createdAt,
       'notes': notes,
       'invoice_number': invoiceNumber,
-      'payement_method_id': paymentMethodId
+      'payement_method_id': paymentMethodId,
     };
   }
 }
@@ -279,5 +279,43 @@ class PaymentMethodModel {
       'account_name': accountName,
       'isActive': isActive,
     };
+  }
+}
+
+class PaymentModel {
+  int? id;
+  int invoiceId;
+  int paymentMethodId;
+  int amount;
+  String tanggalBayar;
+  String buktiPayment;
+  String? notes;
+  PaymentMethodModel? paymentMethodModel;
+  InvoiceModel? invoicemodel;
+  PaymentModel({
+    this.id,
+    required this.invoiceId,
+    required this.paymentMethodId,
+    required this.amount,
+    required this.buktiPayment,
+    required this.tanggalBayar,
+    this.notes,
+    this.invoicemodel,
+    this.paymentMethodModel,
+  });
+  factory PaymentModel.fromJson(Map<String, dynamic> json) {
+    return PaymentModel(
+      id: json['id'],
+      invoiceId: json['invoice_id'],
+      paymentMethodId: json['payment_method_id'],
+      amount: json['amount'],
+      buktiPayment: json['bukti_payment'],
+      tanggalBayar: json['tanggal_bayar'],
+      notes: json['notes'],
+      // invoicemodel: json['invoice_name'] != null ?  
+      // invoicemode
+      // : null,
+      // paymentMethodModel: json['pm_name'],
+    );
   }
 }
