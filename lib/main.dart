@@ -12,6 +12,7 @@ import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
+import 'package:kliencash/state/cubit/SelectDateAddPayement.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
@@ -68,6 +69,7 @@ void main() async {
         BlocProvider(create: (context) => SelectedPaymentMethod()),
         BlocProvider(create: (context) => BookstatuslengthCubit()..getlength()),
         BlocProvider(create: (context) => PickedPict()),
+        BlocProvider(create: (context) => SelectDateAddPayement()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
