@@ -25,8 +25,8 @@ class AddPayment extends StatefulWidget {
 }
 
 class _AddPaymentState extends State<AddPayment> {
-  var controller = TextEditingController();
-  var focusNode = FocusNode();
+  var amountC = TextEditingController();
+  var amountF = FocusNode();
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -55,19 +55,17 @@ class _AddPaymentState extends State<AddPayment> {
             children: [
               _selectProjectsWhenAddPayment(context),
               _selectedInvoiceWhenAddPayement(context),
-              MyTextFileds(
-                controller: controller,
-                label: 'Estimated Value',
-                icon: Icons.attach_money,
-                focusNode: focusNode,
-                isOtional: false,
-              ),
-              MyTextFileds(
-                controller: controller,
-                label: 'Total Amount',
-                icon: Icons.attach_money,
-                focusNode: focusNode,
-                isOtional: false,
+              BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
+                builder: (context, state) {
+                  amountC.text = state.isNotEmpty
+                      ? formatCurrency(state[0].totalAmount)
+                      : '';
+                  return TextFiledsReadOnly(
+                    controller: amountC,
+                    label: 'Amount',
+                    icon: Icons.attach_money,
+                  );
+                },
               ),
               Row(
                 spacing: 10,
@@ -103,12 +101,45 @@ class _AddPaymentState extends State<AddPayment> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       width: width * 0.4,
-                      child: ListTile(
-                        trailing: Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.grey,
-                        ),
-                        title: MyText(title: 'Status', fontSize: 10),
+                      child: BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
+                        builder: (context, state) {
+                          var paymentMethodSelected = state.isNotEmpty
+                              ? state[0]
+                              : null;
+                          return ListTile(
+                            leading: Icon(
+                              paymentMethodSelected != null
+                                  ? paymentMethodSelected.paymentMethod!.type ==
+                                            'BANK'
+                                        ? Icons.account_balance
+                                        : Icons.account_balance_wallet
+                                  : Icons.account_balance,
+                              color: Colors.grey,
+                            ),
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  title: paymentMethodSelected != null
+                                      ? paymentMethodSelected
+                                            .paymentMethod!
+                                            .type
+                                      : 'Payment Method',
+                                  fontSize: 10,
+                                ),
+                                if (paymentMethodSelected != null) ...[
+                                  MyText(
+                                    title: paymentMethodSelected
+                                        .paymentMethod!
+                                        .name,
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -235,6 +266,15 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
                                               invoice.totalAmount,
                                             ),
                                             color: Colors.grey,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          MyText(
+                                            title:
+                                                invoice.paymentMethod!.type ==
+                                                    'CASH'
+                                                ? invoice.paymentMethod!.type
+                                                : '${invoice.paymentMethod!.type}: ${invoice.paymentMethod!.name}',
+                                            color: Colors.grey,
                                           ),
                                         ],
                                       ),
@@ -270,13 +310,31 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
                   ],
                 ),
               )
-            : Container(
-                width: double.maxFinite,
-                alignment: Alignment.center,
-                child: MyText(
-                  title: 'Silahkan Pilih Projects Terlebih dahulu.',
-                  color: Colors.grey,
-                ),
+            : Column(
+                spacing: 10,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  Container(
+                    height: 4,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.grey.shade200,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Icon(Icons.work, color: Colors.grey, size: 50),
+                  Container(
+                    width: double.maxFinite,
+                    alignment: Alignment.center,
+                    child: MyText(
+                      title: 'Silahkan Pilih Projects Terlebih dahulu.',
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
       );
     },
@@ -307,6 +365,12 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
                         title: formatCurrency(data.totalAmount),
                         color: Colors.grey,
                         fontWeight: FontWeight.w600,
+                      ),
+                      MyText(
+                        title: data.paymentMethod!.type == 'CASH'
+                            ? data.paymentMethod!.type
+                            : '${data.paymentMethod!.type}: ${data.paymentMethod!.name}',
+                        color: Colors.grey,
                       ),
                     ],
                   )
