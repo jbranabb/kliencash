@@ -9,4 +9,8 @@ final class InvoiceReadSucces extends InvoiceState {
   List<InvoiceModel> list;
   InvoiceReadSucces({required this.list});
 }
+final class InvoiceReadSuccesWithId extends InvoiceState {
+  List<InvoiceModel> list;
+  InvoiceReadSuccesWithId({required this.list});
+}
 final class InvoicePostSucces extends InvoiceState {}
