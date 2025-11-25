@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +12,7 @@ import 'package:kliencash/Screens/Widgets/picked_pict.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/cubit/SelectDateAddPayement.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
@@ -40,6 +42,7 @@ class _AddPaymentState extends State<AddPayment> {
             context.read<SelectedProjects>().reset();
             context.read<Selectedinvoice>().reset();
             context.read<InvoiceBloc>().add(ReadInvoice());
+            context.read<SelectDateAddPayement>().reset();
           },
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
@@ -70,80 +73,7 @@ class _AddPaymentState extends State<AddPayment> {
               Row(
                 spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      width: width * 0.5,
-                      child: ListTile(
-                        leading: Icon(Icons.calendar_month, color: Colors.grey),
-                        title: MyText(title: 'Tanggal Bayar', fontSize: 10),
-                        trailing: Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      width: width * 0.4,
-                      child: BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
-                        builder: (context, state) {
-                          var paymentMethodSelected = state.isNotEmpty
-                              ? state[0]
-                              : null;
-                          return ListTile(
-                            leading: Icon(
-                              paymentMethodSelected != null
-                                  ? paymentMethodSelected.paymentMethod!.type ==
-                                            'BANK'
-                                        ? Icons.account_balance
-                                        : Icons.account_balance_wallet
-                                  : Icons.account_balance,
-                              color: Colors.grey,
-                            ),
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MyText(
-                                  title: paymentMethodSelected != null
-                                      ? paymentMethodSelected
-                                            .paymentMethod!
-                                            .type
-                                      : 'Payment Method',
-                                  fontSize: 10,
-                                ),
-                                if (paymentMethodSelected != null) ...[
-                                  MyText(
-                                    title: paymentMethodSelected
-                                        .paymentMethod!
-                                        .name,
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                children: [_dateSection(context), _paymentMethodSection(context)],
               ),
               _pickPicturePayment(context),
               Align(
@@ -168,6 +98,157 @@ class _AddPaymentState extends State<AddPayment> {
       ),
     );
   }
+}
+
+Widget _paymentMethodSection(BuildContext context) {
+  var width = MediaQuery.of(context).size.width;
+  return SizedBox(
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300, width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      width: width * 0.4,
+      child: BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
+        builder: (context, state) {
+          var paymentMethodSelected = state.isNotEmpty ? state[0] : null;
+          return ListTile(
+            leading: Icon(
+              paymentMethodSelected != null
+                  ? paymentMethodSelected.paymentMethod!.type == 'BANK'
+                        ? Icons.account_balance
+                        : Icons.account_balance_wallet
+                  : Icons.account_balance,
+              color: Colors.grey,
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MyText(
+                  title: paymentMethodSelected != null
+                      ? paymentMethodSelected.paymentMethod!.type
+                      : 'Payment Method',
+                  fontSize: 10,
+                ),
+                if (paymentMethodSelected != null) ...[
+                  MyText(
+                    title: paymentMethodSelected.paymentMethod!.name,
+                    color: Colors.grey,
+                    fontSize: 10,
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
+Widget _dateSection(BuildContext context) {
+  var width = MediaQuery.of(context).size.width;
+  return SizedBox(
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300, width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      width: width * 0.5,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () async {
+          showDialog(
+            context: context,
+            builder: (context) {
+              context.read<SelectDateAddPayement>().setDateTime([
+                DateTime.now(),
+              ]);
+              return _showSingleDateTime(context);
+            },
+          );
+        },
+        child: ListTile(
+          leading: Icon(Icons.calendar_month, color: Colors.grey),
+          title: BlocBuilder<SelectDateAddPayement, List<DateTime>>(
+            builder: (context, state) {
+              return MyText(
+                title: state.isNotEmpty
+                    ? formatDate(state[0].toIso8601String())
+                    : 'Tanggal Bayar',
+                fontSize: 10,
+              );
+            },
+          ),
+          trailing: Icon(
+            Icons.arrow_drop_down_rounded,
+            size: 15,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _showSingleDateTime(BuildContext context) {
+  return Dialog(
+    insetPadding: EdgeInsets.symmetric(horizontal: 10),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CalendarDatePicker2(
+          config: CalendarDatePicker2Config(
+            calendarType: CalendarDatePicker2Type.single,
+            selectedDayHighlightColor: Theme.of(context).colorScheme.onPrimary,
+            selectedMonthTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            selectedYearTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            selectedDayTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            weekdayLabelTextStyle: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          value: [DateTime.now()],
+          onValueChanged: (value) {
+            context.read<SelectDateAddPayement>().setDateTime(value);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<SelectDateAddPayement>().reset();
+              },
+              child: MyText(title: 'Batal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: MyText(
+                title: 'Selesai',
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+      ],
+    ),
+  );
 }
 
 Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
