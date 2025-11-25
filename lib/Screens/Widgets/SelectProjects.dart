@@ -92,7 +92,7 @@ class SelectProjecstWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             spacing: 4,
                             children: [
-                              _projectsDate(
+                              projectsDate(
                                 startAt,
                                 Colors.green.shade100,
                                 Colors.green,
@@ -102,7 +102,7 @@ class SelectProjecstWidget extends StatelessWidget {
                                 size: 8,
                                 color: Colors.grey,
                               ),
-                              _projectsDate(
+                              projectsDate(
                                 endAt,
                                 Colors.blue.shade100,
                                 Colors.blue,
@@ -139,7 +139,7 @@ class SelectProjecstWidget extends StatelessWidget {
   }
 }
 
-Widget _projectsDate(
+Widget projectsDate(
   String title,
   Color bgColor,
   Color color, {
@@ -271,7 +271,7 @@ Widget projectsToAdd(double height) {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   spacing: 4,
                                   children: [
-                                    _projectsDate(
+                                    projectsDate(
                                       startAt,
                                       Colors.green.shade100,
                                       Colors.green,
@@ -281,7 +281,7 @@ Widget projectsToAdd(double height) {
                                       size: 8,
                                       color: Colors.grey,
                                     ),
-                                    _projectsDate(
+                                    projectsDate(
                                       endAt,
                                       Colors.blue.shade100,
                                       Colors.blue,
