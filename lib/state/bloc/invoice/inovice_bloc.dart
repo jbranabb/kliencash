@@ -53,10 +53,17 @@ class InvoiceBloc extends Bloc<InoviceEvent, InvoiceState> {
        CLIENT.name as client_name,
        CLIENT.handphone as client_phone,
        CLIENT.country_code as client_cc,
-       CLIENT.alamat as client_alamat
+       CLIENT.alamat as client_alamat,
+       PAYMENT_METHOD.id as payementMethod_id,
+       PAYMENT_METHOD.name as paymn_name,
+       PAYMENT_METHOD.type as paymn_type,
+       PAYMENT_METHOD.number as paymn_number,
+       PAYMENT_METHOD.account_name as paymn_accountName,
+       PAYMENT_METHOD.isActive as paymn_isActive
       FROM INVOICE
       INNER JOIN PROJECTS ON INVOICE.project_id = PROJECTS.id
       INNER JOIN CLIENT ON PROJECTS.client_id = CLIENT.Id
+      INNER JOIN PAYMENT_METHOD ON INVOICE.payement_method_id = PAYMENT_METHOD.id 
       WHERE PROJECTS.Id = ?  
       ''',[event.id]);
       List<InvoiceModel> results = data
