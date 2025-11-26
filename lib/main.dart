@@ -9,6 +9,7 @@ import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/Screens/pages/intialpage/onBorading.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/bloc/payment/payment_bloc.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
@@ -70,6 +71,7 @@ void main() async {
         BlocProvider(create: (context) => BookstatuslengthCubit()..getlength()),
         BlocProvider(create: (context) => PickedPict()),
         BlocProvider(create: (context) => SelectDateAddPayement()),
+        BlocProvider(create: (context) => PaymentBloc()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),

@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kliencash/Screens/Widgets/SelectProjects.dart';
-import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/picked_pict.dart';
@@ -13,6 +11,7 @@ import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/bloc/payment/payment_bloc.dart';
 import 'package:kliencash/state/cubit/SelectDateAddPayement.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
@@ -32,8 +31,6 @@ class _AddPaymentState extends State<AddPayment> {
   var amountF = FocusNode();
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -142,8 +139,20 @@ void _validatePostPayment(
       projectsId != null &&
       paymentMethodId != null &&
       amount != null &&
-      tanggalBayar.isNotEmpty) {
-    // context.read<PaymentBlocBloc>()
+      tanggalBayar.isNotEmpty &&
+      buktiPayment != null &&
+      buktiPayment.isNotEmpty) {
+    context.read<PaymentBloc>().add(
+      PostDataPayment(
+        paymentModel: PaymentModel(
+          invoiceId: invoiceId,
+          paymentMethodId: paymentMethodId,
+          amount: amount,
+          buktiPayment: buktiPayment,
+          tanggalBayar: tanggalBayar[0].toIso8601String(),
+        ),
+      ),
+    );
   } else {
     ScaffoldMessenger.of(
       context,
