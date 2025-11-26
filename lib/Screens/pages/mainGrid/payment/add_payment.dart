@@ -47,78 +47,91 @@ class _AddPaymentState extends State<AddPayment> {
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         title: MyText(title: 'Add Payment', color: Colors.white, fontSize: 18),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 10,
-            children: [
-              _selectProjectsWhenAddPayment(context),
-              _selectedInvoiceWhenAddPayement(context),
-              BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
-                builder: (context, state) {
-                  amountC.text = state.isNotEmpty
-                      ? formatCurrency(state[0].totalAmount)
-                      : '';
-                  return TextFiledsReadOnly(
-                    controller: amountC,
-                    label: 'Amount',
-                    icon: Icons.attach_money,
-                  );
-                },
-              ),
-              Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _dateSection(context),
-                  _paymentMethodSection(context),
-                ],
-              ),
-              _pickPicturePayment(context),
-              Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  onPressed: () {
-                    var invoiceId = context.read<Selectedinvoice>().state[0].id;
-                    var projectsId = context
-                        .read<SelectedProjects>()
-                        .state['Id'];
-                    var paymentMethodId = invoiceId != null
-                        ? context
-                              .read<Selectedinvoice>()
-                              .state[0]
-                              .paymentMethodId
-                        : null;
-                    var amount = invoiceId != null
-                        ? context.read<Selectedinvoice>().state[0].totalAmount
-                        : null;
-                    var tanggalBayar = context
-                        .read<SelectDateAddPayement>()
-                        .state;
-                    var buktiPayment = context.read<PickedPict>().state;
-                    _validatePostPayment(
-                      context,
-                      invoiceId,
-                      projectsId,
-                      paymentMethodId,
-                      amount,
-                      tanggalBayar,
-                      buktiPayment,
+      body: BlocListener<PaymentBloc, PaymentState>(
+        listener: (context, state) {
+          if(state is PaymentPostDataSucces){
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Berhasil menambahkan Payment', 
+            Theme.of(context).colorScheme.onPrimary));
+            context.read<PaymentBloc>().add(ReadDataPayment());
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 10,
+              children: [
+                _selectProjectsWhenAddPayment(context),
+                _selectedInvoiceWhenAddPayement(context),
+                BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
+                  builder: (context, state) {
+                    amountC.text = state.isNotEmpty
+                        ? formatCurrency(state[0].totalAmount)
+                        : '';
+                    return TextFiledsReadOnly(
+                      controller: amountC,
+                      label: 'Amount',
+                      icon: Icons.attach_money,
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                  child: MyText(
-                    title: 'Selesai',
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                ),
+                Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _dateSection(context),
+                    _paymentMethodSection(context),
+                  ],
+                ),
+                _pickPicturePayment(context),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      var invoiceId = context
+                          .read<Selectedinvoice>()
+                          .state[0]
+                          .id;
+                      var projectsId = context
+                          .read<SelectedProjects>()
+                          .state['Id'];
+                      var paymentMethodId = invoiceId != null
+                          ? context
+                                .read<Selectedinvoice>()
+                                .state[0]
+                                .paymentMethodId
+                          : null;
+                      var amount = invoiceId != null
+                          ? context.read<Selectedinvoice>().state[0].totalAmount
+                          : null;
+                      var tanggalBayar = context
+                          .read<SelectDateAddPayement>()
+                          .state;
+                      var buktiPayment = context.read<PickedPict>().state;
+                      _validatePostPayment(
+                        context,
+                        invoiceId,
+                        projectsId,
+                        paymentMethodId,
+                        amount,
+                        tanggalBayar,
+                        buktiPayment,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    child: MyText(
+                      title: 'Selesai',
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
