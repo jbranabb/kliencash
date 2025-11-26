@@ -292,6 +292,7 @@ class PaymentModel {
   String? notes;
   PaymentMethodModel? paymentMethodModel;
   InvoiceModel? invoicemodel;
+  ProjectsModel? projectsModel;
   PaymentModel({
     this.id,
     required this.invoiceId,
@@ -302,6 +303,7 @@ class PaymentModel {
     this.notes,
     this.invoicemodel,
     this.paymentMethodModel,
+    this.projectsModel,
   });
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
@@ -312,10 +314,43 @@ class PaymentModel {
       buktiPayment: json['bukti_payment'],
       tanggalBayar: json['tanggal_bayar'],
       notes: json['notes'],
-      // invoicemodel: json['invoice_name'] != null ?  
-      // invoicemode
-      // : null,
-      // paymentMethodModel: json['pm_name'],
+      invoicemodel: json['invoice_projects_id'] != null
+          ? InvoiceModel(
+              projectsId: json['invoice_projects_id'],
+              paymentMethodId: json['invoice_payment_method_id'],
+              status: json['invoice_status'],
+              subtotal: json['invoice_subtotal'],
+              title: json['invoice_title'],
+              totalAmount: json['invoice_totalAmount'],
+              tanggal: json['invoice_tanggal'],
+              jatuhTempo: json['invoice_jatuhTempo'],
+              isRounded: json['invoice_isRounded'],
+              invoiceNumber: json['Invoice_invoiceNumber'],
+              createdAt: json['invoicee_createdAt'],
+            )
+          : null,
+      paymentMethodModel: json['pm_id'] != null
+          ? PaymentMethodModel(
+              name: json['pm_name'],
+              type: json['pm_type'],
+              accountName: json['pm_accountName'],
+              number: json['pm_number'],
+              isActive: json['pm_isActive'],
+            )
+          : null,
+      projectsModel: json['id_projects'] != null
+          ? ProjectsModel.fromJson({
+              'Id': json['id_projects'] ?? 0,
+              'agenda': json['projects_agenda'] ?? '',
+              'desc': json['projects_desc'],
+              'status': json['projects_status'] ?? '',
+              'client_id': json['projects_client_id'] ?? 0,
+              'estimatedValue': json['projects_price'] ?? 0,
+              'startAt': json['projects_startAt'] ?? '',
+              'endAt': json['projects_endAt'] ?? '',
+              'createdAt': json['projects_createdAt'] ?? '',
+            })
+          : null,
     );
   }
 }
