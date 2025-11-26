@@ -353,4 +353,13 @@ class PaymentModel {
           : null,
     );
   }
+  Map<String, dynamic> toJson(){
+    return {
+      'invoice_id':invoiceId,
+      'payment_method_id':paymentMethodId,
+      'amount':amount,
+      'tanggal_bayar': tanggalBayar,
+      'bukti_payment':buktiPayment,
+    };
+  }
 }
