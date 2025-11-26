@@ -9,6 +9,7 @@ import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/picked_pict.dart';
+import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
@@ -73,14 +74,42 @@ class _AddPaymentState extends State<AddPayment> {
               Row(
                 spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [_dateSection(context), _paymentMethodSection(context)],
+                children: [
+                  _dateSection(context),
+                  _paymentMethodSection(context),
+                ],
               ),
               _pickPicturePayment(context),
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
                   onPressed: () {
-                    print(context.read<PickedPict>().state);
+                    var invoiceId = context.read<Selectedinvoice>().state[0].id;
+                    var projectsId = context
+                        .read<SelectedProjects>()
+                        .state['Id'];
+                    var paymentMethodId = invoiceId != null
+                        ? context
+                              .read<Selectedinvoice>()
+                              .state[0]
+                              .paymentMethodId
+                        : null;
+                    var amount = invoiceId != null
+                        ? context.read<Selectedinvoice>().state[0].totalAmount
+                        : null;
+                    var tanggalBayar = context
+                        .read<SelectDateAddPayement>()
+                        .state;
+                    var buktiPayment = context.read<PickedPict>().state;
+                    _validatePostPayment(
+                      context,
+                      invoiceId,
+                      projectsId,
+                      paymentMethodId,
+                      amount,
+                      tanggalBayar,
+                      buktiPayment,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -97,6 +126,28 @@ class _AddPaymentState extends State<AddPayment> {
         ),
       ),
     );
+  }
+}
+
+void _validatePostPayment(
+  BuildContext context,
+  int? invoiceId,
+  int? projectsId,
+  int? paymentMethodId,
+  int? amount,
+  List<DateTime> tanggalBayar,
+  String? buktiPayment,
+) {
+  if (invoiceId != null &&
+      projectsId != null &&
+      paymentMethodId != null &&
+      amount != null &&
+      tanggalBayar.isNotEmpty) {
+    // context.read<PaymentBlocBloc>()
+  } else {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(mySnakcbar('Silahkan Isi Fileds Terlebih Dahulu', null));
   }
 }
 
