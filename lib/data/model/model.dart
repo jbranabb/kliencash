@@ -293,6 +293,7 @@ class PaymentModel {
   PaymentMethodModel? paymentMethodModel;
   InvoiceModel? invoicemodel;
   ProjectsModel? projectsModel;
+  ClientModel? clientModel;
   PaymentModel({
     this.id,
     required this.invoiceId,
@@ -304,6 +305,7 @@ class PaymentModel {
     this.invoicemodel,
     this.paymentMethodModel,
     this.projectsModel,
+    this.clientModel
   });
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
@@ -349,6 +351,15 @@ class PaymentModel {
               'startAt': json['projects_startAt'] ?? '',
               'endAt': json['projects_endAt'] ?? '',
               'createdAt': json['projects_createdAt'] ?? '',
+            })
+          : null,
+          clientModel: json['id_client'] != null
+          ? ClientModel.fromJson({
+              'Id': json['id_client'] ?? '',
+              'name': json['client_name'] ?? '',
+              'handphone': json['client_phone'] ?? '',
+              'country_code': json['client_cc'] ?? '',
+              'alamat': json['client_alamat'] ?? '',
             })
           : null,
     );
