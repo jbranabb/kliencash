@@ -6,4 +6,7 @@ class PickedPict extends Cubit<String> {
   void getImage(String path){
     emit(path);
   }
+  void reset(){
+    emit('');
+  }
 }
