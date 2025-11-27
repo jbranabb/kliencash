@@ -11,9 +11,19 @@ import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 
-class InvoicePage extends StatelessWidget {
+class InvoicePage extends StatefulWidget {
   const InvoicePage({super.key});
 
+  @override
+  State<InvoicePage> createState() => _InvoicePageState();
+}
+
+class _InvoicePageState extends State<InvoicePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<InvoiceBloc>().add(ReadInvoice());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

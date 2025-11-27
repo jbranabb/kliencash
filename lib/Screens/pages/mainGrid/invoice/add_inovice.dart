@@ -261,12 +261,14 @@ class _AddInoviceState extends State<AddInovice> {
                                       'bank'
                                 ? Icons.account_balance
                                 : Icons.account_balance_wallet,
-                                color: Colors.grey,
+                            color: Colors.grey,
                           ),
                           title: MyText(
                             title: state['name'] ?? 'Select Payement Method',
                           ),
-                          subtitle: state['name'] != null && state['type'].toLowerCase() != 'cash' 
+                          subtitle:
+                              state['name'] != null &&
+                                  state['type'].toLowerCase() != 'cash'
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -292,10 +294,7 @@ class _AddInoviceState extends State<AddInovice> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    var subtotalFormated = subtotalC.text.replaceAll(
-                      RegExp(r'[Rp\s.]'),
-                      '',
-                    );
+                    print(subtotalC.text);
                     var rawtotalAmoutFormated = totalAmountC.text.replaceAll(
                       RegExp(r'[Rp\s.]'),
                       '',
@@ -307,7 +306,7 @@ class _AddInoviceState extends State<AddInovice> {
                     validatePost(
                       context,
                       idC.text,
-                      int.parse(subtotalFormated),
+                      subtotalC.text,
                       pajakC.text,
                       discountC.text,
                       titleC.text,
@@ -396,22 +395,24 @@ Widget selectedPayementMethod() {
                         color: Colors.grey,
                         fontSize: 10,
                       ),
-                      subtitle:  data.type.toLowerCase() != 'cash' ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          MyText(
-                            title:
-                                '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                          MyText(
-                            title: 'A.n: ${data.accountName}',
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ],
-                      ) : null,
+                      subtitle: data.type.toLowerCase() != 'cash'
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  title:
+                                      '${data.type.toLowerCase() == 'bank' ? 'Rek' : 'Num'}: ${data.number}',
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                                MyText(
+                                  title: 'A.n: ${data.accountName}',
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ],
+                            )
+                          : null,
                     );
                   },
                 ),
@@ -428,7 +429,7 @@ Widget selectedPayementMethod() {
 void validatePost(
   BuildContext context,
   String id,
-  int subtotal,
+  String subtotal,
   String pajak,
   String discount,
   String title,
@@ -443,23 +444,23 @@ void validatePost(
 ) {
   var paymentId = context.read<SelectedPaymentMethod>().state['id'];
   if (id.isNotEmpty &&
-      subtotal != 0 &&
+      subtotal.isNotEmpty &&
       startAt.isNotEmpty &&
       title.isNotEmpty &&
       paymentId != null &&
       jatuhTempoAt.isNotEmpty &&
       status != null) {
+    var subtotalFormated = subtotal.replaceAll(RegExp(r'[Rp\s.]'), '');
     var rawLegth = int.parse(statelist) + 1;
     var seprated = rawLegth / 100;
     var listlength = seprated.toString().replaceAll('.', '');
     var date = DateFormat('ddMMyyyy').format(DateTime.now());
-    print(date);
     context.read<InvoiceBloc>().add(
       PostInvoice(
         invoiceModel: InvoiceModel(
           projectsId: int.parse(id),
           status: status,
-          subtotal: subtotal,
+          subtotal: int.parse(subtotalFormated),
           pajak: int.tryParse(pajak) ?? 0,
           discount: int.tryParse(discount) ?? 0,
           title: title,
@@ -476,7 +477,6 @@ void validatePost(
       ),
     );
   } else {
-    print('isi');
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(mySnakcbar('Silahkan isi fields terlebih dahulu', null));
