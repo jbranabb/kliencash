@@ -10,6 +10,7 @@ import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
+import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
 
 class AddUser extends StatefulWidget {
@@ -182,6 +183,7 @@ void _validatePost(
     );
     context.read<PaymentMethodBloc>().add(GenerateCashPaymentMethod());
     context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
+    context.read<BookstatuslengthCubit>().getlength();
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar('Silahkan isi semua fields terlebih dahulu', null),
