@@ -27,20 +27,20 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       PAYMENT_METHOD.number as pm_number,
       PAYMENT_METHOD.account_name as pm_accountName,
       PAYMENT_METHOD.isActive as pm_isActive,
-      INVOICE.projects_id as invoice_projects_id,
-      INVOICE.payment_method_id as invoice_payment_method_id,
+      INVOICE.project_id as invoice_projects_id,
+      INVOICE.payement_method_id as invoice_payment_method_id,
       INVOICE.status as invoice_status,
       INVOICE.subtotal as invoice_subtotal,
       INVOICE.title as invoice_title,
-      INVOICE.totalAmount as invoice_totalAmount,
+      INVOICE.total_amount as invoice_totalAmount,
       INVOICE.tanggal as invoice_tanggal,
-      INVOICE.jatuhTempo as invoice_jatuhTempo,
+      INVOICE.jatuh_tempo as invoice_jatuhTempo,
       INVOICE.isRounded as invoice_isRounded,
-      INVOICE.invoiceNumber as Invoice_invoiceNumber,
+      INVOICE.invoice_number as Invoice_invoiceNumber,
       INVOICE.createdAt as invoicee_createdAt
       FROM PAYMENT
       INNER JOIN INVOICE ON INVOICE.Id = PAYMENT.invoice_id
-      INNER JOIN PROJECTS ON PROJECTS.Id = INVOICE.projects_id
+      INNER JOIN PROJECTS ON PROJECTS.Id = INVOICE.project_id
       INNER JOIN PAYMENT_METHOD ON PAYMENT_METHOD.id = PAYMENT.payment_method_id
       ''');
       var results = data.map((e) => PaymentModel.fromJson(e)).toList();
