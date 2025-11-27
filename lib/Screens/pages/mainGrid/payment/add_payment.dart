@@ -41,6 +41,7 @@ class _AddPaymentState extends State<AddPayment> {
             context.read<Selectedinvoice>().reset();
             context.read<InvoiceBloc>().add(ReadInvoice());
             context.read<SelectDateAddPayement>().reset();
+            context.read<PickedPict>().reset();
           },
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
@@ -98,18 +99,15 @@ class _AddPaymentState extends State<AddPayment> {
                           .read<SelectedProjects>()
                           .state['Id'];
                       var paymentMethodId = invoiceId != null
-                          ? context
-                                .read<Selectedinvoice>()
-                                .state[0]
-                                .paymentMethodId
+                          ? context.read<Selectedinvoice>().state[0].paymentMethodId
                           : null;
-                      var amount = invoiceId != null
-                          ? context.read<Selectedinvoice>().state[0].totalAmount
+                      var amount = invoiceId != null ? context.read<Selectedinvoice>().state[0].totalAmount
                           : null;
                       var tanggalBayar = context
                           .read<SelectDateAddPayement>()
                           .state;
                       var buktiPayment = context.read<PickedPict>().state;
+                      print(buktiPayment);
                       _validatePostPayment(
                         context,
                         invoiceId,
@@ -155,6 +153,7 @@ void _validatePostPayment(
       tanggalBayar.isNotEmpty &&
       buktiPayment != null &&
       buktiPayment.isNotEmpty) {
+      print('in validation : $buktiPayment');
     context.read<PaymentBloc>().add(
       PostDataPayment(
         paymentModel: PaymentModel(
@@ -166,6 +165,7 @@ void _validatePostPayment(
         ),
       ),
     );
+    context.read<PickedPict>().reset();
   } else {
     ScaffoldMessenger.of(
       context,
@@ -566,8 +566,7 @@ Widget _pickPicturePayment(BuildContext context) {
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  builder: (context) => Dialog(
                     child: Image.file(File(state)),
                   ),
                 );
@@ -596,7 +595,7 @@ Widget _pickPicturePayment(BuildContext context) {
                       right: 6,
                       child: IconButton(
                         onPressed: () {
-                          context.read<PickedPict>().getImage("");
+                          context.read<PickedPict>().reset();
                         },
                         icon: Icon(Icons.delete),
                         color: Colors.red,
@@ -613,8 +612,8 @@ Widget _pickPicturePayment(BuildContext context) {
               var picked = await ImagePicker().pickImage(
                 source: ImageSource.gallery,
               );
-              print(picked);
               if (picked != null) {
+              print(picked.path);
                 final appDir = await getApplicationDocumentsDirectory();
                 final myDir = Directory("${appDir.path}/myImages");
                 if (!await myDir.exists()) {
@@ -625,6 +624,7 @@ Widget _pickPicturePayment(BuildContext context) {
                 final exportPath = await File(picked.path).copy(newPath);
                 print('Export Path: ${exportPath.path}');
                 context.read<PickedPict>().getImage(exportPath.path);
+
               }
             },
             child: Container(
