@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/invoice_page.dart';
-import 'package:kliencash/Screens/pages/mainGrid/payment/payement_page.dart';
+import 'package:kliencash/Screens/pages/mainGrid/payment/payment_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
