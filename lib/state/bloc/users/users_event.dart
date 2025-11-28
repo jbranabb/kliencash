@@ -8,4 +8,8 @@ class PostDataUsers extends UsersEvent {
 User user;
 PostDataUsers({required this.user});
 }
-class EditDataUsers extends UsersEvent {}
+class EditDataUsers extends UsersEvent {
+  int id;
+  User user;
+  EditDataUsers({required this.user, required this.id});
+}

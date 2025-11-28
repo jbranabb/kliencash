@@ -19,5 +19,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       await db.insert("USERS", event.user.toJson());
       emit(UsersPostSucces());
     });
+    on<EditDataUsers>((event, emit)async {
+      var db = await database.getDatabase;
+      await db.update("USERS", event.user.toJson(),where: "id = ?", whereArgs: [event.id]);
+      emit(UsersEditSucces());
+    });
   }
 }
