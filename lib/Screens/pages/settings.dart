@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
+import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -35,6 +37,17 @@ class _SettingsPageState extends State<SettingsPage> {
   var numberF = FocusNode();
   var atasNamaC = TextEditingController();
   var atasNamaF = FocusNode();
+  //user informations
+  var usernameC = TextEditingController();
+  var usernameF = FocusNode();
+  var namaUsahaC = TextEditingController();
+  var namaUsahaF = FocusNode();
+  var alamatC = TextEditingController();
+  var alamatF = FocusNode();
+  var phoneNumber = TextEditingController();
+  var phoneNumberF = FocusNode();
+  var emailC = TextEditingController();
+  var emailF = FocusNode();
   @override
   void dispose() {
     nameC.dispose();
@@ -43,6 +56,17 @@ class _SettingsPageState extends State<SettingsPage> {
     numberF.dispose();
     atasNamaC.dispose();
     atasNamaF.dispose();
+    //user informations
+    usernameC.dispose();
+    usernameF.dispose();
+    namaUsahaC.dispose();
+    namaUsahaF.dispose();
+    alamatC.dispose();
+    alamatF.dispose();
+    phoneNumber.dispose();
+    phoneNumberF.dispose();
+    emailC.dispose();
+    emailF.dispose();
     super.dispose();
   }
 
@@ -83,90 +107,104 @@ class _SettingsPageState extends State<SettingsPage> {
             context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
           }
         },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 24.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: height * 0.02),
-                Container(
-                  height: 110,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.onPrimary,
-                        Theme.of(context).colorScheme.primary,
+        child: BlocListener<UsersBloc, UsersState>(
+          listener: (context, state) {
+            if (state is UsersEditSucces) {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  'Berhasil Update User Informations',
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+              context.read<UsersBloc>().add(ReadDataUsers());
+            }
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 24.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: height * 0.02),
+                  Container(
+                    height: 110,
+                    width: 110,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.onPrimary,
+                          Theme.of(context).colorScheme.primary,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: Offset(0, 8),
+                        ),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: Offset(0, 8),
-                      ),
-                    ],
+                    child: Icon(
+                      Icons.business_rounded,
+                      color: Colors.white,
+                      size: 50,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.business_rounded,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                ),
 
-                SizedBox(height: height * 0.04),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 4),
-                        blurRadius: 20,
-                        color: Colors.black.withOpacity(0.06),
-                      ),
-                    ],
+                  SizedBox(height: height * 0.04),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, 4),
+                          blurRadius: 20,
+                          color: Colors.black.withOpacity(0.06),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: _userSection(),
+                    ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: _userSection(),
+                  SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, 4),
+                          blurRadius: 20,
+                          color: Colors.black.withOpacity(0.06),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        _paymentMethod(),
+                        _langueSection(),
+                        _themeSection(),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 4),
-                        blurRadius: 20,
-                        color: Colors.black.withOpacity(0.06),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      _paymentMethod(),
-                      _langueSection(),
-                      _themeSection(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                MyText(title: 'Build by J With Love', color: Colors.grey),
-              ],
+                  SizedBox(height: 20),
+                  MyText(title: 'Build by J With Love', color: Colors.grey),
+                ],
+              ),
             ),
           ),
         ),
@@ -224,14 +262,30 @@ class _SettingsPageState extends State<SettingsPage> {
                                                   atasNamaF,
                                                   'Edit',
                                                   onpresed: () {
-                                                    var stateType = context.read<DropdownStatusinvoice>().state;
-                                                        context.read<PaymentMethodBloc
-                                                        >().add(EditPaymentMethod(id: data.id!,
-                                                            model:PaymentMethodModel(
-                                                                  name: nameC.text,
-                                                                  accountName:atasNamaC.text,
-                                                                  number:numberC.text,
-                                                                  type:stateType!,
+                                                    var stateType = context
+                                                        .read<
+                                                          DropdownStatusinvoice
+                                                        >()
+                                                        .state;
+                                                    context
+                                                        .read<
+                                                          PaymentMethodBloc
+                                                        >()
+                                                        .add(
+                                                          EditPaymentMethod(
+                                                            id: data.id!,
+                                                            model:
+                                                                PaymentMethodModel(
+                                                                  name: nameC
+                                                                      .text,
+                                                                  accountName:
+                                                                      atasNamaC
+                                                                          .text,
+                                                                  number:
+                                                                      numberC
+                                                                          .text,
+                                                                  type:
+                                                                      stateType!,
                                                                   isActive: 0,
                                                                 ),
                                                           ),
@@ -345,7 +399,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
 
   Dialog _popUpBottomSheet(
     TextEditingController nameC,
@@ -544,16 +597,187 @@ class _SettingsPageState extends State<SettingsPage> {
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      Icons.edit_rounded,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      size: 18,
+                  InkWell(
+                    onTap: () {
+                      usernameC.text = data.username;
+                      namaUsahaC.text = data.namaPerusahaaan;
+                      alamatC.text = data.alamat;
+                      phoneNumber.text = data.phoneNumber.toString();
+                      emailC.text = data.emaiil;
+                      context.read<CountrycodeCubit>().changeCountryCode(
+                        data.countryCode,
+                      );
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            insetPadding: EdgeInsets.symmetric(horizontal: 10),
+                            child: SingleChildScrollView(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    spacing: 10,
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          MyText(
+                                            title: 'Edit Users Information',
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Icon(
+                                              Icons.cancel,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      MyTextFileds(
+                                        controller: usernameC,
+                                        label: "Username",
+                                        icon: Icons.person,
+                                        focusNode: usernameF,
+                                        isOtional: false,
+                                        onEditingCom: () {
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(namaUsahaF);
+                                        },
+                                      ),
+                                      MyTextFileds(
+                                        controller: namaUsahaC,
+                                        label: "Nama Usaha",
+                                        icon: Icons.business,
+                                        focusNode: namaUsahaF,
+                                        isOtional: false,
+                                        onEditingCom: () {
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(alamatF);
+                                        },
+                                      ),
+                                      MyTextFileds(
+                                        controller: alamatC,
+                                        label: "Alamat",
+                                        icon: Icons.location_on_rounded,
+                                        focusNode: alamatF,
+                                        isOtional: false,
+                                        maxlines: 10,
+                                        onEditingCom: () {
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(phoneNumberF);
+                                        },
+                                      ),
+                                      MyTextFiledsForPhone(
+                                        controller: phoneNumber,
+                                        label: "Phonenumber",
+                                        icon: Icons.phone,
+                                        focusNode: phoneNumberF,
+                                        onEditingCom: () {
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(emailF);
+                                        },
+                                      ),
+                                      MyTextFileds(
+                                        controller: emailC,
+                                        label: "Email",
+                                        icon: Icons.mail,
+                                        focusNode: emailF,
+                                        isOtional: false,
+                                        maxlines: 3,
+                                        onEditingCom: () {
+                                          FocusScope.of(context).unfocus();
+                                        },
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (usernameC.text.isNotEmpty &&
+                                                namaUsahaC.text.isNotEmpty &&
+                                                phoneNumber.text.isNotEmpty &&
+                                                alamatC.text.isNotEmpty &&
+                                                emailC.text.isNotEmpty) {
+                                              print('execute');
+                                              var cc = context
+                                                  .read<CountrycodeCubit>()
+                                                  .state;
+                                              context.read<UsersBloc>().add(
+                                                EditDataUsers(
+                                                  id: data.id!,
+                                                  user: User(
+                                                    namaPerusahaaan:
+                                                        namaUsahaC.text,
+                                                    username: usernameC.text,
+                                                    alamat: alamatC.text,
+                                                    emaiil: emailC.text,
+                                                    countryCode: cc,
+                                                    phoneNumber: int.parse(
+                                                      phoneNumber.text,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                      title: MyText(title: 'Terjadi Kesalahan'),
+                                                      content: MyText(title: 'Silahkan Isi Semua Fileds Terlebih dahulu'),
+                                                      actions: [TextButton(onPressed: (){Navigator.of(context).pop();}, child: MyText(title: 'Oke'))],
+                                                    ),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                          ),
+                                          child: MyText(
+                                            title: 'Selesai',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.edit_rounded,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ],
