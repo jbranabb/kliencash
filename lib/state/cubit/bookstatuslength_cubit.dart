@@ -10,7 +10,7 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
     var db = await database.getDatabase;
     var dataClient = await db.query('CLIENT');
     var dataInvoice = await db.query('INVOICE');
-    var dataPayments = await db.query('INVOICE');
+    var dataPayments = await db.query('PAYMENT');
     List<bool> outstandingDate = [];
     var invoiceResults = dataInvoice.map((e)=>InvoiceModel.fromJson(e)).toList();
     if(invoiceResults.isNotEmpty){
@@ -35,7 +35,7 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
       },
       {
         'title': 'Payments Done',
-        'value': '0',
+        'value': dataPayments.length,
         'icon': Icons.pending_actions,
         'color': Colors.green,
       },
