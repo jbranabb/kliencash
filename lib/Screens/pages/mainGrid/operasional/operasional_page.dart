@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
-import 'package:kliencash/Screens/Widgets/text_fields.dart'
-    hide colors, bgcolors;
-import 'package:kliencash/Screens/pages/mainGrid/operasional/add_operasional.dart';
+import 'package:kliencash/Screens/Widgets/text_fields.dart' hide colors, bgcolors;
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';

@@ -13,7 +13,6 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
     var dataPayments = await db.query('PAYMENT');
     List<bool> outstandingDate = [];
     var invoiceResults = dataInvoice.map((e)=>InvoiceModel.fromJson(e)).toList();
-    if(invoiceResults.isNotEmpty){
     for(var i in invoiceResults){
     var outstanding =  DateTime.parse(i.jatuhTempo).isBefore(DateTime.now());
     outstandingDate.add(outstanding);
@@ -48,10 +47,7 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
         'color': Colors.red,
       },
     ];
-    print(outstandingDate);
-    print(invoiceResults);
-    print(invoiceResults.where((e) => e.status == 'Dp / Partial').length);
-    print(outstandingDate.where((e) => e ==  true).length);
+    print('object from bookstaus');
     emit(cardData);
-  }}
+  }
 }

@@ -64,9 +64,7 @@ class _BookingStatuesState extends State<BookingStatues> {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child:
                         BlocBuilder<
-                          BookstatuslengthCubit,
-                          List<Map<String, dynamic>>
-                        >(
+                          BookstatuslengthCubit,List<Map<String, dynamic>>>(
                           builder: (context, cardData) {
                             if(cardData.isEmpty){
                               return MyText(title: 'Loading...');
