@@ -22,3 +22,8 @@ String formatDateDetail(String date){
   var formated = DateFormat('dd MMM yyyy').format(dateFromIso);
   return formated;
 }
+String formatDateWithoutY(String date){
+  var dateFromIso = DateTime.parse(date);
+  var formated = DateFormat('dd MMM').format(dateFromIso);
+  return formated;
+}

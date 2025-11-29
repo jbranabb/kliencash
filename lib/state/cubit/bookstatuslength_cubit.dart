@@ -35,7 +35,7 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
       },
       {
         'title': 'Payments Done',
-        'value': dataPayments.length,
+        'value': dataPayments.isNotEmpty ?  dataPayments.length : 0,
         'icon': Icons.pending_actions,
         'color': Colors.green,
       },

@@ -7,8 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kliencash/Screens/Widgets/picked_pict.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/Screens/pages/intialpage/onBorading.dart';
+import 'package:kliencash/observer.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/payment/payment_bloc.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
@@ -40,7 +42,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
+  Bloc.observer = Observer();
   int launchCount  = pref?.getInt('launchCount') ?? 0;
   await pref?.setInt('launchCount', launchCount + 1);
   print('launchCount :$launchCount');
@@ -72,6 +74,7 @@ void main() async {
         BlocProvider(create: (context) => PickedPict()),
         BlocProvider(create: (context) => SelectDateAddPayement()),
         BlocProvider(create: (context) => PaymentBloc()),
+        BlocProvider(create: (context) => OperasionalBloc()..add(ReadData())),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
