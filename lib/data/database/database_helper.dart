@@ -104,6 +104,15 @@ class DatabaseHelper {
     FOREIGN KEY (payment_method_id) REFERENCES PAYMENT_METHOD(id) ON DELETE CASCADE
     )
     ''');
-
+    await db.execute('''
+    CREATE TABLE OPERASIONAL(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    amount INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES PROJECTS(Id) ON DELETE CASCADE
+    )    
+    ''');
   }
 }

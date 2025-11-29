@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/invoice_page.dart';
+import 'package:kliencash/Screens/pages/mainGrid/operasional/operasional_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/payment/payment_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
 SliverToBoxAdapter mainGrid() {
@@ -33,6 +34,9 @@ SliverToBoxAdapter mainGrid() {
                     }
                     else if(index == 3){
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PayementPage(),));
+                    }
+                    else if(index == 4){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OperasionalPage(),));
                     }
                   },
               child: Container(
@@ -101,8 +105,8 @@ Widget childGrid(int index, BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.bar_chart_rounded),
-        MyText(title: "Report")
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.factory),
+        MyText(title: "Operasional", textAlign: TextAlign.center,)
       ],
     );
     case 5:
@@ -110,8 +114,8 @@ Widget childGrid(int index, BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.factory),
-        MyText(title: "Operasional", textAlign: TextAlign.center,)
+        Icon(color: Theme.of(context).colorScheme.onPrimary,size: 30, Icons.bar_chart_rounded),
+        MyText(title: "Report")
       ],
     );
     default:

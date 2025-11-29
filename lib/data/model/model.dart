@@ -306,7 +306,7 @@ class PaymentModel {
     this.invoicemodel,
     this.paymentMethodModel,
     this.projectsModel,
-    this.clientModel
+    this.clientModel,
   });
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
@@ -354,7 +354,7 @@ class PaymentModel {
               'createdAt': json['projects_createdAt'] ?? '',
             })
           : null,
-          clientModel: json['id_client'] != null
+      clientModel: json['id_client'] != null
           ? ClientModel.fromJson({
               'Id': json['id_client'] ?? '',
               'name': json['client_name'] ?? '',
@@ -365,13 +365,60 @@ class PaymentModel {
           : null,
     );
   }
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      'invoice_id':invoiceId,
-      'payment_method_id':paymentMethodId,
-      'amount':amount,
+      'invoice_id': invoiceId,
+      'payment_method_id': paymentMethodId,
+      'amount': amount,
       'tanggal_bayar': tanggalBayar,
-      'bukti_payment':buktiPayment,
+      'bukti_payment': buktiPayment,
+    };
+  }
+}
+
+class OperasionalModdel {
+  int? id;
+  int projectId;
+  String title;
+  int amount;
+  String date;
+  ProjectsModel? projectsModel;
+  OperasionalModdel({
+    this.id,
+    required this.projectId,
+    required this.title,
+    required this.amount,
+    required this.date,
+    this.projectsModel,
+  });
+  factory OperasionalModdel.fromJson(Map<String, dynamic> json) {
+    return OperasionalModdel(
+      id: json['id'],
+      projectId: json['project_id'],
+      title: json['title'],
+      amount: json['amount'],
+      date: json['date'],
+      projectsModel: json['project_id'] != null
+          ? ProjectsModel.fromJson({
+              'Id': json['projects_id'] ?? 0,
+              'agenda': json['projects_agenda'] ?? '',
+              'desc': json['projects_desc'],
+              'status': json['projects_status'] ?? '',
+              'client_id': json['projects_client_id'] ?? 0,
+              'estimatedValue': json['projects_price'] ?? 0,
+              'startAt': json['projects_startAt'] ?? '',
+              'endAt': json['projects_endAt'] ?? '',
+              'createdAt': json['projects_createdAt'] ?? '',
+            })
+          : null,
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'project_id': projectId,
+      'title': title,
+      'amount': amount,
+      'date': date,
     };
   }
 }
