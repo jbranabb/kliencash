@@ -26,13 +26,28 @@ class _PayementPageState extends State<PayementPage> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: myAppBar(context, 'Payment Page'),
       body: BlocBuilder<PaymentBloc, PaymentState>(
         builder: (context, state) {
           if (state is PaymentReadDataSucces) {
             if (state.list.isEmpty) {
-              return Container(child: MyText(title: 'Hai Kosong Nih'));
+              return SizedBox(
+                height: height,
+                width: double.maxFinite,
+                child: Column(
+                  spacing: 4,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.attach_money, size: 60,color: Colors.grey,),
+                  MyText(title: 'Belum Ada Payment Saat Ini', fontWeight: FontWeight.bold,color: Colors.grey.shade700,),
+                  MyText(title: 'Silahkan tambahkan Terlebih Dahulu',
+                  color: Colors.grey,
+                   textAlign: TextAlign.center,),
+                ],
+              ));
             }
             return ListView.builder(
               itemCount: state.list.length,
