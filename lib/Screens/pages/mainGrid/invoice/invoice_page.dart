@@ -9,6 +9,7 @@ import 'package:kliencash/Screens/pages/mainGrid/invoice/detail_invoice.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 
 class InvoicePage extends StatefulWidget {
@@ -24,6 +25,7 @@ class _InvoicePageState extends State<InvoicePage> {
     super.initState();
     context.read<InvoiceBloc>().add(ReadInvoice());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,9 +57,9 @@ class _InvoicePageState extends State<InvoicePage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AddInovice()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => AddInovice()));
         },
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.add, color: Colors.white),
@@ -75,11 +77,7 @@ class _InvoicePageState extends State<InvoicePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.receipt_long_outlined,
-            color: Colors.grey[400],
-            size: 80,
-          ),
+          Icon(Icons.receipt_long_outlined, color: Colors.grey[400], size: 80),
           SizedBox(height: 16),
           MyText(
             title: 'Belum ada Invoice',
@@ -128,9 +126,9 @@ class _InvoicePageState extends State<InvoicePage> {
           borderRadius: BorderRadius.circular(16),
           onTap: () {
             context.read<Selectedinvoice>().getbyId(invoice.id!);
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => DetailInvoice()),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => DetailInvoice()));
           },
           child: Padding(
             padding: EdgeInsets.all(16),
@@ -157,7 +155,10 @@ class _InvoicePageState extends State<InvoicePage> {
                       ],
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: bgcolors(invoice.status),
                         borderRadius: BorderRadius.circular(20),
@@ -205,6 +206,19 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Icon(Icons.attach_money, size: 14, color: Colors.grey[600]),
+                    SizedBox(width: 4),
+                    MyText(
+                      title: formatCurrency(invoice.projectsModel!.price),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[600]!,
+                    ),
+                  ],
+                ),
+
                 SizedBox(height: 12),
                 Container(
                   padding: EdgeInsets.all(12),
@@ -214,12 +228,13 @@ class _InvoicePageState extends State<InvoicePage> {
                   ),
                   child: Column(
                     children: [
-                      _buildFinancialRow(
-                        'Estimasi',
-                        formatCurrency(invoice.projectsModel!.price),
-                        Colors.grey[700]!,
-                      ),
-                      SizedBox(height: 6),
+                      // _buildFinancialRow(
+                      //   'Estimasi',
+                      //   formatCurrency(invoice.projectsModel!.price),
+                      //   Colors.grey[700]!,
+                      // ),
+                      // _buildFinancialRow('Operasional', 'value', Colors.grey),
+                      _operasional(invoice),
                       _buildFinancialRow(
                         'Subtotal',
                         formatRupiah.format(invoice.subtotal),
@@ -229,11 +244,12 @@ class _InvoicePageState extends State<InvoicePage> {
                         SizedBox(height: 6),
                         _buildFinancialRow(
                           'Pajak (${invoice.pajak}%)',
-                          '+ ${formatRupiah.format(invoice.subtotal * invoice.pajak !/ 100)}',
+                          '+ ${formatRupiah.format(invoice.subtotal * invoice.pajak! / 100)}',
                           Colors.deepOrange,
                         ),
                       ],
-                      if (invoice.discount!= null && invoice.discount! > 0) ...[
+                      if (invoice.discount != null &&
+                          invoice.discount! > 0) ...[
                         SizedBox(height: 6),
                         _buildFinancialRow(
                           'Diskon (${invoice.discount}%)',
@@ -279,14 +295,20 @@ class _InvoicePageState extends State<InvoicePage> {
                         Icon(
                           Icons.alarm,
                           size: 14,
-                          color: _isDueSoon(dueDate) ? Colors.red : Colors.grey[500],
+                          color: _isDueSoon(dueDate)
+                              ? Colors.red
+                              : Colors.grey[500],
                         ),
                         SizedBox(width: 4),
                         MyText(
                           title: 'Jatuh Tempo: $formattedDueDate',
                           fontSize: 12,
-                          color: _isDueSoon(dueDate) ? Colors.red : Colors.grey[600]!,
-                          fontWeight: _isDueSoon(dueDate) ? FontWeight.w600 : FontWeight.normal,
+                          color: _isDueSoon(dueDate)
+                              ? Colors.red
+                              : Colors.grey[600]!,
+                          fontWeight: _isDueSoon(dueDate)
+                              ? FontWeight.w600
+                              : FontWeight.normal,
                         ),
                       ],
                     ),
@@ -297,6 +319,95 @@ class _InvoicePageState extends State<InvoicePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _operasional(InvoiceModel invoice) {
+    return BlocBuilder<OperasionalBloc, OperasionalState>(
+      builder: (context, state) {
+        if (state is OperasionalReadSucces) {
+          var data = state.list
+              .where((e) => e.projectId == invoice.projectsId)
+              .toList();
+          if (data.isNotEmpty) {
+            var totalAmount = 0;
+            for (var amount in data) {
+              totalAmount += amount.amount;
+            }
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.factory, size: 14, color: Colors.grey[600]),
+                    SizedBox(width: 4),
+                    MyText(
+                      title: "Operasional: ",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[600]!,
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var listOp = data[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                MyText(
+                                  title: '• ${listOp.title} ',
+                                  fontSize: 10,
+                                  color: Colors.grey.shade700,
+                                ),
+                                MyText(
+                                  title: formatCurrency(listOp.amount),
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MyText(
+                          title:'Total Operasional: ',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                          color:Colors.grey.shade600,
+                        ),
+                        MyText(
+                          title:
+                              formatCurrency(totalAmount),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color:Colors.grey.shade600,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(color: Colors.grey.shade300),
+              ],
+            );
+          }
+        }
+        return SizedBox.shrink();
+      },
     );
   }
 
