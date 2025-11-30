@@ -1,9 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 
@@ -54,6 +56,8 @@ class SelectProjecstWidget extends StatelessWidget {
                 state['endAt'] ?? '2025-12-20T00:00:00',
               );
               var endAt = DateFormat('dd-MM-yyyy').format(formatedEnd);
+              var id = state['Id'];
+              var price = state['estimatedValue'];
               return ListTile(
                 leading: Container(
                   height: 40,
@@ -88,6 +92,75 @@ class SelectProjecstWidget extends StatelessWidget {
                             color: Colors.grey.shade700,
                             fontWeight: FontWeight.w600,
                           ),
+                          BlocBuilder<OperasionalBloc, OperasionalState>(
+                                    builder: (context, state) {
+                                      if (state is OperasionalReadSucces) {
+                                        var data = state.list
+                                            .where((e) => e.projectId == id)
+                                            .toList();
+                                        if (data.isEmpty) {
+                                          return MyText(
+                                            title: 'Belum Ada Biaya Operasional',
+                                            fontSize: 8,
+                                            color: Colors.grey,
+                                          );
+                                        }
+                                        var totalAmount = 0;
+                                        for(var amount in data){
+                                            totalAmount += amount.amount;
+                                        }
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: data.length,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                var listOp = data[index];
+                                                return Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:CrossAxisAlignment.center,
+                                                      children: [
+                                                        MyText(
+                                                          title: '• ',
+                                                          fontWeight:FontWeight.bold,
+                                                          fontSize: 8,
+                                                          color: Colors.grey.shade700,
+                                                        ),
+                                                        MyText(
+                                                          title:'${listOp.title} ',
+                                                          fontWeight:FontWeight.w600,
+                                                          fontSize: 8,
+                                                          color: Colors.grey.shade700,
+                                                        ),
+                                                        MyText(
+                                                          title: formatCurrency(
+                                                            listOp.amount,
+                                                          ),
+                                                          fontSize: 8,
+                                                          color: Colors.grey,
+                                                          fontWeight:FontWeight.w600,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                            MyText(
+                                              title: 'Total: ${formatCurrency(totalAmount + price)}',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                      return Container();
+                                    },
+                                  ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             spacing: 4,
@@ -225,84 +298,155 @@ Widget projectsToAdd(double height) {
                     ).format(formatedStart);
                     var formatedEnd = DateTime.parse(list.endAt);
                     var endAt = DateFormat('dd-MM-yyyy').format(formatedEnd);
-                    return Material(
-                      color: Colors.transparent,
-                      child: Card(
-                        clipBehavior: Clip.none,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            print(list.id);
-                            context.read<SelectedProjects>().selecProjects(
-                              list.id!,
-                            );
-                            Navigator.of(context).pop();
-                          },
-                          child: ListTile(
-                            leading: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              alignment: Alignment.center,
-                              child: Icon(
-                                Icons.work,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                MyText(title: list.agenda, fontSize: 13),
-                                MyText(
-                                  title: list.client!.name,
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Card(
+                          clipBehavior: Clip.none,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              context.read<SelectedProjects>().selecProjects(
+                                list.id!,
+                              );
+                              Navigator.of(context).pop();
+                            },
+                            child: ListTile(
+                              leading: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
-                                MyText(
-                                  title: formatRupiah.format(list.price),
-                                  fontSize: 12,
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w600,
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.work,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  spacing: 4,
-                                  children: [
-                                    projectsDate(
-                                      startAt,
-                                      Colors.green.shade100,
-                                      Colors.green,
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_rounded,
-                                      size: 8,
-                                      color: Colors.grey,
-                                    ),
-                                    projectsDate(
-                                      endAt,
-                                      Colors.blue.shade100,
-                                      Colors.blue,
-                                      icon: Icons.done,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            trailing: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: bgcolors(list.status),
-                                border: Border.all(color: colors(list.status)),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: MyText(
-                                  title: list.status,
-                                  fontSize: 10,
-                                  color: colors(list.status),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MyText(title: list.agenda, fontSize: 13, fontWeight: FontWeight.w600,),
+                                  MyText(
+                                    title: list.client!.name,
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  MyText(
+                                    title: formatRupiah.format(list.price),
+                                    fontSize: 10,
+                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  BlocBuilder<OperasionalBloc, OperasionalState>(
+                                    builder: (context, state) {
+                                      if (state is OperasionalReadSucces) {
+                                        var data = state.list
+                                            .where((e) => e.projectId == list.id)
+                                            .toList();
+                                        if (data.isEmpty) {
+                                          return MyText(
+                                            title: 'Belum Ada Biaya Operasional',
+                                            fontSize: 8,
+                                            color: Colors.grey,
+                                          );
+                                        }
+                                        var totalAmount = 0;
+                                        for(var amount in data){
+                                            totalAmount += amount.amount;
+                                        }
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: data.length,
+                                              physics: NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                var listOp = data[index];
+                                                return Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:CrossAxisAlignment.center,
+                                                      children: [
+                                                        MyText(
+                                                          title: '• ',
+                                                          fontWeight:FontWeight.bold,
+                                                          fontSize: 8,
+                                                          color: Colors.grey.shade700,
+                                                        ),
+                                                        MyText(
+                                                          title:'${listOp.title} ',
+                                                          fontWeight:FontWeight.w600,
+                                                          fontSize: 8,
+                                                          color: Colors.grey.shade700,
+                                                        ),
+                                                        MyText(
+                                                          title: formatCurrency(
+                                                            listOp.amount,
+                                                          ),
+                                                          fontSize: 8,
+                                                          color: Colors.grey,
+                                                          fontWeight:FontWeight.w600,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                            MyText(
+                                              title: 'Total: ${formatCurrency(totalAmount + list.price)}',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                      return Container();
+                                    },
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    spacing: 4,
+                                    children: [
+                                      projectsDate(
+                                        startAt,
+                                        Colors.green.shade100,
+                                        Colors.green,
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_rounded,
+                                        size: 8,
+                                        color: Colors.grey,
+                                      ),
+                                      projectsDate(
+                                        endAt,
+                                        Colors.blue.shade100,
+                                        Colors.blue,
+                                        icon: Icons.done,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: bgcolors(list.status),
+                                  border: Border.all(color: colors(list.status)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: MyText(
+                                    title: list.status,
+                                    fontSize: 10,
+                                    color: colors(list.status),
+                                  ),
                                 ),
                               ),
                             ),

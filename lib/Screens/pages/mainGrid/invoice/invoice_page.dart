@@ -205,7 +205,6 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                   ],
                 ),
-
                 SizedBox(height: 12),
                 Container(
                   padding: EdgeInsets.all(12),
