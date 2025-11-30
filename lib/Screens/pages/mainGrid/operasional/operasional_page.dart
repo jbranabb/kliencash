@@ -5,7 +5,8 @@ import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
-import 'package:kliencash/Screens/Widgets/text_fields.dart' hide colors, bgcolors;
+import 'package:kliencash/Screens/Widgets/text_fields.dart'
+    hide colors, bgcolors;
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
@@ -17,12 +18,21 @@ class OperasionalPage extends StatefulWidget {
   State<OperasionalPage> createState() => _OperasionalPageState();
 }
 
-var titleC = TextEditingController();
-var titleF = FocusNode();
-var amountC = TextEditingController();
-var amountF = FocusNode();
-
 class _OperasionalPageState extends State<OperasionalPage> {
+  var titleC = TextEditingController();
+  var titleF = FocusNode();
+  var amountC = TextEditingController();
+  var amountF = FocusNode();
+
+  @override
+  void dispose() {
+    titleC.dispose();
+    titleF.dispose();
+    amountC.dispose();
+    amountF.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +74,35 @@ class _OperasionalPageState extends State<OperasionalPage> {
         child: BlocBuilder<ProjectsBloc, ProjectsState>(
           builder: (context, state) {
             if (state is ProjectsSuccesState) {
+              if (state.list.isEmpty) {
+                return SizedBox(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: Column(
+                    spacing: 4,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.work, size: 60, color: Colors.grey),
+                      MyText(
+                        title: 'Belum Ada Projects Saat Ini',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade700,
+                      ),
+                      MyText(
+                        title: 'Silahkan tambahkan Terlebih Dahulu',
+                        color: Colors.grey,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              }
               return ListView.builder(
                 itemCount: state.list.length,
                 itemBuilder: (context, index) {
                   var data = state.list[index];
+                  var isExpanded = data.isExpanded;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Container(
@@ -84,118 +119,137 @@ class _OperasionalPageState extends State<OperasionalPage> {
                         ],
                       ),
                       child: ClipRect(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            spacing: 4,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              context.read<ProjectsBloc>().add(
+                                ToggleIsExpandedProjects(id: index),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                spacing: 4,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  MyText(
-                                    title: data.agenda,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: bgcolors(data.status),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: MyText(
-                                        title: data.status.toUpperCase(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      MyText(
+                                        title: data.agenda,
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                        color: colors(data.status),
+                                        fontSize: 18,
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              _buildRow(
-                                Icons.person,
-                                data.client!.name,
-                                iconSize: 16,
-                                textSize: 14,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: _buildRow(
-                                    Icons.attach_money,
-                                    formatCurrency(data.price),
-                                    colors: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                    iconSize: 18,
-                                    textSize: 14,
-                                  ),
-                                ),
-                              ),
-                              _buildRow(
-                                Icons.watch_later_outlined,
-                                'Dibuat: ${formatDateDetail(data.createdAt)}',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    operasionalList(data),
-                                    SizedBox(height: 10),
-                                    InkWell(
-                                      borderRadius: BorderRadius.circular(12),
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              operasionalFunction(
-                                                context,
-                                                data,
-                                              ),
-                                        );
-                                      },
-                                      child: Container(
+                                      Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.grey[50],
+                                          color: bgcolors(data.status),
                                           borderRadius: BorderRadius.circular(
-                                            12,
+                                            10,
                                           ),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            spacing: 2,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                          child: MyText(
+                                            title: data.status.toUpperCase(),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 10,
+                                            color: colors(data.status),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  _buildRow(
+                                    Icons.person,
+                                    data.client!.name,
+                                    iconSize: 16,
+                                    textSize: 14,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: _buildRow(
+                                        Icons.attach_money,
+                                        formatCurrency(data.price),
+                                        colors: Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimary,
+                                        iconSize: 18,
+                                        textSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  _buildRow(
+                                    Icons.watch_later_outlined,
+                                    'Dibuat: ${formatDateDetail(data.createdAt)}',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildRow(
+                                        Icons.touch_app,
+                                        'Klik Untuk Menambahkan Operasional',
+                                        textSize: 8,
+                                      ),
+                                      Icon(
+                                        isExpanded
+                                            ? Icons.arrow_drop_up_rounded
+                                            : Icons.arrow_drop_down_rounded,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        AnimatedContainer(
+                                          height: isExpanded ? null : 0,
+                                          duration: Durations.long1,
+                                          child: Column(
                                             children: [
-                                              Icon(
-                                                Icons.add,
-                                                color: Colors.grey,
+                                              operasionalList(
+                                                data,
+                                                context,
+                                                titleC,
+                                                titleF,
+                                                amountC,
+                                                amountF,
                                               ),
-                                              MyText(
-                                                title: 'Operasional',
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.grey,
+                                              SizedBox(height: 10),
+                                              addNewOperasionalButton(
+                                                context,
+                                                titleC,
+                                                titleF,
+                                                amountC,
+                                                amountF,
+                                                data,
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -203,8 +257,18 @@ class _OperasionalPageState extends State<OperasionalPage> {
                   );
                 },
               );
+            } else if (state is ProjectsLoadingState) {
+              return SizedBox(
+                height: double.maxFinite,
+                width: double.maxFinite,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              );
             }
-            return Container();
+            return SizedBox.shrink();
           },
         ),
       ),
@@ -212,7 +276,62 @@ class _OperasionalPageState extends State<OperasionalPage> {
   }
 }
 
-Widget operasionalList(ProjectsModel data) {
+Widget addNewOperasionalButton(BuildContext context, 
+  TextEditingController titleC,
+  FocusNode titleF,
+  TextEditingController amountC,
+  FocusNode amountF,
+  ProjectsModel data,
+) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(12),
+    onTap: () {
+      titleC.clear();
+      amountC.clear();
+      showDialog(
+        context: context,
+        builder: (context) => operasionalFunction(
+          context,
+          titleC,
+          titleF,
+          amountC,
+          amountF,
+          data,
+        ),
+      );
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          spacing: 2,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, color: Colors.grey),
+            MyText(
+              title: 'Operasional',
+              fontWeight: FontWeight.w600,
+              color: Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget operasionalList(
+  ProjectsModel data,
+  BuildContext context,
+  TextEditingController titleC,
+  FocusNode titleF,
+  TextEditingController amountC,
+  FocusNode amountF,
+) {
   return SizedBox(
     child: BlocBuilder<OperasionalBloc, OperasionalState>(
       builder: (context, state) {
@@ -272,43 +391,48 @@ Widget operasionalList(ProjectsModel data) {
                           context: context,
                           builder: (context) => operasionalFunction(
                             context,
+                            titleC,
+                            titleF,
+                            amountC,
+                            amountF,
                             data,
                             title: 'Edit',
                             onPressed: () {
-                              if(titleC.text.isNotEmpty && amountC.text.isNotEmpty){
-                              var cleaned = amountC.text.replaceAll(
-                                RegExp(r'[Rp\s.]'),
-                                '',
-                              );
-                              context.read<OperasionalBloc>().add(
-                                EditData(
-                                  id: list.id!,
-                                  operasionalModdel: OperasionalModdel(
-                                    projectId: data.id!,
-                                    title: titleC.text,
-                                    amount: int.parse(cleaned),
-                                    date: DateTime.now().toIso8601String(),
-                                  ),
-                                ),
-                              );
-                              }else{
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: MyText(title: 'Terjadi Kesalahan'),
-                                  content: MyText(
-                                    title: 'Isi Fileds Terlebih Dahulu',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: MyText(title: 'Ok'),
+                              if (titleC.text.isNotEmpty &&
+                                  amountC.text.isNotEmpty) {
+                                var cleaned = amountC.text.replaceAll(
+                                  RegExp(r'[Rp\s.]'),
+                                  '',
+                                );
+                                context.read<OperasionalBloc>().add(
+                                  EditData(
+                                    id: list.id!,
+                                    operasionalModdel: OperasionalModdel(
+                                      projectId: data.id!,
+                                      title: titleC.text,
+                                      amount: int.parse(cleaned),
+                                      date: DateTime.now().toIso8601String(),
                                     ),
-                                  ],
-                                ),
-                              );
+                                  ),
+                                );
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: MyText(title: 'Terjadi Kesalahan'),
+                                    content: MyText(
+                                      title: 'Isi Fileds Terlebih Dahulu',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: MyText(title: 'Ok'),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }
                             },
                           ),
@@ -318,10 +442,12 @@ Widget operasionalList(ProjectsModel data) {
                         title: MyText(
                           title: list.title,
                           fontWeight: FontWeight.w600,
+                          fontSize: 12,
                         ),
                         subtitle: MyText(
                           title: formatCurrency(list.amount),
                           color: Colors.grey,
+                          fontSize: 12,
                         ),
                         trailing: MyText(
                           title: formatDateDetail(list.date),
@@ -343,6 +469,10 @@ Widget operasionalList(ProjectsModel data) {
 
 Widget operasionalFunction(
   BuildContext context,
+  TextEditingController titleC,
+  FocusNode titleF,
+  TextEditingController amountC,
+  FocusNode amountF,
   ProjectsModel data, {
   String? title,
   void Function()? onPressed,
