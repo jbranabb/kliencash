@@ -5,9 +5,8 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/pdfViwer.dart';
 import 'package:kliencash/data/model/model.dart';
-import 'package:kliencash/state/cubit/SelectedClient.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
-import 'package:intl/intl.dart';
 
 class DetailInvoice extends StatelessWidget {
   const DetailInvoice({super.key});
@@ -192,6 +191,48 @@ class DetailInvoice extends StatelessWidget {
                             _buildInfoRow(
                               'Project Price',
                               formatCurrency(project.price),
+                            ),
+                            BlocBuilder<OperasionalBloc, OperasionalState>(
+                              builder: (context, state) {
+                                if (state is OperasionalReadSucces) {
+                                  var data = state.list
+                                      .where((e) => e.projectId == project.id)
+                                      .toList();
+                                  if (data.isNotEmpty) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(height: 8),
+                                        _buildInfoRow('Operasional:', ''),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount: data.length,
+                                          itemBuilder: (context, index) {
+                                            var listOp = data[index];
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                  ),
+                                              child: _buildInfoRow(
+                                                '• ${listOp.title}',
+                                                formatCurrency(listOp.amount),
+                                                labelSize:
+                                                    listOp.title.length > 12
+                                                    ? 10
+                                                    : 12,
+                                                valueSize: 12,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                }
+                                return SizedBox.shrink();
+                              },
                             ),
                             SizedBox(height: 8),
                             _buildInfoRow(
