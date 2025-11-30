@@ -16,3 +16,7 @@ class DeleteDataProjects extends ProjectsEvent{
   int id; 
   DeleteDataProjects({required this.id});
 }
+class ToggleIsExpandedProjects extends ProjectsEvent{
+  int id; 
+  ToggleIsExpandedProjects({required this.id});
+}

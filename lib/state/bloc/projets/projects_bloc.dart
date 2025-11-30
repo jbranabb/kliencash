@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:kliencash/data/database/database_helper.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:meta/meta.dart';
@@ -42,6 +43,15 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       var db = await database.getDatabase;
       await db.delete("PROJECTS", where: 'Id = ?',whereArgs: [event.id]);
       emit(ProjectsDeleteSuccesState());
+    });
+    on<ToggleIsExpandedProjects>((event, emit) {
+      if(state is ProjectsSuccesState){
+        var rawlist = state as ProjectsSuccesState;
+        var data = List<ProjectsModel>.from(rawlist.list);
+        final updateUsers =  data[event.id];
+        data[event.id] = updateUsers.copyWith(isExpanded: !updateUsers.isExpanded);
+      emit(ProjectsSuccesState(list: data));
+      }
     });
   }
 }

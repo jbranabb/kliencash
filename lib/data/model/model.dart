@@ -85,6 +85,7 @@ class ProjectsModel {
   String status;
   String createdAt;
   ClientModel? client;
+  bool isExpanded;
   ProjectsModel({
     this.id,
     required this.clientId,
@@ -96,6 +97,7 @@ class ProjectsModel {
     required this.status,
     required this.createdAt,
     this.client,
+    this.isExpanded = false,
   });
   factory ProjectsModel.fromJson(Map<String, dynamic> json) {
     return ProjectsModel(
@@ -129,6 +131,22 @@ class ProjectsModel {
       "status": status,
       "createdAt": createdAt,
     };
+  }
+
+  ProjectsModel copyWith({bool? isExpanded}) {
+    return ProjectsModel(
+      clientId: clientId,
+      agenda: agenda,
+      price: price,
+      startAt: startAt,
+      endAt: endAt,
+      status: status,
+      createdAt: createdAt,
+      desc: desc,
+      client: client,
+      id: id,
+      isExpanded: isExpanded ?? this.isExpanded 
+    );
   }
 }
 
