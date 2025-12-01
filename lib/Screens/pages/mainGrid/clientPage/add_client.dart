@@ -164,6 +164,7 @@ void validatePost(
           alamat: alamat,
           handphone: phone,
           countryCode: countryCode,
+          createdAt: DateTime.now().toIso8601String()
         ),
       ),
     );

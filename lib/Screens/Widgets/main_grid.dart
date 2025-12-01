@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/invoice_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/operasional/operasional_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/payment/payment_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
+import 'package:kliencash/Screens/pages/mainGrid/report/report_page.dart';
+import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/cubit/reportchart/chartdataclientCubit.dart';
 
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
@@ -26,7 +30,9 @@ SliverToBoxAdapter mainGrid() {
               onTap: () {
                 if (index == 0) {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const ClientPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const ClientPage(),
+                    ),
                   );
                 } else if (index == 1) {
                   Navigator.of(context).push(
@@ -50,6 +56,17 @@ SliverToBoxAdapter mainGrid() {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const PayementPage(),
+                    ),
+                  );
+                } else if (index == 5) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        context.read<ClientBloc>().add(ReadDataClient());
+                        var state = context.read<ClientBloc>().state as ClientSucces;
+                        context.read<ChartDataClientCubit>().getDataChart(state);
+                        return ReportPage();
+                      },
                     ),
                   );
                 }
@@ -80,95 +97,29 @@ SliverToBoxAdapter mainGrid() {
 Widget childGrid(int index, BuildContext context) {
   switch (index) {
     case 0:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.person,
-          ),
-          MyText(title: "Client"),
-        ],
-      );
+      return menuSection(context, Icons.person, 'Client');
     case 1:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.work,
-          ),
-          MyText(title: "Projects"),
-        ],
-      );
+      return menuSection(context, Icons.work, 'Projects');
     case 2:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.factory,
-          ),
-          MyText(title: "Operasional", textAlign: TextAlign.center),
-        ],
-      );
+      return menuSection(context, Icons.factory, 'Operasional');
     case 3:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.receipt_long_rounded,
-          ),
-          MyText(title: "Invoice"),
-        ],
-      );
+      return menuSection(context, Icons.receipt_long_rounded, 'Invoice');
     case 4:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-            Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.attach_money_rounded,
-          ),
-          MyText(title: "Payment"),
-          ],
-      );
+      return menuSection(context, Icons.attach_money, 'Payment');
     case 5:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.bar_chart_rounded,
-          ),
-          MyText(title: "Report"),
-        ],
-      );
+      return menuSection(context, Icons.bar_chart_rounded, 'Report');
     default:
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
-            Icons.person,
-          ),
-          MyText(title: "seprei gratis bowok", textAlign: TextAlign.center),
-        ],
-      );
+      return menuSection(context, Icons.person, 'Bowok');
   }
+}
+
+Widget menuSection(BuildContext context, IconData icon, String title) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(color: Theme.of(context).colorScheme.onPrimary, size: 30, icon),
+      MyText(title: title),
+    ],
+  );
 }

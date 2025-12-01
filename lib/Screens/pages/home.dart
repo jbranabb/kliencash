@@ -5,6 +5,7 @@ import 'package:kliencash/Screens/Widgets/main_grid.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 import 'package:kliencash/Screens/pages/settings.dart';
+import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,10 +20,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<BookstatuslengthCubit>().getlength();
+    context.read<ClientBloc>().add(ReadDataClient());
+    print('INIT HOME'); 
   }
   
   @override
   Widget build(BuildContext context) {
+    print('BUILD HOME');
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
