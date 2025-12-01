@@ -5,21 +5,30 @@ import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/data/model/model.dart';
-import 'package:kliencash/state/bloc/users/users_bloc.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/widgets.dart';
 
-Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async {
+Future<Uint8List> generatePDF(
+  BuildContext context,
+  List<User> userState,
+  OperasionalReadSucces opdata,
+) async {
   var state = context.read<Selectedinvoice>().state;
   var invoice = state[0];
   var projects = invoice.projectsModel!;
   var client = invoice.clientModel!;
   var paymentM = invoice.paymentMethod!;
+  var finalOpData = opdata.list
+      .where((e) => e.projectId == projects.id)
+      .toList();
   var onprimaryColor = PdfColor.fromInt(
     Theme.of(context).colorScheme.onPrimary.value,
   );
+  var height = MediaQuery.of(context).size.height;
+  var width = MediaQuery.of(context).size.width;
   var user = userState[0];
   var pdf = pw.Document();
   pdf.addPage(
@@ -68,8 +77,7 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                               textAlign: pw.TextAlign.start,
                             ),
                             MyTextPdf(
-                              title:
-                                  '${user.countryCode} ${user.phoneNumber}',
+                              title: '${user.countryCode} ${user.phoneNumber}',
                             ),
                           ],
                         ),
@@ -173,7 +181,7 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
           pw.SizedBox(height: 8),
           pw.Table(
             border: pw.TableBorder(
-              horizontalInside: pw.BorderSide(color: PdfColors.grey500),
+              horizontalInside: pw.BorderSide(color: PdfColors.grey100),
             ),
             defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
             children: [
@@ -194,14 +202,14 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                     alignment: pw.Alignment.center,
                     child: pw.Padding(
                       padding: pw.EdgeInsets.all(8),
-                      child: MyTextPdf(title: "Status"),
+                      child: MyTextPdf(title: "Total"),
                     ),
                   ),
                   pw.Align(
                     alignment: pw.Alignment.center,
                     child: pw.Padding(
                       padding: pw.EdgeInsets.all(8),
-                      child: MyTextPdf(title: "Subtotal"),
+                      child: MyTextPdf(title: "Status"),
                     ),
                   ),
                 ],
@@ -223,6 +231,13 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                     alignment: pw.Alignment.center,
                     child: pw.Padding(
                       padding: pw.EdgeInsets.all(8),
+                      child: MyTextPdf(title: formatCurrency(invoice.subtotal)),
+                    ),
+                  ),
+                  pw.Align(
+                    alignment: pw.Alignment.center,
+                    child: pw.Padding(
+                      padding: pw.EdgeInsets.all(8),
                       child: MyTextPdf(
                         title: projects.status.toUpperCase(),
                         color: pdfcolors(projects.status),
@@ -231,17 +246,60 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                       ),
                     ),
                   ),
-                  pw.Align(
-                    alignment: pw.Alignment.center,
-                    child: pw.Padding(
-                      padding: pw.EdgeInsets.all(8),
-                      child: MyTextPdf(title: formatCurrency(invoice.subtotal)),
-                    ),
-                  ),
                 ],
               ),
             ],
           ),
+          if (finalOpData.isNotEmpty) ...[
+            pw.SizedBox(height: 8),
+            pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child:pw.Container(
+              width: width * 0.7,
+              decoration: pw.BoxDecoration(
+                border: pw.Border.all(color: PdfColors.grey),
+                color: PdfColors.grey100,
+                borderRadius: pw.BorderRadius.circular(4),
+              ),
+              child: pw.Padding(
+                padding: pw.EdgeInsets.all(10),
+                child: pw.Column(
+                  children: [
+                    pw.Align(
+                      alignment: pw.Alignment.centerLeft,        
+                      child: MyTextPdf(
+                        title: 'Biaya Operasional / Tambahan',
+                        fontSize: 12,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
+                    ...finalOpData.map((items) {
+                      return pw.SizedBox(
+                        child: pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            MyTextPdf(
+                              title: "- ${items.title}",
+                              fontSize: 10,
+                              color: PdfColors.grey700,
+                            ),
+                            MyTextPdf(
+                              title: "- ${formatCurrency(items.amount)}",
+                              fontSize: 10,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColors.grey700,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ), 
+            ),
+            pw.SizedBox(height: 10),
+          ],
           pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -273,7 +331,6 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                         if (invoice.pajak != 0) ...[
                           MyTextPdf(title: 'Pajak (${invoice.pajak}%)'),
                           MyTextPdf(
-
                             color: PdfColors.orange600,
                             title:
                                 " + ${formatCurrency(invoice.subtotal * (invoice.pajak! / 100))}",
@@ -358,34 +415,43 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
                   title: 'Metode Pembayaran: ',
                   fontWeight: pw.FontWeight.bold,
                 ),
-                if(paymentM.type.toString().toLowerCase() == 'cash') ...[
-                  MyTextPdf(title: 'Cash')
+                if (paymentM.type.toString().toLowerCase() == 'cash') ...[
+                  MyTextPdf(title: 'Cash'),
                 ],
-                if(paymentM.type.toString().toLowerCase() != 'cash' && paymentM.number !=null && paymentM.accountName !=null) ...[
-                pw.Row(
-                  children: [
-                    MyTextPdf(title: '${paymentM.type}: '),
-                    MyTextPdf(title: paymentM.name, fontWeight: pw.FontWeight.bold),
-                  ],
-                ),
-                pw.Row(
-                  children: [
-                    MyTextPdf(title: paymentM.type.toString() == 'BANK' ? 'No. Rekening: ' : 'Number: '),
-                    MyTextPdf(
-                      title: paymentM.number!,
-                      fontWeight: pw.FontWeight.bold,
-                    ),
-                  ],
-                ),
-                pw.Row(
-                  children: [
-                    MyTextPdf(title: 'A.n: '),
-                    MyTextPdf(
-                      title: paymentM.accountName!,
-                      fontWeight: pw.FontWeight.bold,
-                    ),
-                  ],
-                ),
+                if (paymentM.type.toString().toLowerCase() != 'cash' &&
+                    paymentM.number != null &&
+                    paymentM.accountName != null) ...[
+                  pw.Row(
+                    children: [
+                      MyTextPdf(title: '${paymentM.type}: '),
+                      MyTextPdf(
+                        title: paymentM.name,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                  pw.Row(
+                    children: [
+                      MyTextPdf(
+                        title: paymentM.type.toString() == 'BANK'
+                            ? 'No. Rekening: '
+                            : 'Number: ',
+                      ),
+                      MyTextPdf(
+                        title: paymentM.number!,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                  pw.Row(
+                    children: [
+                      MyTextPdf(title: 'A.n: '),
+                      MyTextPdf(
+                        title: paymentM.accountName!,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ],
+                  ),
                 ],
               ],
             ),
@@ -410,11 +476,11 @@ Future<Uint8List> generatePDF(BuildContext context, List<User> userState) async 
               ),
             ),
           ],
-          pw.SizedBox(height: 20,),
+          pw.SizedBox(height: 20),
           MyTextPdf(
             title: 'Invoice ini di buat otomatis oleh sistem KlienCash',
             fontSize: 12,
-            color: PdfColors.grey
+            color: PdfColors.grey,
           ),
         ],
       ),
