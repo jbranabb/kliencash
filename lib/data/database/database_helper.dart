@@ -20,7 +20,6 @@ class DatabaseHelper {
   }
 
   Future<void> _createDb(Database db, int version) async {
-
     await db.execute('''
     CREATE TABLE USERS(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +50,9 @@ class DatabaseHelper {
       name TEXT NOT NULL,
       handphone TEXT NOT NULL,
       country_code TEXT NOT NULL,
-      alamat TEXT NOT NULL) 
+      alamat TEXT NOT NULL,
+      createdAt TEXT 
+      ) 
       ''');
 
     await db.execute('''

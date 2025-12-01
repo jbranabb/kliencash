@@ -48,13 +48,15 @@ class ClientModel {
   String alamat;
   String handphone;
   String countryCode;
+  String createdAt;
   ClientModel({
     this.id,
     required this.name,
     required this.alamat,
     required this.handphone,
     required this.countryCode,
-  });
+    String? createdAt
+  }) : createdAt = createdAt ?? DateTime.now().toIso8601String();
   factory ClientModel.fromJson(Map<String, dynamic> json) {
     return ClientModel(
       id: json['Id'],
@@ -62,6 +64,7 @@ class ClientModel {
       alamat: json['alamat'],
       countryCode: json['country_code'],
       handphone: json['handphone'],
+      createdAt: json['createdAt'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -70,6 +73,7 @@ class ClientModel {
       "alamat": alamat,
       "handphone": handphone,
       "country_code": countryCode,
+      "createdAt": createdAt,
     };
   }
 }
@@ -116,6 +120,7 @@ class ProjectsModel {
               alamat: json['client_alamat'] ?? '',
               handphone: json['client_handphone'] ?? '',
               countryCode: json['client_countryCode'] ?? '',
+              createdAt: json['createdAt'] ?? '',
             )
           : null,
     );
