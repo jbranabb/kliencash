@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/pages/pdf.dart';
+import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:printing/printing.dart';
@@ -18,12 +19,13 @@ class Pdfviwer extends StatelessWidget {
       body: BlocBuilder<UsersBloc, UsersState>(
         builder: (context, state) {
           if(state is UsersSucces){
+            var rawData = context.read<OperasionalBloc>().state as OperasionalReadSucces;
             return PdfPreview(
             allowPrinting: true,
             canDebug: false,
             pdfFileName:
                 '${invoice.invoiceNumber}-${invoice.projectsModel!.agenda}',
-            build: (format) => generatePDF(context, state.list),
+            build: (format) => generatePDF(context, state.list, rawData),
           ); 
           }
           return SizedBox.shrink(); 
