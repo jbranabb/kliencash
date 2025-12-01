@@ -364,9 +364,9 @@ class DetailInvoice extends StatelessWidget {
               ).push(MaterialPageRoute(builder: (context) => Pdfviwer()));
             },
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
-            icon: Icon(Icons.payment, color: Colors.white),
+            icon: Icon(Icons.picture_as_pdf, color: Colors.white),
             label: MyText(
-              title: 'Process Payment',
+              title: 'Print Invoices',
               color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
