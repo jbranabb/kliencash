@@ -28,8 +28,7 @@ class _ClientPageState extends State<ClientPage> {
 
   @override
   void initState() {
-    super.initState();
-    print('init');
+  super.initState();
   }
 
   @override
@@ -283,8 +282,6 @@ class _ClientPageState extends State<ClientPage> {
                         ],
                       ),
                     ),
-      
-                    // Arrow Icon
                     Icon(
                       Icons.chevron_right,
                       color: Colors.grey[400],
