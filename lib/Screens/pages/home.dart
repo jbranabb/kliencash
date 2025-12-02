@@ -6,6 +6,7 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 import 'package:kliencash/Screens/pages/settings.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     context.read<BookstatuslengthCubit>().getlength();
     context.read<ClientBloc>().add(ReadDataClient());
+    context.read<ProjectsBloc>().add(ReadDataProjects());
     print('INIT HOME'); 
   }
   

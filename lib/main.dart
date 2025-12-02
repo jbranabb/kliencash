@@ -26,6 +26,7 @@ import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/state/cubit/drop_down_rounded.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 import 'package:kliencash/state/cubit/onBoardingCubit.dart';
+import 'package:kliencash/state/cubit/reportchart/chartProjects.dart';
 import 'package:kliencash/state/cubit/reportchart/chartdataclientCubit.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
@@ -77,6 +78,8 @@ void main() async {
         BlocProvider(create: (context) => PaymentBloc()),
         BlocProvider(create: (context) => OperasionalBloc()..add(ReadData())),
         BlocProvider(create: (context) => ChartDataClientCubit()),
+        BlocProvider(create: (context) => ChartProjectsStaus()),
+        BlocProvider(create: (context) => ChartProjectsHightValue()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
