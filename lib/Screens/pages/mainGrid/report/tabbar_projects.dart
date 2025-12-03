@@ -24,13 +24,11 @@ class TabbarProjects extends StatelessWidget {
                         List<ProjectsHightValue>
                       >(
                         builder: (context, state) {
-                          if(state.isEmpty){
+                          if (state.isEmpty) {
                             return SizedBox.shrink();
                           }
                           return SfCartesianChart(
-                            title: ChartTitle(
-                              text: 'Project Rankings ',
-                            ),
+                            title: ChartTitle(text: 'Project Rankings '),
                             primaryXAxis: CategoryAxis(),
                             tooltipBehavior: TooltipBehavior(
                               enable: true,
@@ -65,7 +63,10 @@ class TabbarProjects extends StatelessWidget {
                                 dataSource: state,
                                 xValueMapper: (d, _) {
                                   var namevalue = d.agenda.split('-');
-                                  var displayedName = namevalue[1].toString().length >= 10 ? namevalue[0] : "${namevalue[0]}\n${namevalue[1]}";
+                                  var displayedName =
+                                      namevalue[1].toString().length >= 10
+                                      ? namevalue[0]
+                                      : "${namevalue[0]}\n${namevalue[1]}";
                                   return displayedName;
                                 },
                                 yValueMapper: (d, _) => d.value,
