@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/profile_data.dart';
 import 'package:kliencash/Screens/Widgets/main_grid.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 import 'package:kliencash/Screens/pages/settings.dart';
+import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
@@ -61,14 +63,15 @@ class _HomePageState extends State<HomePage> {
           ProfileData(),
           mainGrid(),
           BookingStatues(),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(childCount: 10, (
-              context,
-              index,
-            ) {
-              return ListTile(title: MyText(title: 'title $index'));
-            }),
-          ),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 20,),
+                MyText(title: 'Build By J With Love', color: Colors.grey,),
+              ],
+            ),
+          )
         ],
       ),
     );

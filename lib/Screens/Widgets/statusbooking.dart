@@ -25,7 +25,7 @@ class _BookingStatuesState extends State<BookingStatues> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MyText(
-                  title: 'Status',
+                  title: 'Overview',
                   color: Theme.of(context).colorScheme.onPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
