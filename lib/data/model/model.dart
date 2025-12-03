@@ -49,13 +49,17 @@ class ClientModel {
   String handphone;
   String countryCode;
   String createdAt;
+  InvoiceModel? invoiceModel;
+  ProjectsModel? projectsModel;
   ClientModel({
     this.id,
     required this.name,
     required this.alamat,
     required this.handphone,
     required this.countryCode,
-    String? createdAt
+    this.invoiceModel,
+    this.projectsModel,
+    String? createdAt,
   }) : createdAt = createdAt ?? DateTime.now().toIso8601String();
   factory ClientModel.fromJson(Map<String, dynamic> json) {
     return ClientModel(
@@ -65,6 +69,34 @@ class ClientModel {
       countryCode: json['country_code'],
       handphone: json['handphone'],
       createdAt: json['createdAt'],
+      invoiceModel: json['invoice_id'] != null
+          ? InvoiceModel(
+              projectsId: json['invoice_projects_id'],
+              paymentMethodId: json['invoice_payment_method_id'],
+              status: json['invoice_status'],
+              subtotal: json['invoice_subtotal'],
+              title: json['invoice_title'],
+              totalAmount: json['invoice_totalAmount'],
+              tanggal: json['invoice_tanggal'],
+              jatuhTempo: json['invoice_jatuhTempo'],
+              isRounded: json['invoice_isRounded'],
+              invoiceNumber: json['Invoice_invoiceNumber'],
+              createdAt: json['invoicee_createdAt'],
+            )
+          : null,
+      projectsModel: json['id_projects'] != null
+          ? ProjectsModel.fromJson({
+              'Id': json['id_projects'] ?? 0,
+              'agenda': json['projects_agenda'] ?? '',
+              'desc': json['projects_desc'],
+              'status': json['projects_status'] ?? '',
+              'client_id': json['projects_client_id'] ?? 0,
+              'estimatedValue': json['projects_price'] ?? 0,
+              'startAt': json['projects_startAt'] ?? '',
+              'endAt': json['projects_endAt'] ?? '',
+              'createdAt': json['projects_createdAt'] ?? '',
+            })
+          : null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -150,7 +182,7 @@ class ProjectsModel {
       desc: desc,
       client: client,
       id: id,
-      isExpanded: isExpanded ?? this.isExpanded 
+      isExpanded: isExpanded ?? this.isExpanded,
     );
   }
 }
