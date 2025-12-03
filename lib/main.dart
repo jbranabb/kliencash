@@ -28,6 +28,7 @@ import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 import 'package:kliencash/state/cubit/onBoardingCubit.dart';
 import 'package:kliencash/state/cubit/reportchart/chartProjects.dart';
 import 'package:kliencash/state/cubit/reportchart/chartdataclientCubit.dart';
+import 'package:kliencash/state/cubit/reportchart/chartinvoice.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 import 'package:kliencash/state/cubit/selectedpaymentMethod.dart';
@@ -80,6 +81,7 @@ void main() async {
         BlocProvider(create: (context) => ChartDataClientCubit()),
         BlocProvider(create: (context) => ChartProjectsStaus()),
         BlocProvider(create: (context) => ChartProjectsHightValue()),
+        BlocProvider(create: (context) => ChartinvoiceStatus()),
       ],
       child: MainApp(launchcount: launchCount,),
     ),
