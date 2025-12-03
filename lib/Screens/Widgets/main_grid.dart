@@ -8,9 +8,11 @@ import 'package:kliencash/Screens/pages/mainGrid/payment/payment_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/projects_page.dart';
 import 'package:kliencash/Screens/pages/mainGrid/report/report_page.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/reportchart/chartProjects.dart';
 import 'package:kliencash/state/cubit/reportchart/chartdataclientCubit.dart';
+import 'package:kliencash/state/cubit/reportchart/chartinvoice.dart';
 
 SliverToBoxAdapter mainGrid() {
   return SliverToBoxAdapter(
@@ -68,10 +70,14 @@ SliverToBoxAdapter mainGrid() {
                         var state = context.read<ClientBloc>().state as ClientSucces;
                         context.read<ChartDataClientCubit>().getDataChart(state);
                         // projects
-                        context.read<ProjectsBloc>().add(ReadDataProjects());
                         var stateProjects = context.read<ProjectsBloc>().state as ProjectsSuccesState;
+                        context.read<ProjectsBloc>().add(ReadDataProjects());
                         context.read<ChartProjectsStaus>().getProjectsData(stateProjects);
                         context.read<ChartProjectsHightValue>().getProjectsData(stateProjects);
+                        //invoice
+                        context.read<InvoiceBloc>().add(ReadInvoice());
+                        var data = context.read<InvoiceBloc>().state as InvoiceReadSucces;
+                        context.read<ChartinvoiceStatus>().getstatus(data);
                         return ReportPage();
                       },
                     ),

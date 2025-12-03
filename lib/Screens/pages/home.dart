@@ -6,6 +6,7 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/statusbooking.dart';
 import 'package:kliencash/Screens/pages/settings.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
+import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
 
@@ -23,9 +24,10 @@ class _HomePageState extends State<HomePage> {
     context.read<BookstatuslengthCubit>().getlength();
     context.read<ClientBloc>().add(ReadDataClient());
     context.read<ProjectsBloc>().add(ReadDataProjects());
-    print('INIT HOME'); 
+    context.read<InvoiceBloc>().add(ReadInvoice());
+    print('INIT HOME');
   }
-  
+
   @override
   Widget build(BuildContext context) {
     print('BUILD HOME');
@@ -45,7 +47,9 @@ class _HomePageState extends State<HomePage> {
               InkWell(
                 borderRadius: BorderRadius.circular(120),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage(),));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -58,15 +62,13 @@ class _HomePageState extends State<HomePage> {
           mainGrid(),
           BookingStatues(),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              childCount: 10,
-              (context, index) {
-                return ListTile(
-                  title: MyText(title: 'title $index'),
-                );
-              },
-            ),
-          )
+            delegate: SliverChildBuilderDelegate(childCount: 10, (
+              context,
+              index,
+            ) {
+              return ListTile(title: MyText(title: 'title $index'));
+            }),
+          ),
         ],
       ),
     );
