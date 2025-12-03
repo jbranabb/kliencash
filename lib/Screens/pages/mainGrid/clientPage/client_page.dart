@@ -28,7 +28,7 @@ class _ClientPageState extends State<ClientPage> {
 
   @override
   void initState() {
-  super.initState();
+    super.initState();
   }
 
   @override
@@ -89,9 +89,9 @@ class _ClientPageState extends State<ClientPage> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AddClient()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => AddClient()));
         },
         icon: Icon(Icons.person_add, color: Colors.white),
         label: MyText(
@@ -127,18 +127,18 @@ class _ClientPageState extends State<ClientPage> {
     );
   }
 
-  Widget _buildClientCard(BuildContext context, dynamic client, int index) {
-    String initials = client.name.trim().isEmpty 
-        ? '?' 
+  Widget _buildClientCard(BuildContext context, ClientModel client, int index) {
+    String initials = client.name.trim().isEmpty
+        ? '?'
         : client.name.trim().length == 1
-            ? client.name[0].toUpperCase()
-            : client.name.trim().split(' ').length > 1
-                ? '${client.name.trim().split(' ')[0][0]}${client.name.trim().split(' ')[1][0]}'.toUpperCase()
-                : client.name[0].toUpperCase();
-
+        ? client.name[0].toUpperCase()
+        : client.name.trim().split(' ').length > 1
+        ? '${client.name.trim().split(' ')[0][0]}${client.name.trim().split(' ')[1][0]}'
+              .toUpperCase()
+        : client.name[0].toUpperCase();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical:4 ),
+      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
       child: Slidable(
         key: Key(index.toString()),
         endActionPane: ActionPane(
@@ -149,11 +149,8 @@ class _ClientPageState extends State<ClientPage> {
               onPressed: (context) {
                 showDialog(
                   context: context,
-                  builder: (context) => confirmDelete(
-                    client.name,
-                    context,
-                    client.id!,
-                  ),
+                  builder: (context) =>
+                      confirmDelete(client.name, context, client.id!),
                 );
               },
               backgroundColor: Colors.red,
@@ -181,20 +178,21 @@ class _ClientPageState extends State<ClientPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onLongPress: () {
+                name.text = client.name;
+                alamat.text = client.alamat;
+                phone.text =  client.handphone.toString();
+                context.read<CountrycodeCubit>().changeCountryCode(client.countryCode);
                 showDialog(
                   context: context,
                   builder: (context) => editDataClient(
                     client.id!,
                     name,
-                    client.name,
                     phone,
-                    client.handphone,
                     alamat,
-                    client.alamat,
-                    client.countryCode,
                     nameF,
                     phoneF,
                     alamatF,
+                    client,
                     context,
                   ),
                 );
@@ -209,7 +207,7 @@ class _ClientPageState extends State<ClientPage> {
                       width: 56,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                       color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         boxShadow: [
                           BoxShadow(
                             color: Theme.of(context).colorScheme.primary,
@@ -227,9 +225,9 @@ class _ClientPageState extends State<ClientPage> {
                         ),
                       ),
                     ),
-      
+
                     SizedBox(width: 16),
-      
+
                     // Client Info
                     Expanded(
                       child: Column(
@@ -252,7 +250,8 @@ class _ClientPageState extends State<ClientPage> {
                               SizedBox(width: 6),
                               Expanded(
                                 child: MyText(
-                                  title: "${client.countryCode} ${client.handphone}",
+                                  title:
+                                      "${client.countryCode} ${client.handphone}",
                                   fontSize: 14,
                                   color: Colors.grey[600]!,
                                 ),
@@ -274,7 +273,6 @@ class _ClientPageState extends State<ClientPage> {
                                   title: client.alamat,
                                   fontSize: 13,
                                   color: Colors.grey[600]!,
-                                  
                                 ),
                               ),
                             ],
@@ -300,23 +298,19 @@ class _ClientPageState extends State<ClientPage> {
 
 AlertDialog confirmDelete(String name, BuildContext context, int id) {
   return AlertDialog(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     title: Row(
       children: [
         Icon(Icons.delete_outline, color: Colors.red),
         SizedBox(width: 8),
         Expanded(
-          child: MyText(
-            title: 'Hapus Client?',
-            fontWeight: FontWeight.bold,
-          ),
+          child: MyText(title: 'Hapus Client?', fontWeight: FontWeight.bold),
         ),
       ],
     ),
     content: MyText(
-      title: 'Apakah Anda yakin ingin menghapus client "$name"? Tindakan ini tidak dapat dibatalkan.',
+      title:
+          'Apakah Anda yakin ingin menghapus client "$name"? Tindakan ini tidak dapat dibatalkan.',
     ),
     actions: [
       TextButton(
@@ -324,10 +318,7 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
         style: TextButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),
-        child: MyText(
-          title: 'Batal',
-          color: Colors.grey[700]!,
-        ),
+        child: MyText(title: 'Batal', color: Colors.grey[700]!),
       ),
       ElevatedButton(
         onPressed: () {
@@ -337,9 +328,7 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: MyText(
           title: 'Ya, Hapus',
@@ -354,26 +343,17 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
 Dialog editDataClient(
   int id,
   TextEditingController name,
-  String nameB,
   TextEditingController phone,
-  String phoneB,
   TextEditingController alamat,
-  String alamtB,
-  String ccb,
   FocusNode nameF,
   FocusNode phoneF,
   FocusNode alamatF,
+  ClientModel clientModel,
   BuildContext context,
 ) {
-  name.text = nameB;
-  phone.text = phoneB;
-  alamat.text = alamtB;
-
   return Dialog(
     insetPadding: EdgeInsets.all(16),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     child: Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
@@ -412,9 +392,7 @@ Dialog editDataClient(
                   ),
                 ],
               ),
-
               SizedBox(height: 20),
-
               MyTextFileds(
                 controller: name,
                 label: "Nama",
@@ -425,9 +403,7 @@ Dialog editDataClient(
                   FocusScope.of(context).requestFocus(phoneF);
                 },
               ),
-
               SizedBox(height: 12),
-
               MyTextFiledsForPhone(
                 controller: phone,
                 label: 'Nomor Telepon',
@@ -437,9 +413,7 @@ Dialog editDataClient(
                   FocusScope.of(context).requestFocus(alamatF);
                 },
               ),
-
               SizedBox(height: 12),
-
               MyTextFileds(
                 controller: alamat,
                 label: "Alamat",
@@ -448,22 +422,10 @@ Dialog editDataClient(
                 maxlines: 10,
                 isOtional: false,
                 onEditingCom: () {
-                  _handleSave(
-                    context,
-                    id,
-                    name,
-                    nameB,
-                    phone,
-                    phoneB,
-                    alamat,
-                    alamtB,
-                    ccb,
-                  );
+                  FocusScope.of(context).unfocus();
                 },
               ),
-
               SizedBox(height: 20),
-
               // Buttons
               Row(
                 children: [
@@ -494,17 +456,15 @@ Dialog editDataClient(
                               context,
                               id,
                               name,
-                              nameB,
                               phone,
-                              phoneB,
                               alamat,
-                              alamtB,
-                              ccb,
-                            );
+                              clientModel
+                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary,
                             padding: EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -534,18 +494,15 @@ void _handleSave(
   BuildContext context,
   int id,
   TextEditingController name,
-  String nameB,
   TextEditingController phone,
-  String phoneB,
   TextEditingController alamat,
-  String alamtB,
-  String ccb,
+  ClientModel clientmodel,
 ) {
   var state = context.read<CountrycodeCubit>().state;
-  if (nameB == name.text &&
-      phone.text == phoneB &&
-      alamat.text == alamtB &&
-      ccb == state) {
+  if (clientmodel.name == name.text &&
+      phone.text == clientmodel.handphone &&
+      alamat.text == clientmodel.alamat &&
+      clientmodel.countryCode == state) {
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar(
@@ -554,14 +511,7 @@ void _handleSave(
       ),
     );
   } else {
-    validateEdit(
-      id,
-      name.text,
-      state,
-      phone.text,
-      alamat.text,
-      context,
-    );
+    validateEdit(id, name.text, state, phone.text, alamat.text, context);
   }
 }
 
@@ -575,23 +525,21 @@ void validateEdit(
 ) {
   if (name.isNotEmpty && phone.isNotEmpty && alamat.isNotEmpty) {
     context.read<ClientBloc>().add(
-          EditDataClient(
-            id: id,
-            clientModel: ClientModel(
-              name: name,
-              alamat: alamat,
-              handphone: phone,
-              countryCode: countryCode,
-            ),
-          ),
-        );
+      EditDataClient(
+        id: id,
+        clientModel: ClientModel(
+          name: name,
+          alamat: alamat,
+          handphone: phone,
+          countryCode: countryCode,
+        ),
+      ),
+    );
   } else {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orange),
