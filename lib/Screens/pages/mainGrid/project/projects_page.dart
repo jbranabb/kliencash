@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
+import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/selectClientsWidget.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
@@ -90,9 +92,9 @@ class _ProjectsPageState extends State<ProjectsPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddProjects()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => const AddProjects()));
         },
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.add, color: Colors.white),
@@ -129,11 +131,11 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, dynamic project, int index) {
+  Widget _buildProjectCard(BuildContext context, ProjectsModel project, int index) {
     final startDate = DateTime.parse(project.startAt);
     final endDate = DateTime.parse(project.endAt);
     final createdAt = DateTime.parse(project.createdAt);
-    
+
     final formattedStart = DateFormat('dd MMM yyyy').format(startDate);
     final formattedEnd = DateFormat('dd MMM yyyy').format(endDate);
     final formattedCreated = DateFormat('dd MMM yyyy, HH:mm').format(createdAt);
@@ -175,7 +177,31 @@ class _ProjectsPageState extends State<ProjectsPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onLongPress: () {
-                _showEditDialog(context, project);
+                final formattedDateStart = DateTime.parse(project.startAt);
+                final formattedDateEnd = DateTime.parse(project.endAt);
+                context.read<Selectedclient>().selectedClient(project.clientId);
+                context.read<Selecteddatecubit>().setDate([
+                  formattedDateStart,
+                  formattedDateEnd,
+                ]);
+                context.read<StatusprojectrsCubit>().setStatus(project.status);
+                startAtC.text = formattedDateStart.toIso8601String();
+                endAtC.text = formattedDateEnd.toIso8601String();
+                clientIdC.text = project.clientId.toString();
+                print('client id : $clientIdC');
+                _showEditDialog(
+                  context,
+                  project,
+                  agendaC..text = project.agenda,
+                  agendaF,
+                  descC..text = project.desc ?? '',
+                  descF,
+                  priceC..text = formatCurrency(project.price),
+                  priceF,
+                  clientIdC,
+                  startAtC,
+                  endAtC,
+                );
               },
               child: Padding(
                 padding: EdgeInsets.all(16),
@@ -199,9 +225,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
                               SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Icon(Icons.person, 
-                                    size: 14, 
-                                    color: Colors.grey[600]
+                                  Icon(
+                                    Icons.person,
+                                    size: 14,
+                                    color: Colors.grey[600],
                                   ),
                                   SizedBox(width: 4),
                                   MyText(
@@ -218,8 +245,8 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         SizedBox(width: 8),
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12, 
-                            vertical: 6
+                            horizontal: 12,
+                            vertical: 6,
                           ),
                           decoration: BoxDecoration(
                             color: bgcolors(project.status),
@@ -234,10 +261,13 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                       ],
                     ),
-      
+
                     SizedBox(height: 12),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(8),
@@ -246,7 +276,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.attach_money, 
+                            Icons.attach_money,
                             size: 16,
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
@@ -260,7 +290,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ],
                       ),
                     ),
-      
+
                     // Description
                     if (project.desc != null && project.desc!.isNotEmpty) ...[
                       SizedBox(height: 12),
@@ -291,7 +321,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                       ),
                     ],
-      
+
                     SizedBox(height: 12),
                     Divider(height: 1, color: Colors.grey[200]),
                     SizedBox(height: 12),
@@ -306,9 +336,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
                           ),
                         ),
                         SizedBox(width: 8),
-                        Icon(Icons.arrow_forward, 
-                          size: 16, 
-                          color: Colors.grey[400]
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 16,
+                          color: Colors.grey[400],
                         ),
                         SizedBox(width: 8),
                         Expanded(
@@ -321,7 +352,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                       ],
                     ),
-      
+
                     SizedBox(height: 12),
                     Row(
                       children: [
@@ -334,12 +365,16 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                       ],
                     ),
-      
+
                     // Long Press Hint
                     SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.touch_app, size: 11, color: Colors.grey[400]),
+                        Icon(
+                          Icons.touch_app,
+                          size: 11,
+                          color: Colors.grey[400],
+                        ),
                         SizedBox(width: 4),
                         MyText(
                           title: 'Tahan untuk edit',
@@ -393,44 +428,38 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  void _showEditDialog(BuildContext context, dynamic project) {
-    final formattedDateStart = DateTime.parse(project.startAt);
-    final formattedDateEnd = DateTime.parse(project.endAt);
-
-    context.read<Selectedclient>().selectedClient(project.clientId);
-    context.read<Selecteddatecubit>().setDate([
-      formattedDateStart,
-      formattedDateEnd,
-    ]);
-    context.read<StatusprojectrsCubit>().setStatus(project.status);
-    
-    startAtC.text = formattedDateStart.toIso8601String();
-    endAtC.text = formattedDateEnd.toIso8601String();
-    clientIdC.text = project.clientId.toString();
-
+  void _showEditDialog(
+    BuildContext context,
+    ProjectsModel project,
+    TextEditingController agendaC,
+    FocusNode agendaF,
+    TextEditingController descC,
+    FocusNode descF,
+    TextEditingController priceC,
+    FocusNode priceF,
+    TextEditingController clientIdC,
+    TextEditingController startAt,
+    TextEditingController endAt,
+  ) {
     showDialog(
       context: context,
-      builder: (context) => editProjects(
-        context,
-        MediaQuery.of(context).size.height,
-        agendaC,
-        agendaF,
-        project.agenda,
-        descC,
-        descF,
-        project.desc,
-        priceC,
-        priceF,
-        project.price,
-        clientIdC,
-        project.clientId,
-        startAtC,
-        project.startAt,
-        endAtC,
-        project.endAt,
-        project.status,
-        project.id!,
-      ),
+      builder: (context) {
+        print('build showdialog edit projects');
+        return editProjects(
+          context,
+          MediaQuery.of(context).size.height,
+          agendaC,
+          agendaF,
+          descC,
+          descF,
+          priceC,
+          priceF,
+          clientIdC,
+          startAtC,
+          endAtC,
+          project,
+        );
+      },
     );
   }
 }
@@ -440,31 +469,19 @@ Widget editProjects(
   double height,
   TextEditingController agendaC,
   FocusNode agendaF,
-  String agendaBefore,
   TextEditingController descC,
   FocusNode descF,
-  String? descBefore,
   TextEditingController priceC,
   FocusNode priceF,
-  int priceBefore,
   TextEditingController clientIdC,
-  int clientIdBefore,
   TextEditingController startAt,
-  String startAtBefore,
   TextEditingController endAt,
-  String endAtBefore,
-  String statusBefore,
-  int id,
+  ProjectsModel projectsModel,
 ) {
-  agendaC.text = agendaBefore;
-  descC.text = descBefore ?? '';
-  priceC.text = priceBefore.toString();
-
+  print('build edit projects widets');
   return Dialog(
     insetPadding: EdgeInsets.all(16),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     child: Container(
       constraints: BoxConstraints(maxHeight: height * 0.8),
       child: SingleChildScrollView(
@@ -479,8 +496,9 @@ Widget editProjects(
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.edit, 
-                        color: Theme.of(context).colorScheme.onPrimary
+                      Icon(
+                        Icons.edit,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                       SizedBox(width: 8),
                       MyText(
@@ -500,14 +518,12 @@ Widget editProjects(
                 ],
               ),
               SizedBox(height: 20),
-              
               SelectClientsWidget(
                 listener: (_, state) {
                   clientIdC.text = state['Id'].toString();
                 },
               ),
               SizedBox(height: 12),
-              
               MyTextFileds(
                 controller: agendaC,
                 label: "Agenda",
@@ -531,19 +547,27 @@ Widget editProjects(
                 },
               ),
               SizedBox(height: 12),
-              
               MyTextFileds(
                 controller: priceC,
                 label: "Harga",
                 icon: Icons.attach_money,
                 focusNode: priceF,
+                textType: TextInputType.number,
                 isOtional: false,
                 onEditingCom: () {
                   FocusScope.of(context).unfocus();
                 },
+                onChanged: (value) {
+                  var formatedValue = formatCurrency(int.parse(priceC.text));
+                  priceC.value = TextEditingValue(
+                    text: formatedValue,
+                    selection: TextSelection.collapsed(
+                      offset: formatedValue.length,
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 12),
-              
               DateStartAndEnd(
                 listener: (context, state) {
                   startAt.text = state[0].toIso8601String();
@@ -551,33 +575,29 @@ Widget editProjects(
                 },
               ),
               SizedBox(height: 12),
-              
+
               Statuswidget(),
               SizedBox(height: 20),
-              
+
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    var stateStatus = context.read<StatusprojectrsCubit>().state;
+                    var stateStatus = context
+                        .read<StatusprojectrsCubit>()
+                        .state;
                     validateEditProjects(
                       context,
                       agendaC.text,
-                      agendaBefore,
                       descC.text,
-                      descBefore,
                       priceC.text,
-                      priceBefore,
                       clientIdC.text,
-                      clientIdBefore.toString(),
                       startAt.text,
-                      startAtBefore,
                       endAt.text,
-                      endAtBefore,
                       stateStatus ?? "",
-                      statusBefore,
-                      id,
+                      projectsModel.id!,
+                      projectsModel
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -605,28 +625,28 @@ Widget editProjects(
 void validateEditProjects(
   BuildContext context,
   String agendaC,
-  String agendaBefore,
   String? descC,
-  String? descBefore,
   String priceC,
-  int priceBefore,
   String clientIdC,
-  String clientIdCBefore,
   String startAt,
-  String startAtBefore,
   String endAt,
-  String endAtBefore,
   String status,
-  String statusBefore,
   int id,
+  ProjectsModel projectsModel
 ) {
-  if (agendaC == agendaBefore &&
-      descC == descBefore &&
-      priceC == priceBefore.toString() &&
-      startAt == startAtBefore &&
-      endAt == endAtBefore &&
-      status == statusBefore &&
-      clientIdC == clientIdCBefore) {
+        print('id client : $clientIdC');
+        print('id  : $id');
+        print('agenda : $agendaC');
+        print('desc : $descC');
+        print('price : $priceC');
+        print('status : $status');
+  if (agendaC == projectsModel.agenda &&
+      descC == projectsModel.desc &&
+      priceC == priceC.toString() &&
+      startAt == projectsModel.startAt &&
+      endAt == projectsModel.endAt &&
+      status == projectsModel.status &&
+      clientIdC == projectsModel.clientId.toString() ) {
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar(
         'Tidak ada perubahan',
@@ -638,29 +658,28 @@ void validateEditProjects(
       priceC.isNotEmpty &&
       clientIdC.isNotEmpty &&
       startAt.isNotEmpty) {
+    var subtotalFormated = priceC.replaceAll(RegExp(r'[Rp\s.]'), '');
     context.read<ProjectsBloc>().add(
-          EditDataProjects(
-            projectsModel: ProjectsModel(
-              clientId: int.parse(clientIdC),
-              agenda: agendaC,
-              desc: descC,
-              price: int.parse(priceC),
-              startAt: startAt,
-              endAt: endAt,
-              status: status,
-              createdAt: DateTime.now().toIso8601String(),
-            ),
-            id: id,
-          ),
-        );
+      EditDataProjects(
+        projectsModel: ProjectsModel(
+          clientId: int.parse(clientIdC),
+          agenda: agendaC,
+          desc: descC,
+          price: int.parse(subtotalFormated),
+          startAt: startAt,
+          endAt: endAt,
+          status: status,
+          createdAt: DateTime.now().toIso8601String(),
+        ),
+        id: id,
+      ),
+    );
     Navigator.of(context).pop();
   } else {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orange),
@@ -688,23 +707,19 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
         children: [
           Icon(Icons.delete_outline, color: Colors.red),
           SizedBox(width: 8),
           Expanded(
-            child: MyText(
-              title: 'Hapus Project?',
-              fontWeight: FontWeight.bold,
-            ),
+            child: MyText(title: 'Hapus Project?', fontWeight: FontWeight.bold),
           ),
         ],
       ),
       content: MyText(
-        title: 'Apakah Anda yakin ingin menghapus project "$title"? Tindakan ini tidak dapat dibatalkan.',
+        title:
+            'Apakah Anda yakin ingin menghapus project "$title"? Tindakan ini tidak dapat dibatalkan.',
       ),
       actions: [
         TextButton(
@@ -712,10 +727,7 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
-          child: MyText(
-            title: 'Batal',
-            color: Colors.grey[700]!,
-          ),
+          child: MyText(title: 'Batal', color: Colors.grey[700]!),
         ),
         ElevatedButton(
           onPressed: () {
