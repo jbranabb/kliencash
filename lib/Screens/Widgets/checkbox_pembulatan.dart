@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/cubit/checkbook_pembulatan.dart';
 import 'package:kliencash/state/cubit/count_amount.dart';
@@ -34,7 +36,7 @@ class CheckboxPembulatan extends StatelessWidget {
                         .toggleCheckBox();
                   },
                 ),
-                MyText(title: 'Pembulatan', fontSize: 12),
+                MyText(title: LocaleKeys.rounding.tr(), fontSize: 12),
               ],
             ),
             Padding(

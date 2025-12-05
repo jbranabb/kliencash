@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/pages/mainGrid/clientPage/client_page.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/invoice/invoice_page.dart';
@@ -110,17 +112,17 @@ SliverToBoxAdapter mainGrid() {
 Widget childGrid(int index, BuildContext context) {
   switch (index) {
     case 0:
-      return menuSection(context, Icons.person, 'Client');
+      return menuSection(context, Icons.person, LocaleKeys.client.tr());
     case 1:
-      return menuSection(context, Icons.work, 'Projects');
+      return menuSection(context, Icons.work, LocaleKeys.projects.tr());
     case 2:
-      return menuSection(context, Icons.factory, 'Operasional');
+      return menuSection(context, Icons.factory, LocaleKeys.operasional.tr());
     case 3:
-      return menuSection(context, Icons.receipt_long_rounded, 'Invoice');
+      return menuSection(context, Icons.receipt_long_rounded, LocaleKeys.invoice.tr());
     case 4:
-      return menuSection(context, Icons.attach_money, 'Payment');
+      return menuSection(context, Icons.attach_money, LocaleKeys.payment.tr());
     case 5:
-      return menuSection(context, Icons.bar_chart_rounded, 'Report');
+      return menuSection(context, Icons.bar_chart_rounded, LocaleKeys.report.tr());
     default:
       return menuSection(context, Icons.person, 'Bowok');
   }

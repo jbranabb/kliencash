@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 
@@ -42,7 +43,7 @@ class TextFieldsDropDown extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0, top: 4,left: 8,right: 8),
-                    child: MyText(title: state ?? 'Pilih Status',color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
+                    child: MyText(title: state ?? LocaleKeys.selectStatus,color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
                   )),
               );
             },

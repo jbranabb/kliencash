@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 
 class SelectClientsWidget extends StatelessWidget {
@@ -29,7 +31,7 @@ class SelectClientsWidget extends StatelessWidget {
             title: MyText(
               title: stateIsnotEmpty
                   ? state['name'].toString()
-                  : 'Pilih Client',
+                  : LocaleKeys.selectClient.tr(),
             ),
             leading: stateIsnotEmpty
                 ? Container(

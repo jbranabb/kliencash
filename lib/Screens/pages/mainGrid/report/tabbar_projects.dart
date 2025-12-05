@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/cubit/reportchart/chartProjects.dart';
@@ -28,7 +30,7 @@ class TabbarProjects extends StatelessWidget {
                             return SizedBox.shrink();
                           }
                           return SfCartesianChart(
-                            title: ChartTitle(text: 'Project Rankings '),
+                            title: ChartTitle(text: LocaleKeys.projectRanking.tr()),
                             primaryXAxis: CategoryAxis(),
                             tooltipBehavior: TooltipBehavior(
                               enable: true,
@@ -100,13 +102,13 @@ class TabbarProjects extends StatelessWidget {
                             SizedBox(height: 16),
                             Icon(Icons.work, size: 40, color: Colors.grey),
                             MyText(
-                              title: 'Tidak Ada Data Chart',
+                              title: LocaleKeys.noChartData.tr(),
                               fontWeight: FontWeight.bold,
                               color: Colors.grey,
                             ),
                             MyText(
                               title:
-                                  'Belum Ada Projects Saat Ini\nSilahkan Tambahkan Terlebih Dahulu',
+                                  LocaleKeys.noProjectsData.tr(),
                               textAlign: TextAlign.center,
                               color: Colors.grey,
                             ),
@@ -116,7 +118,7 @@ class TabbarProjects extends StatelessWidget {
                       );
                     }
                     return SfCircularChart(
-                      title: ChartTitle(text: 'Projects Status'),
+                      title: ChartTitle(text: LocaleKeys.projectStatus.tr()),
                       legend: Legend(
                         isVisible: true,
                         position: LegendPosition.bottom,

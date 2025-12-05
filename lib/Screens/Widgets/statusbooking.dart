@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
@@ -67,7 +69,7 @@ class _BookingStatuesState extends State<BookingStatues> {
                           BookstatuslengthCubit,List<Map<String, dynamic>>>(
                           builder: (context, cardData) {
                             if(cardData.isEmpty){
-                              return MyText(title: 'Loading...');
+                              return MyText(title: LocaleKeys.loading.tr());
                             }
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.center,

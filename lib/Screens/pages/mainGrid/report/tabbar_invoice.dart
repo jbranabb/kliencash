@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
@@ -35,16 +37,16 @@ class TabbarInvoice extends StatelessWidget {
                         return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          MyText(title: 'Summary Overall', fontWeight: FontWeight.w600,),
+                          MyText(title: LocaleKeys.summaryOverall.tr(), fontWeight: FontWeight.w600,),
                           SizedBox(height: 10,),
                           _buildRow(
                             Icons.receipt_long_rounded,
-                            'Total Invoice',
+                            LocaleKeys.totalInvoice.tr(),
                             state.list.length.toString(),
                           ),
                           _buildRow(
                             Icons.payment_rounded,
-                            'Total Paid',
+                            LocaleKeys.totalPaid.tr(),
                             formatCurrency(totalinvoice),
                           ),
                           _buildRow(
@@ -82,13 +84,13 @@ class TabbarInvoice extends StatelessWidget {
                             color: Colors.grey,
                           ),
                           MyText(
-                            title: 'Tidak Ada Data Chart',
+                            title: LocaleKeys.noChartData.tr(),
                             fontWeight: FontWeight.bold,
                             color: Colors.grey,
                           ),
                           MyText(
                             title:
-                                'Belum Ada Invoie Saat Ini\nSilahkan Tambahkan Terlebih Dahulu',
+                                LocaleKeys.noInvoiceData.tr(),
                             textAlign: TextAlign.center,
                             color: Colors.grey,
                           ),
@@ -98,7 +100,7 @@ class TabbarInvoice extends StatelessWidget {
                     );
                   }
                   return SfCircularChart(
-                    title: ChartTitle(text: 'Most Invoice Status'),
+                    title: ChartTitle(text: LocaleKeys.mostInvoiceStatus.tr()),
                     legend: Legend(
                       isVisible: true,
                       position: LegendPosition.bottom,

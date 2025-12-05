@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
@@ -18,7 +20,7 @@ class DateStartAndEnd extends StatelessWidget {
             spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(title: title ?? 'Tanggal Mulai Dan Selesai'),
+              MyText(title: title ?? LocaleKeys.startDateAndEndDate),
               InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
@@ -55,7 +57,7 @@ class DateStartAndEnd extends StatelessWidget {
                                 title: startDate,
                                 fontWeight: FontWeight.w600,
                               ),
-                              MyText(title: 'Sd'),
+                              MyText(title: LocaleKeys.until.tr()),
                               MyText(
                                 title: endDate,
                                 fontWeight: FontWeight.w600,
@@ -68,7 +70,7 @@ class DateStartAndEnd extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.calendar_month, color: Colors.grey),
-                            MyText(title: 'Pilih Tanggal'),
+                            MyText(title: LocaleKeys.selectDateLabel.tr()),
                           ],
                         );
                       },
