@@ -1,15 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
-import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/Screens/pages/intialpage/add_user.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
 import 'package:kliencash/state/cubit/onBoardingCubit.dart';
+import 'package:kliencash/state/cubit/toggleLang.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class OnboradingPage extends StatelessWidget {
+class OnboradingPage extends StatefulWidget {
   const OnboradingPage({super.key});
+
+  @override
+  State<OnboradingPage> createState() => _OnboradingPageState();
+}
+
+class _OnboradingPageState extends State<OnboradingPage> {
+  bool _hasInitialized = false;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasInitialized) {
+      context.read<Togglelang>().nowlangue(context.locale.languageCode);
+      _hasInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +35,26 @@ class OnboradingPage extends StatelessWidget {
     PageController pageController = PageController();
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          children: [
-            MyText(title: 'EN | ID'),
-            Row(
-              spacing: 4,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _dotTheme(Colors.black, 0),
-                _dotTheme(Colors.blue.shade900, 1),
-                _dotTheme(Colors.pink.shade400, 2),
-              ],
-            ),
-          ],
+        toolbarHeight: 60,
+        automaticallyImplyLeading: false,
+        flexibleSpace: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _changeTextlang(),
+              SizedBox(height: 8),
+              Row(
+                spacing: 4,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _dotTheme(Colors.black, 0),
+                  _dotTheme(Colors.blue.shade900, 1),
+                  _dotTheme(Colors.pink.shade400, 2),
+                ],
+              ),
+            ],
+          ),
         ),
-        centerTitle: true,
       ),
       body: Stack(
         children: [
@@ -46,24 +68,24 @@ class OnboradingPage extends StatelessWidget {
                 context,
                 pageController,
                 Icons.folder,
-                'Manage Projects Effortlessly',
-                'Keep every job organized and running smooth.',
+                LocaleKeys.onBoardingPage1Title,
+                LocaleKeys.onBoardingPage1Subtitle,
                 false,
               ),
               _onboardingWidgets(
                 context,
                 pageController,
                 Icons.receipt_long_rounded,
-                'Smarter Billing',
-                'Create, print, and send invoices effortlessly.',
+                LocaleKeys.onBoardingPage2Title,
+                LocaleKeys.onBoardingPage2Subtitle,
                 false,
               ),
               _onboardingWidgets(
                 context,
                 pageController,
                 Icons.bar_chart_rounded,
-                'Business Insights',
-                'Clear, visual reports to help you make better decisions.',
+                LocaleKeys.onBoardingPage3Title,
+                LocaleKeys.onBoardingPage3Subtitle,
                 true,
               ),
             ],
@@ -96,7 +118,7 @@ class OnboradingPage extends StatelessWidget {
                                 pageController.jumpToPage(2);
                               },
                               child: MyText(
-                                title: 'Skip',
+                                title: LocaleKeys.skipButton.tr(),
                                 color: Colors.grey.shade400,
                               ),
                             )
@@ -120,6 +142,45 @@ class OnboradingPage extends StatelessWidget {
   }
 }
 
+Widget _changeTextlang() {
+  return Builder(
+    builder: (BuildContext context) {
+      return BlocBuilder<Togglelang, String>(
+        builder: (context, state) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 4,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.setLocale(Locale('en'));
+                  });
+                  context.read<Togglelang>().nowlangue('en');
+                },
+                child: MyText(
+                  title: 'EN',
+                  color: state == 'en' ? Colors.black : Colors.grey,
+                ),
+              ),
+              MyText(title: ' | '),
+              GestureDetector(
+                onTap: () {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.setLocale(Locale('id'));
+                  });
+                  context.read<Togglelang>().nowlangue('id');
+                },
+                child: MyText(title: 'ID', color: state == 'id' ? Colors.black : Colors.grey,),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
 Widget _dotTheme(Color color, value) {
   return BlocBuilder<ChangeTheme, int>(
     builder: (context, state) {
@@ -141,7 +202,7 @@ Widget _dotTheme(Color color, value) {
               width: 20,
               decoration: BoxDecoration(
                 border: BoxBorder.all(color: Colors.grey),
-                color:color,
+                color: color,
                 shape: BoxShape.circle,
               ),
             ),
@@ -183,14 +244,14 @@ Widget _onboardingWidgets(
           ),
           SizedBox(height: itslastpage ? height * 0.20 : height * 0.25),
           MyText(
-            title: title,
+            title: title.tr(),
             fontWeight: FontWeight.bold,
             color: Theme.of(context).colorScheme.onPrimary,
           ),
           SizedBox(
             width: width * 0.8,
             child: MyText(
-              title: subtitle,
+              title: subtitle.tr(),
               color: Colors.grey,
               textAlign: TextAlign.center,
             ),
@@ -207,7 +268,7 @@ Widget _onboardingWidgets(
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
                   child: MyText(
-                    title: 'Get Started',
+                    title: LocaleKeys.getStartedButton.tr(),
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

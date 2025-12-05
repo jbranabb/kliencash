@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
@@ -13,6 +15,7 @@ import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/SettingsCubit.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
+import 'package:kliencash/state/cubit/toggleLang.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -75,14 +78,14 @@ class _SettingsPageState extends State<SettingsPage> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, 'Settings'),
+      appBar: myAppBar(context, LocaleKeys.settings.tr()),
       body: BlocListener<PaymentMethodBloc, PaymentMethodState>(
         listener: (context, state) {
           if (state is PaymentMethodPostSucces) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Menambahkan Payment Method',
+                LocaleKeys.successAddPaymentMethod.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -91,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Mengedit Payment Method',
+                LocaleKeys.successEditPaymentMethod.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -100,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Menghapus Payment Method',
+                LocaleKeys.successDeletePaymentMethod.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -113,7 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 mySnakcbar(
-                  'Berhasil Update User Informations',
+                  LocaleKeys.successUpdateUserInfo.tr(),
                   Theme.of(context).colorScheme.onPrimary,
                 ),
               );
@@ -492,7 +495,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   label: 'Name',
                   icon: Icons.credit_card,
                   hint: MyText(
-                    title: 'Contoh: BCA,Dana DLL ',
+                    title: LocaleKeys.bankExample.tr(),
                     color: Colors.grey,
                   ),
                   focusNode: nameF,
@@ -503,7 +506,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   label: 'Number',
                   icon: Icons.onetwothree,
                   hint: MyText(
-                    title: 'No Rek atau no E-Wallet ',
+                    title: LocaleKeys.bankNumber.tr(),
                     color: Colors.grey,
                   ),
                   focusNode: numberF,
@@ -513,7 +516,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   controller: atasNamaC,
                   label: 'Atas nama',
                   icon: Icons.person,
-                  hint: MyText(title: 'Contoh: Yanto  ', color: Colors.grey),
+                  hint: MyText(title: LocaleKeys.accountNameExample.tr(), color: Colors.grey),
                   focusNode: atasNamaF,
                   isOtional: false,
                 ),
@@ -545,17 +548,16 @@ class _SettingsPageState extends State<SettingsPage> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: MyText(title: 'Terjadi Kesalahan'),
+                                title: MyText(title: LocaleKeys.errorOccurred.tr()),
                                 content: MyText(
-                                  title:
-                                      'Silahkan isi semua fileds terlebih dahulu',
+                                  title: LocaleKeys.pleaseCheckInput.tr(),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: MyText(title: 'Ok'),
+                                    child: MyText(title: LocaleKeys.ok.tr()),
                                   ),
                                 ],
                               ),
@@ -592,7 +594,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   MyText(
-                    title: 'User Information',
+                    title: LocaleKeys.userInformation.tr(),
                     color: Colors.grey[600],
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -631,7 +633,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           MyText(
-                                            title: 'Edit Users Information',
+                                            title: LocaleKeys.editUserInfo.tr(),
                                             fontWeight: FontWeight.w600,
                                           ),
                                           InkWell(
@@ -736,12 +738,28 @@ class _SettingsPageState extends State<SettingsPage> {
                                             } else {
                                               showDialog(
                                                 context: context,
-                                                builder: (context) =>
-                                                    AlertDialog(
-                                                      title: MyText(title: 'Terjadi Kesalahan'),
-                                                      content: MyText(title: 'Silahkan Isi Semua Fileds Terlebih dahulu'),
-                                                      actions: [TextButton(onPressed: (){Navigator.of(context).pop();}, child: MyText(title: 'Oke'))],
+                                                builder: (context) => AlertDialog(
+                                                  title: MyText(
+                                                    title: LocaleKeys.errorOccurred.tr(),
+                                                  ),
+                                                  content: MyText(
+                                                    title: LocaleKeys.pleaseCheckInput.tr(),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop();
+                                                      },
+                                                      child: MyText(
+                                                        title: LocaleKeys
+                                                            .understood
+                                                            .tr(),
+                                                      ),
                                                     ),
+                                                  ],
+                                                ),
                                               );
                                             }
                                           },
@@ -835,7 +853,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               child: _additionalInfo(
                 Icons.language,
-                'Bahasa',
+                'Bahasa'.tr(),
                 iconTrailing: state
                     ? Icons.arrow_drop_up_rounded
                     : Icons.arrow_drop_down_rounded,
@@ -847,29 +865,41 @@ class _SettingsPageState extends State<SettingsPage> {
                 duration: Durations.medium2,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[50],
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: ListTile(
-                          leading: MyText(
-                            title: 'ID',
-                            fontWeight: FontWeight.bold,
+                  child: BlocBuilder<Togglelang, String>(
+                    builder: (context, state) {
+                      return Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: state == 'id' ? Colors.grey[50] : Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: ListTile(
+                              onTap: () => context.setLocale(Locale('id')),
+                              leading: MyText(
+                                title: 'ID',
+                                fontWeight: FontWeight.bold,
+                              ),
+                              title: MyText(title: LocaleKeys.indonesian.tr()),
+                            ),
                           ),
-                          title: MyText(title: 'Indonesia'),
-                        ),
-                      ),
-                      ListTile(
-                        leading: MyText(
-                          title: 'EN',
-                          fontWeight: FontWeight.bold,
-                        ),
-                        title: MyText(title: 'English'),
-                      ),
-                    ],
+                          Container(
+                            decoration: BoxDecoration(
+                              color: state == 'en' ? Colors.grey[50] : Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: ListTile(
+                              onTap: () => context.setLocale(Locale('en')),
+                              leading: MyText(
+                                title: 'EN',
+                                fontWeight: FontWeight.bold,
+                              ),
+                              title: MyText(title: LocaleKeys.english.tr()),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -927,7 +957,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     shape: BoxShape.circle,
                                   ),
                                 ),
-                                title: MyText(title: 'Biru'),
+                                title: MyText(title: LocaleKeys.blue.tr()),
                               ),
                             ),
                           ),
@@ -950,7 +980,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     shape: BoxShape.circle,
                                   ),
                                 ),
-                                title: MyText(title: 'Pink'),
+                                title: MyText(title: LocaleKeys.pink.tr()),
                               ),
                             ),
                           ),
@@ -973,7 +1003,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     shape: BoxShape.circle,
                                   ),
                                 ),
-                                title: MyText(title: 'Black'),
+                                title: MyText(title: LocaleKeys.black.tr()),
                               ),
                             ),
                           ),
