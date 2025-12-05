@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
@@ -30,7 +32,7 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, 'Invoice List'),
+      appBar: myAppBar(context, LocaleKeys.invoiceList.tr()),
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.onPrimary,
         onRefresh: () async {
@@ -64,7 +66,7 @@ class _InvoicePageState extends State<InvoicePage> {
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.add, color: Colors.white),
         label: MyText(
-          title: 'Invoice',
+          title: LocaleKeys.invoice.tr(),
           color: Colors.white,
           fontWeight: FontWeight.w600,
         ),
@@ -80,14 +82,14 @@ class _InvoicePageState extends State<InvoicePage> {
           Icon(Icons.receipt_long_outlined, color: Colors.grey[400], size: 80),
           SizedBox(height: 16),
           MyText(
-            title: 'Belum ada Invoice',
+            title: LocaleKeys.noInvoice.tr(),
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Colors.grey[700]!,
           ),
           SizedBox(height: 8),
           MyText(
-            title: 'Silahkan tambahkan invoice baru',
+            title: LocaleKeys.addInvoiceFirst.tr(),
             color: Colors.grey[500]!,
             textAlign: TextAlign.center,
           ),
@@ -301,7 +303,7 @@ class _InvoicePageState extends State<InvoicePage> {
                         ),
                         SizedBox(width: 4),
                         MyText(
-                          title: 'Jatuh Tempo: $formattedDueDate',
+                          title: '${LocaleKeys.dueDate.tr()} $formattedDueDate',
                           fontSize: 12,
                           color: _isDueSoon(dueDate)
                               ? Colors.red
@@ -341,7 +343,7 @@ class _InvoicePageState extends State<InvoicePage> {
                     Icon(Icons.factory, size: 14, color: Colors.grey[600]),
                     SizedBox(width: 4),
                     MyText(
-                      title: "Operasional: ",
+                      title: "${LocaleKeys.opeartional}: ",
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey[600]!,
@@ -385,7 +387,7 @@ class _InvoicePageState extends State<InvoicePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         MyText(
-                          title:'Total Operasional: ',
+                          title:'${LocaleKeys.operationalTotal}: ',
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
                           color:Colors.grey.shade600,

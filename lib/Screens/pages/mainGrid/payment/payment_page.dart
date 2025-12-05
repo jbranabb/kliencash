@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
-import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/payment/add_payment.dart';
@@ -28,7 +29,7 @@ class _PayementPageState extends State<PayementPage> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: myAppBar(context, 'Payment Page'),
+      appBar: myAppBar(context, LocaleKeys.paymentPage.tr()),
       body: BlocBuilder<PaymentBloc, PaymentState>(
         builder: (context, state) {
           if (state is PaymentReadDataSucces) {
@@ -39,15 +40,22 @@ class _PayementPageState extends State<PayementPage> {
                 child: Column(
                   spacing: 4,
                   mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.attach_money, size: 60,color: Colors.grey,),
-                  MyText(title: 'Belum Ada Payment Saat Ini', fontWeight: FontWeight.bold,color: Colors.grey.shade700,),
-                  MyText(title: 'Silahkan tambahkan Terlebih Dahulu',
-                  color: Colors.grey,
-                   textAlign: TextAlign.center,),
-                ],
-              ));
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.attach_money, size: 60, color: Colors.grey),
+                    MyText(
+                      title: LocaleKeys.noPayment.tr(),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade700,
+                    ),
+                    MyText(
+                      title: LocaleKeys.addPaymentFirst.tr(),
+                      color: Colors.grey,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
             }
             return ListView.builder(
               itemCount: state.list.length,
@@ -69,7 +77,7 @@ class _PayementPageState extends State<PayementPage> {
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.add, color: Colors.white),
         label: MyText(
-          title: 'Payment',
+          title: LocaleKeys.payment.tr(),
           color: Colors.white,
           fontWeight: FontWeight.w600,
         ),
@@ -129,7 +137,10 @@ Widget _buildList(BuildContext context, PaymentModel data) {
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: MyText(
-                          title: data.invoicemodel!.status.toUpperCase(),
+                          title:
+                              data.invoicemodel!.status.toLowerCase() == 'lunas'
+                              ? LocaleKeys.fullyPaid.tr().toUpperCase()
+                              : data.invoicemodel!.status.toUpperCase(),
                           fontSize: 12,
                           color:
                               data.invoicemodel!.status.toLowerCase() == 'lunas'
@@ -160,33 +171,39 @@ Widget _buildList(BuildContext context, PaymentModel data) {
                       MyText(title: formatCurrency(data.amount)),
                       Column(
                         children: [
-                      _buildRow(
-                        Icon(Icons.work, color: Colors.grey, size: 14),
-                        Expanded(
-                          child: MyText(
-                            title: data.projectsModel!.agenda,
-                            color: Colors.grey,
+                          _buildRow(
+                            Icon(Icons.work, color: Colors.grey, size: 14),
+                            Expanded(
+                              child: MyText(
+                                title: data.projectsModel!.agenda,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      _buildRow(
-                        Icon(Icons.person, color: Colors.grey, size: 14),
-                        Expanded(child: MyText(title: data.clientModel!.name, color: Colors.grey)),
-                      ),
+                          _buildRow(
+                            Icon(Icons.person, color: Colors.grey, size: 14),
+                            Expanded(
+                              child: MyText(
+                                title: data.clientModel!.name,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 10),
                 Expanded(
-                  flex:1,
+                  flex: 1,
                   child: InkWell(
-                    onTap: (){
-                      showDialog(context: context, builder: (context) => Dialog(
-                        child: Image.file(
-                          File(data.buktiPayment),),
-                      ),);
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            Dialog(child: Image.file(File(data.buktiPayment))),
+                      );
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadiusGeometry.circular(12),

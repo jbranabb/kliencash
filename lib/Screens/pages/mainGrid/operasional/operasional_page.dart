@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
@@ -36,7 +38,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, 'Operasional Page'),
+      appBar: myAppBar(context, LocaleKeys.operasionalPage.tr()),
       body: BlocListener<OperasionalBloc, OperasionalState>(
         listener: (context, state) {
           if (state is OperasionalPostSucces) {
@@ -44,7 +46,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Menambahkan Modal',
+                LocaleKeys.successAddModal.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -55,7 +57,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Mengedit Modal',
+                'Berhasil Mengedit Modal'.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -65,7 +67,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
             context.read<OperasionalBloc>().add(ReadData());
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Menghapus Modal',
+                LocaleKeys.successDeleteModal.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -85,12 +87,12 @@ class _OperasionalPageState extends State<OperasionalPage> {
                     children: [
                       Icon(Icons.work, size: 60, color: Colors.grey),
                       MyText(
-                        title: 'Belum Ada Projects Saat Ini',
+                        title: LocaleKeys.noProjects.tr(),
                         fontWeight: FontWeight.bold,
                         color: Colors.grey.shade700,
                       ),
                       MyText(
-                        title: 'Silahkan tambahkan Terlebih Dahulu',
+                        title: LocaleKeys.addOperasionalFirst.tr(),
                         color: Colors.grey,
                         textAlign: TextAlign.center,
                       ),
@@ -313,7 +315,7 @@ Widget addNewOperasionalButton(BuildContext context,
           children: [
             Icon(Icons.add, color: Colors.grey),
             MyText(
-              title: 'Operasional',
+              title: LocaleKeys.operasional.tr(),
               fontWeight: FontWeight.w600,
               color: Colors.grey,
             ),
@@ -350,17 +352,17 @@ Widget operasionalList(
                   return showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: MyText(title: 'Hapus Items ini?'),
+                      title: MyText(title: LocaleKeys.deleteItem.tr()),
                       content: MyText(
                         title:
-                            'Apakah Kamu Yakin ingin menghapus ${list.title}?',
+                            LocaleKeys.deleteClientConfirm.tr(namedArgs: {"name": list.title}),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(false);
                           },
-                          child: MyText(title: 'Batal'),
+                          child: MyText(title: LocaleKeys.cancel.tr()),
                         ),
                         TextButton(
                           onPressed: () {
@@ -370,7 +372,7 @@ Widget operasionalList(
                             );
                           },
                           child: MyText(
-                            title: 'Ya, Yakin',
+                            title: LocaleKeys.yesConfirm.tr(),
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
                           ),
@@ -396,7 +398,7 @@ Widget operasionalList(
                             amountC,
                             amountF,
                             data,
-                            title: 'Edit',
+                            title: LocaleKeys.edit.tr(),
                             onPressed: () {
                               if (titleC.text.isNotEmpty &&
                                   amountC.text.isNotEmpty) {
@@ -419,16 +421,16 @@ Widget operasionalList(
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: MyText(title: 'Terjadi Kesalahan'),
+                                    title: MyText(title: LocaleKeys.errorOccurred.tr()),
                                     content: MyText(
-                                      title: 'Isi Fileds Terlebih Dahulu',
+                                      title: LocaleKeys.fillFieldsFirst,
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: MyText(title: 'Ok'),
+                                        child: MyText(title: LocaleKeys.ok.tr()),
                                       ),
                                     ],
                                   ),
@@ -492,7 +494,7 @@ Widget operasionalFunction(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MyText(
-              title: '${title ?? "Tambahkan"} Operasional',
+              title: '${title ?? LocaleKeys.adding.tr()} ${LocaleKeys.opeartional.tr()}',
               fontWeight: FontWeight.w600,
             ),
             Container(
@@ -523,7 +525,7 @@ Widget operasionalFunction(
             ),
             MyTextFileds(
               controller: titleC,
-              label: 'Title',
+              label: LocaleKeys.title.tr(),
               icon: Icons.description,
               focusNode: titleF,
               isOtional: false,
@@ -533,7 +535,7 @@ Widget operasionalFunction(
             ),
             MyTextFileds(
               controller: amountC,
-              label: 'Jumlah',
+              label: LocaleKeys.amount.tr(),
               icon: Icons.attach_money,
               focusNode: amountF,
               isOtional: false,
@@ -571,9 +573,9 @@ Widget operasionalFunction(
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: MyText(title: 'Terjadi Kesalahan'),
+                            title: MyText(title: LocaleKeys.error.tr()),
                             content: MyText(
-                              title: 'Isi Fileds Terlebih Dahulu',
+                              title: LocaleKeys.fillFieldsFirst.tr(),
                             ),
                             actions: [
                               TextButton(
@@ -591,7 +593,7 @@ Widget operasionalFunction(
                   backgroundColor: Theme.of(context).colorScheme.onPrimary,
                 ),
                 child: MyText(
-                  title: 'Selesai',
+                  title: LocaleKeys.done.tr(),
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),

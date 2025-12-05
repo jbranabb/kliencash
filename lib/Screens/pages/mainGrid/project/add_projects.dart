@@ -1,8 +1,9 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kliencash/Screens/Widgets/appbar.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/selectClientsWidget.dart';
@@ -79,7 +80,7 @@ class _AddProjectsState extends State<AddProjects> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: MyText(title: 'Add Projects', color: Colors.white, fontSize: 18),
+        title: MyText(title: LocaleKeys.addProjects.tr(), color: Colors.white, fontSize: 18),
       ),
       body: BlocListener<ProjectsBloc, ProjectsState>(
         listener: (context, state) {
@@ -89,7 +90,7 @@ class _AddProjectsState extends State<AddProjects> {
             context.read<ProjectsBloc>().add(ReadDataProjects());
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Membuat Data',
+                LocaleKeys.successAddProject.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -106,7 +107,7 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Client in Projects', color: Colors.grey),
+                    MyText(title: LocaleKeys.clientInProjects.tr(), color: Colors.grey),
                     SelectClientsWidget(
                       listener: (_, state) {
                         idC.text = state['Id'].toString();
@@ -118,10 +119,10 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Agenda & Deskripsi', color: Colors.grey),
+                    MyText(title: LocaleKeys.agendaDescription.tr(), color: Colors.grey),
                     MyTextFileds(
                       controller: agendaC,
-                      label: "Agenda",
+                      label: LocaleKeys.agenda.tr(),
                       icon: Icons.work,
                       focusNode: agendaF,
                       isOtional: false,
@@ -133,7 +134,7 @@ class _AddProjectsState extends State<AddProjects> {
                 ),
                 MyTextFileds(
                   controller: descC,
-                  label: "Deskripsi",
+                  label: LocaleKeys.description.tr(),
                   icon: Icons.description,
                   focusNode: descF,
                   isOtional: true,
@@ -146,10 +147,10 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Harga & Info Lainya', color: Colors.grey),
+                    MyText(title: LocaleKeys.priceInfo.tr(), color: Colors.grey),
                     MyTextFileds(
                       controller: priceC,
-                      label: "Harga Awal",
+                      label: LocaleKeys.initialPrice.tr(),
                       icon: Icons.attach_money_outlined,
                       focusNode: priceF,
                       isOtional: false,
@@ -198,7 +199,7 @@ class _AddProjectsState extends State<AddProjects> {
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
                   child: MyText(
-                    title: 'Selesai',
+                    title: LocaleKeys.done.tr(),
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -250,7 +251,7 @@ void validatePost(
   } else {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(mySnakcbar('Mohon isi semua fileds', null));
+    ).showSnackBar(mySnakcbar(LocaleKeys.fillAllFieldsRequired.tr(), null));
   }
 }
 
@@ -287,7 +288,7 @@ Widget userstoAdd(BuildContext context, double height, double width) {
                       Icon(Icons.person_off, size: 40, color: Colors.grey),
                       MyText(
                         title:
-                            "Tidak ada Clients Saat ini silahkan\ntambah client baru",
+                            LocaleKeys.noClient,
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -457,7 +458,6 @@ Widget showDateTime(BuildContext context) {
           },
           onDisplayedMonthChanged: (value) {
             // context.read<Selecteddatecubit>().setDate(value);
-            print('displayed value $value');
           },
         ),
         Row(
@@ -473,7 +473,7 @@ Widget showDateTime(BuildContext context) {
                 print(state);
                 Navigator.of(context).pop();
               },
-              child: MyText(title: 'Batal'),
+              child: MyText(title: LocaleKeys.cancel.tr()),
             ),
             TextButton(
               onPressed: () {
@@ -497,23 +497,23 @@ Widget showDateTime(BuildContext context) {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: MyText(title: 'Terjadi Kesalahan'),
+                      title: MyText(title: LocaleKeys.errorOccurred.tr()),
                       content: MyText(
-                        title: 'Silahkan pilih tanggal Mulai dan Selesai',
+                        title: LocaleKeys.pleasSelectDates.tr(),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: MyText(title: 'Oke'),
+                          child: MyText(title: LocaleKeys.ok.tr()),
                         ),
                       ],
                     ),
                   );
                 }
               },
-              child: MyText(title: 'Oke'),
+              child: MyText(title: LocaleKeys.ok.tr()),
             ),
           ],
         ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
@@ -46,7 +48,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, "All Projects"),
+      appBar: myAppBar(context, LocaleKeys.allProjects.tr()),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<ProjectsBloc>().add(ReadDataProjects());
@@ -58,7 +60,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               context.read<ProjectsBloc>().add(ReadDataProjects());
               ScaffoldMessenger.of(context).showSnackBar(
                 mySnakcbar(
-                  "Berhasil Menghapus Projects",
+                  LocaleKeys.successDeleteProject.tr(),
                   Theme.of(context).colorScheme.onPrimary,
                 ),
               );
@@ -99,7 +101,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         icon: Icon(Icons.add, color: Colors.white),
         label: MyText(
-          title: 'Project',
+          title: LocaleKeys.projects.tr(),
           color: Colors.white,
           fontWeight: FontWeight.w600,
         ),
@@ -115,14 +117,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
           Icon(Icons.work_outline, color: Colors.grey[400], size: 80),
           SizedBox(height: 16),
           MyText(
-            title: 'Belum ada Project',
+            title: LocaleKeys.noProject.tr(),
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Colors.grey[700]!,
           ),
           SizedBox(height: 8),
           MyText(
-            title: 'Silahkan tambahkan project baru',
+            title: LocaleKeys.addProjectFirst.tr(),
             color: Colors.grey[500]!,
             textAlign: TextAlign.center,
           ),
@@ -153,7 +155,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 validateDeleteProjects(project.agenda, project.id!, context);
               },
               icon: Icons.delete_outline,
-              label: "Hapus",
+              label: LocaleKeys.deleteClient.tr(),
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -329,7 +331,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       children: [
                         Expanded(
                           child: _buildDateInfo(
-                            'Mulai',
+                            LocaleKeys.start.tr(),
                             formattedStart,
                             Icons.play_circle_outline,
                             Colors.green,
@@ -344,7 +346,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         SizedBox(width: 8),
                         Expanded(
                           child: _buildDateInfo(
-                            'Selesai',
+                            LocaleKeys.done.tr(),
                             formattedEnd,
                             Icons.check_circle_outline,
                             Colors.blue,
@@ -359,7 +361,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         Icon(Icons.schedule, size: 12, color: Colors.grey[500]),
                         SizedBox(width: 4),
                         MyText(
-                          title: 'Dibuat: $formattedCreated',
+                          title: '${LocaleKeys.created.tr()} $formattedCreated',
                           fontSize: 11,
                           color: Colors.grey[500]!,
                         ),
@@ -377,7 +379,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                         SizedBox(width: 4),
                         MyText(
-                          title: 'Tahan untuk edit',
+                          title: LocaleKeys.holdToEdit,
                           fontSize: 10,
                           color: Colors.grey[400]!,
                           fontWeight: FontWeight.w500,
@@ -502,7 +504,7 @@ Widget editProjects(
                       ),
                       SizedBox(width: 8),
                       MyText(
-                        title: 'Edit Project',
+                        title: LocaleKeys.editProject.tr(),
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
@@ -526,7 +528,7 @@ Widget editProjects(
               SizedBox(height: 12),
               MyTextFileds(
                 controller: agendaC,
-                label: "Agenda",
+                label: LocaleKeys.agenda.tr(),
                 icon: Icons.work,
                 focusNode: agendaF,
                 isOtional: false,
@@ -537,7 +539,7 @@ Widget editProjects(
               SizedBox(height: 12),
               MyTextFileds(
                 controller: descC,
-                label: "Deskripsi",
+                label: LocaleKeys.description.tr(),
                 icon: Icons.description,
                 focusNode: descF,
                 maxlines: 10,
@@ -549,7 +551,7 @@ Widget editProjects(
               SizedBox(height: 12),
               MyTextFileds(
                 controller: priceC,
-                label: "Harga",
+                label: LocaleKeys.initialPrice.tr(),
                 icon: Icons.attach_money,
                 focusNode: priceF,
                 textType: TextInputType.number,
@@ -607,7 +609,7 @@ Widget editProjects(
                     ),
                   ),
                   child: MyText(
-                    title: 'Selesai',
+                    title: LocaleKeys.done.tr(),
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -634,12 +636,6 @@ void validateEditProjects(
   int id,
   ProjectsModel projectsModel
 ) {
-        print('id client : $clientIdC');
-        print('id  : $id');
-        print('agenda : $agendaC');
-        print('desc : $descC');
-        print('price : $priceC');
-        print('status : $status');
   if (agendaC == projectsModel.agenda &&
       descC == projectsModel.desc &&
       priceC == priceC.toString() &&
@@ -649,7 +645,7 @@ void validateEditProjects(
       clientIdC == projectsModel.clientId.toString() ) {
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar(
-        'Tidak ada perubahan',
+        LocaleKeys.nothingChanges.tr(),
         Theme.of(context).colorScheme.onPrimary,
       ),
     );
@@ -684,15 +680,15 @@ void validateEditProjects(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orange),
             SizedBox(width: 8),
-            MyText(title: 'Perhatian'),
+            MyText(title: LocaleKeys.warning.tr()),
           ],
         ),
-        content: MyText(title: 'Silahkan isi semua field yang wajib'),
+        content: MyText(title: LocaleKeys.pleasFillRequired.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: MyText(
-              title: 'Mengerti',
+              title: LocaleKeys.understood.tr(),
               color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.w600,
             ),
@@ -713,21 +709,21 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
           Icon(Icons.delete_outline, color: Colors.red),
           SizedBox(width: 8),
           Expanded(
-            child: MyText(title: 'Hapus Project?', fontWeight: FontWeight.bold),
+            child: MyText(title: LocaleKeys.deleteProject.tr(), fontWeight: FontWeight.bold),
           ),
         ],
       ),
       content: MyText(
         title:
-            'Apakah Anda yakin ingin menghapus project "$title"? Tindakan ini tidak dapat dibatalkan.',
-      ),
+            LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name':title})
+            ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
-          child: MyText(title: 'Batal', color: Colors.grey[700]!),
+          child: MyText(title: LocaleKeys.cancel.tr(), color: Colors.grey[700]!),
         ),
         ElevatedButton(
           onPressed: () {
@@ -742,7 +738,7 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
             ),
           ),
           child: MyText(
-            title: 'Ya, Hapus',
+            title: LocaleKeys.yesDelete.tr(),
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),

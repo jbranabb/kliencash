@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
-import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/report/tabbar_client.dart';
 import 'package:kliencash/Screens/pages/mainGrid/report/tabbar_invoice.dart';
 import 'package:kliencash/Screens/pages/mainGrid/report/tabbar_projects.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class ReportPage extends StatelessWidget {
   const ReportPage({super.key});
@@ -19,7 +18,7 @@ class ReportPage extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: myAppBar(context, 'Report Page'),
+        appBar: myAppBar(context, LocaleKeys.reportPage.tr()),
         body: Column(
           children: [
             SizedBox(height: height * 0.01,),
@@ -51,10 +50,10 @@ class ReportPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: onPrimary,
                   ),
-                  tabs: const [
-                    Text('Client'),
-                    Text('Projects'),
-                    Text('Invoice'),
+                  tabs: [
+                    Text(LocaleKeys.client.tr()),
+                    Text(LocaleKeys.projects.tr()),
+                    Text(LocaleKeys.invoice.tr()),
                   ],
                 ),
               ),

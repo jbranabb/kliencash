@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kliencash/Screens/Widgets/SelectProjects.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
@@ -46,13 +48,13 @@ class _AddPaymentState extends State<AddPayment> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: MyText(title: 'Add Payment', color: Colors.white, fontSize: 18),
+        title: MyText(title: LocaleKeys.addPayment.tr(), color: Colors.white, fontSize: 18),
       ),
       body: BlocListener<PaymentBloc, PaymentState>(
         listener: (context, state) {
           if(state is PaymentPostDataSucces){
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(mySnakcbar('Berhasil menambahkan Payment', 
+            ScaffoldMessenger.of(context).showSnackBar(mySnakcbar(LocaleKeys.successAdded.tr(), 
             Theme.of(context).colorScheme.onPrimary));
             context.read<PaymentBloc>().add(ReadDataPayment());
           }
@@ -73,7 +75,7 @@ class _AddPaymentState extends State<AddPayment> {
                         : '';
                     return TextFiledsReadOnly(
                       controller: amountC,
-                      label: 'Amount',
+                      label: LocaleKeys.amount.tr(),
                       icon: Icons.attach_money,
                     );
                   },
@@ -169,7 +171,7 @@ void _validatePostPayment(
   } else {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(mySnakcbar('Silahkan Isi Fileds Terlebih Dahulu', null));
+    ).showSnackBar(mySnakcbar(LocaleKeys.fillAllFieldsRequired.tr(), null));
   }
 }
 
@@ -484,7 +486,7 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
                     width: double.maxFinite,
                     alignment: Alignment.center,
                     child: MyText(
-                      title: 'Silahkan Pilih Projects Terlebih dahulu.',
+                      title: LocaleKeys.selectProject.tr() + '.',
                       color: Colors.grey,
                     ),
                   ),
