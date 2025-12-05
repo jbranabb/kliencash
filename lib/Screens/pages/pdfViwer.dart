@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/pages/pdf.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
@@ -15,7 +17,7 @@ class Pdfviwer extends StatelessWidget {
     var state = context.read<Selectedinvoice>().state;
     var invoice = state[0];
     return Scaffold(
-      appBar: myAppBar(context, 'Invoice PDF Preview'),
+      appBar: myAppBar(context, LocaleKeys.invoicePdfPreview.tr()),
       body: BlocBuilder<UsersBloc, UsersState>(
         builder: (context, state) {
           if(state is UsersSucces){

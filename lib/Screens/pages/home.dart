@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/profile_data.dart';
 import 'package:kliencash/Screens/Widgets/main_grid.dart';
@@ -40,7 +42,7 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             title: MyText(
-              title: "Client Cash",
+              title: LocaleKeys.clientCash.tr(),
               fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -68,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20,),
-                MyText(title: 'Build By J With Love', color: Colors.grey,),
+                MyText(title: LocaleKeys.buildByJ.tr(), color: Colors.grey,),
               ],
             ),
           )

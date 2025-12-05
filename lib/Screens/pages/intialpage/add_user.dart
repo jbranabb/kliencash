@@ -2,12 +2,14 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/home.dart';
 import 'package:kliencash/data/model/model.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/bloc/paymentMethod/payment_method_bloc.dart';
 import 'package:kliencash/state/bloc/users/users_bloc.dart';
 import 'package:kliencash/state/cubit/bookstatuslength_cubit.dart';
@@ -35,7 +37,7 @@ class _AddUserState extends State<AddUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, 'Create User'),
+      appBar: myAppBar(context, LocaleKeys.createUser.tr()),
       body: BlocListener<UsersBloc, UsersState>(
         listener: (context, state) {
           if (state is UsersPostSucces) {
@@ -59,13 +61,13 @@ class _AddUserState extends State<AddUser> {
                     Icon(Icons.person, color: Colors.grey),
                     MyText(
                       color: Colors.grey,
-                      title: 'User & Buisness Information',
+                      title: LocaleKeys.userBusinessInfo.tr(),
                     ),
                   ],
                 ),
                 MyTextFileds(
                   controller: usernameC,
-                  label: "Username ",
+                  label: LocaleKeys.username.tr(),
                   icon: Icons.person,
                   focusNode: usernameF,
                   isOtional: false,
@@ -75,7 +77,7 @@ class _AddUserState extends State<AddUser> {
                 ),
                 MyTextFileds(
                   controller: namaPerusahaanC,
-                  label: "Nama Usaha",
+                  label: LocaleKeys.businessName.tr(),
                   icon: Icons.business,
                   focusNode: namaPerusahaanF,
                   isOtional: false,
@@ -85,7 +87,7 @@ class _AddUserState extends State<AddUser> {
                 ),
                 MyTextFileds(
                   controller: alamatC,
-                  label: "Alamat",
+                  label: LocaleKeys.address.tr(),
                   icon: Icons.home,
                   focusNode: alamatF,
                   isOtional: false,
@@ -98,12 +100,12 @@ class _AddUserState extends State<AddUser> {
                   spacing: 2,
                   children: [
                     Icon(Icons.contacts_rounded, color: Colors.grey),
-                    MyText(color: Colors.grey, title: 'Contacts Information'),
+                    MyText(color: Colors.grey, title: LocaleKeys.contactsInfo.tr()),
                   ],
                 ),
                 MyTextFiledsForPhone(
                   controller: phoneC,
-                  label: "Phonenumber",
+                  label: LocaleKeys.phoneNumber.tr(),
                   icon: Icons.phone,
                   focusNode: phoneF,
                   onEditingCom: () {
@@ -112,7 +114,7 @@ class _AddUserState extends State<AddUser> {
                 ),
                 MyTextFileds(
                   controller: emailC,
-                  label: "Email",
+                  label: LocaleKeys.email.tr(),
                   icon: Icons.email,
                   focusNode: emailF,
                   isOtional: false,
@@ -139,7 +141,7 @@ class _AddUserState extends State<AddUser> {
                       backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                     child: MyText(
-                      title: 'Selesai',
+                      title: LocaleKeys.done.tr(),
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -186,7 +188,7 @@ void _validatePost(
     context.read<BookstatuslengthCubit>().getlength();
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      mySnakcbar('Silahkan isi semua fields terlebih dahulu', null),
+      mySnakcbar(LocaleKeys.fillAllFields.tr(), null),
     );
   }
 }

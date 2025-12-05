@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/SelectProjects.dart';
 import 'package:kliencash/Screens/Widgets/checkbox_pembulatan.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
@@ -81,7 +83,7 @@ class _AddInoviceState extends State<AddInovice> {
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         title: MyText(
-          title: 'Add New Invoices',
+          title: LocaleKeys.addNewInvoice.tr(),
           color: Colors.white,
           fontSize: 18,
         ),
@@ -105,7 +107,7 @@ class _AddInoviceState extends State<AddInovice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Client Projects', color: Colors.grey),
+                    MyText(title: LocaleKeys.clientInProjects.tr(), color: Colors.grey),
                     SelectProjecstWidget(),
                   ],
                 ),
@@ -124,12 +126,12 @@ class _AddInoviceState extends State<AddInovice> {
                       },
                     ),
                     MyText(
-                      title: 'Subtotal, Pajak & Discount',
+                      title: LocaleKeys.priceInfo.tr(),
                       color: Colors.grey,
                     ),
                     MyTextFileds(
                       controller: subtotalC,
-                      label: 'Subtotal',
+                      label: LocaleKeys.subtotal.tr(),
                       icon: Icons.receipt,
                       focusNode: subtotalF,
                       isOtional: false,
@@ -155,7 +157,7 @@ class _AddInoviceState extends State<AddInovice> {
                     Expanded(
                       child: MyTextFileds(
                         controller: pajakC,
-                        label: 'Pajak',
+                        label: LocaleKeys.tax.tr(),
                         icon: Icons.price_change,
                         focusNode: pajakF,
                         isOtional: true,
@@ -178,7 +180,7 @@ class _AddInoviceState extends State<AddInovice> {
                     Expanded(
                       child: MyTextFileds(
                         controller: discountC,
-                        label: 'Discount',
+                        label: LocaleKeys.discount.tr(),
                         icon: Icons.sell_outlined,
                         focusNode: discountF,
                         isOtional: true,
@@ -204,7 +206,7 @@ class _AddInoviceState extends State<AddInovice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: 'Catatan & DLL ', color: Colors.grey),
+                    MyText(title: LocaleKeys.notes.tr(), color: Colors.grey),
                     MyTextFileds(
                       controller: notes,
                       label: "Catatan",
@@ -263,7 +265,7 @@ class _AddInoviceState extends State<AddInovice> {
                             color: Colors.grey,
                           ),
                           title: MyText(
-                            title: state['name'] ?? 'Select Payement Method',
+                            title: state['name'] ?? LocaleKeys.selectPaymentMethod.tr(),
                           ),
                           subtitle:
                               state['name'] != null &&
@@ -478,6 +480,6 @@ void validatePost(
   } else {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(mySnakcbar('Silahkan isi fields terlebih dahulu', null));
+    ).showSnackBar(mySnakcbar(LocaleKeys.fillAllFieldsRequired.tr(), null));
   }
 }

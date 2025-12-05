@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
@@ -18,7 +20,6 @@ class DetailInvoice extends StatelessWidget {
         if (state.isEmpty) {
           return Scaffold(body: Center(child: Text('No invoice selected')));
         }
-
         var invoice = state[0];
         var project = invoice.projectsModel!;
         var client = invoice.clientModel!;
@@ -38,7 +39,7 @@ class DetailInvoice extends StatelessWidget {
             ),
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             title: MyText(
-              title: 'Invoice Details',
+              title: LocaleKeys.invoiceDetails.tr(),
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -57,7 +58,7 @@ class DetailInvoice extends StatelessWidget {
                       children: [
                         _buildSectionTitle(
                           context,
-                          'Invoice Information',
+                          LocaleKeys.invoiceInformation.tr(),
                           Icons.receipt_long_rounded,
                         ),
                         SizedBox(height: 8),
@@ -67,7 +68,7 @@ class DetailInvoice extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                MyText(title: 'Invoice Number', fontSize: 10),
+                                MyText(title: LocaleKeys.invoiceNumber.tr(), fontSize: 10),
                                 MyText(
                                   title: invoice.invoiceNumber,
                                   fontWeight: FontWeight.bold,
@@ -97,7 +98,7 @@ class DetailInvoice extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            MyText(title: 'Projects Title', fontSize: 10),
+                            MyText(title: LocaleKeys.projectTitle.tr(), fontSize: 10),
                             MyText(
                               title: invoice.title,
                               fontWeight: FontWeight.bold,
@@ -113,7 +114,7 @@ class DetailInvoice extends StatelessWidget {
                               Colors.blue.shade100,
                               Colors.blue,
                               Icons.play_circle_outline_rounded,
-                              'Diterbitkan',
+                              LocaleKeys.issued.tr(),
                             ),
                             Icon(Icons.arrow_forward),
                             projectsDate(
@@ -121,7 +122,7 @@ class DetailInvoice extends StatelessWidget {
                               Colors.red.shade100,
                               Colors.red,
                               Icons.event_busy,
-                              'Jatuh Tempo',
+                              LocaleKeys.dueDate,
                             ),
                           ],
                         ),
@@ -136,7 +137,7 @@ class DetailInvoice extends StatelessWidget {
                             ),
                             MyText(
                               title:
-                                  "Dibuat ${formatDateDetail(invoice.createdAt)}",
+                                  "${LocaleKeys.created.tr()} ${formatDateDetail(invoice.createdAt)}",
                               color: Colors.grey,
                               fontSize: 12,
                             ),
@@ -157,21 +158,21 @@ class DetailInvoice extends StatelessWidget {
                           children: [
                             _buildSectionTitle(
                               context,
-                              'Client Information',
+                              LocaleKeys.clientInformation.tr(),
                               Icons.person,
                             ),
                             SizedBox(height: 16),
                             _buildInfoRow(
-                              'Client Name',
+                              LocaleKeys.clientName,
                               client.name,
                               isBold: true,
                             ),
                             SizedBox(height: 8),
-                            _buildInfoRow('Project', project.agenda),
+                            _buildInfoRow(LocaleKeys.project, project.agenda),
                             if (project.desc != null) ...[
                               SizedBox(height: 8),
-                              _buildInfoRow('Phone', client.handphone),
-                              _buildInfoRow('address', client.alamat),
+                              _buildInfoRow(LocaleKeys.phoneNumber, client.handphone),
+                              _buildInfoRow(LocaleKeys.phoneNumber, client.alamat),
                             ],
                           ],
                         ),
@@ -184,12 +185,12 @@ class DetailInvoice extends StatelessWidget {
                           children: [
                             _buildSectionTitle(
                               context,
-                              'Financial Details',
+                              LocaleKeys.financialDetails,
                               Icons.account_balance_wallet,
                             ),
                             SizedBox(height: 16),
                             _buildInfoRow(
-                              'Project Price',
+                              LocaleKeys.projectPrice.tr(),
                               formatCurrency(project.price),
                             ),
                             BlocBuilder<OperasionalBloc, OperasionalState>(
@@ -202,7 +203,7 @@ class DetailInvoice extends StatelessWidget {
                                     return Column(
                                       children: [
                                         SizedBox(height: 8),
-                                        _buildInfoRow('Operasional:', ''),
+                                        _buildInfoRow('${LocaleKeys.opeartional}:', ''),
                                         ListView.builder(
                                           shrinkWrap: true,
                                           physics:
@@ -242,29 +243,29 @@ class DetailInvoice extends StatelessWidget {
                             SizedBox(height: 8),
                             invoice.pajak != 0
                                 ? _buildInfoRow(
-                                    'Tax',
+                                    LocaleKeys.tax.tr(),
                                     "${invoice.pajak}% (+ $formatedValueTax)",
                                   )
                                 : _buildInfoRow('Tax', "${invoice.pajak}%"),
                             SizedBox(height: 8),
                             invoice.discount != 0
                                 ? _buildInfoRow(
-                                    'Discount',
+                                    LocaleKeys.discount.tr(),
                                     '${invoice.discount}% (- $formatedValueDiskon)',
                                   )
                                 : _buildInfoRow(
-                                    'Discount',
+                                    LocaleKeys.discount.tr(),
                                     '${invoice.discount}%',
                                   ),
                             SizedBox(height: 8),
                             if (invoice.isRounded == 1) ...[
                               MyText(
-                                title: 'Dibulatkan',
+                                title: LocaleKeys.rounding.tr(),
                                 color: Colors.grey,
                                 fontSize: 12,
                               ),
                               _buildInfoRow(
-                                'Rounding',
+                                LocaleKeys.rounding.tr(),
                                 invoice.roundedValue.toString(),
                               ),
                             ],
@@ -275,7 +276,7 @@ class DetailInvoice extends StatelessWidget {
                             ),
                             invoice.totalAmount != 0
                                 ? _buildInfoRow(
-                                    'Total Amount',
+                                    'Total ${LocaleKeys.amount.tr()}',
                                     formatCurrency(invoice.totalAmount),
                                     isBold: true,
                                     labelSize: 14,
@@ -285,8 +286,8 @@ class DetailInvoice extends StatelessWidget {
                                     ).colorScheme.onPrimary,
                                   )
                                 : _buildInfoRow(
-                                    'Total Amount',
-                                    "GRATIS",
+                                    'Total ${LocaleKeys.amount.tr()}',
+                                    LocaleKeys.free.tr(),
                                     isBold: true,
                                     labelSize: 14,
                                     valueSize: 16,
@@ -317,7 +318,7 @@ class DetailInvoice extends StatelessWidget {
                             if (project.desc != null &&
                                 project.desc!.isNotEmpty) ...[
                               _buildInfoRow(
-                                'Project Descriptions',
+                                'Project ${LocaleKeys.description.tr()}',
                                 project.desc.toString(),
                               ),
                             ],
@@ -334,7 +335,7 @@ class DetailInvoice extends StatelessWidget {
                                     Colors.green.shade100.withOpacity(0.3),
                                     Colors.green,
                                     Icons.play_circle_outline_rounded,
-                                    'Mulai',
+                                    LocaleKeys.start.tr(),
                                   ),
                                   Icon(Icons.arrow_forward),
                                   projectsDate(
@@ -342,7 +343,7 @@ class DetailInvoice extends StatelessWidget {
                                     Colors.blue.shade100.withOpacity(0.3),
                                     Colors.blue,
                                     Icons.done,
-                                    'Selesai',
+                                    LocaleKeys.done.tr(),
                                   ),
                                 ],
                               ),
@@ -366,7 +367,7 @@ class DetailInvoice extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             icon: Icon(Icons.picture_as_pdf, color: Colors.white),
             label: MyText(
-              title: 'Print Invoices',
+              title: 'Print Invoice',
               color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
@@ -485,14 +486,5 @@ class DetailInvoice extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'dp / partial':
-        return Colors.orange;
-      default:
-        return Colors.blue;
-    }
   }
 }

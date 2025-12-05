@@ -1,7 +1,8 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
@@ -39,7 +40,7 @@ class _AddClientState extends State<AddClient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context,"Add Client"),
+      appBar: myAppBar(context,LocaleKeys.addClient.tr()),
       body: SingleChildScrollView(
         child: BlocListener<ClientBloc, ClientState>(
           listener: (context, state) {
@@ -48,7 +49,7 @@ class _AddClientState extends State<AddClient> {
               context.read<ClientBloc>().add(ReadDataClient());
               ScaffoldMessenger.of(context).showSnackBar(
                 mySnakcbar(
-                  'Berhasil Menambahkan Client baru',
+                  LocaleKeys.successAddClient.tr(),
                   Theme.of(context).colorScheme.onPrimary,
                 ),
               );
@@ -65,11 +66,11 @@ class _AddClientState extends State<AddClient> {
                       spacing: 10,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MyText(title: 'Nama Client', color: Colors.grey,),
+                        MyText(title: LocaleKeys.clientName2.tr(), color: Colors.grey,),
                         MyTextFileds(
                           controller: nameC,
                           icon: Icons.person,
-                          label: "Nama",
+                          label: LocaleKeys.phoneNumber.tr(),
                           focusNode: nameF,
                           isOtional: false,
                           onEditingCom: () {
@@ -82,10 +83,10 @@ class _AddClientState extends State<AddClient> {
                       spacing: 4,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MyText(title: 'Phone Number', color: Colors.grey,),
+                        MyText(title: LocaleKeys.phoneNumber.tr(), color: Colors.grey,),
                         MyTextFiledsForPhone(
                           controller: phoneC,
-                          label: "Phone",
+                          label: LocaleKeys.phoneNumber.tr(),
                           icon: Icons.phone,
                           focusNode: phoneF,
                           onEditingCom: () {
@@ -98,11 +99,11 @@ class _AddClientState extends State<AddClient> {
                       spacing: 10,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MyText(title: 'Alamat Client', color: Colors.grey,),
+                        MyText(title: LocaleKeys.clientAddress.tr(), color: Colors.grey,),
                         MyTextFileds(
                           controller: alamatC,
                           icon: Icons.home,
-                          label: "Alamat",
+                          label: LocaleKeys.address.tr(),
                           focusNode: alamatF,
                           isOtional: false,
                           maxlines: 10,
@@ -132,7 +133,7 @@ class _AddClientState extends State<AddClient> {
                         backgroundColor: Theme.of(context).colorScheme.onPrimary,
                       ),
                       child: MyText(
-                        title: 'Selesai',
+                        title: LocaleKeys.done.tr(),
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
@@ -170,7 +171,7 @@ void validatePost(
     );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      mySnakcbar("Silahkan isi smua fileds terlebih dahulu", Colors.red),
+      mySnakcbar(LocaleKeys.pleasFillRequired.tr(), Colors.red),
     );
   }
 }

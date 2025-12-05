@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
@@ -35,7 +37,7 @@ class _ClientPageState extends State<ClientPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, "All Clients"),
+      appBar: myAppBar(context, LocaleKeys.allClients.tr()),
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.onPrimary,
         onRefresh: () async {
@@ -47,7 +49,7 @@ class _ClientPageState extends State<ClientPage> {
               context.read<ClientBloc>().add(ReadDataClient());
               ScaffoldMessenger.of(context).showSnackBar(
                 mySnakcbar(
-                  'Berhasil Menghapus Client',
+                  LocaleKeys.successDeleteClient.tr(),
                   Theme.of(context).colorScheme.onPrimary,
                 ),
               );
@@ -56,7 +58,7 @@ class _ClientPageState extends State<ClientPage> {
               context.read<ClientBloc>().add(ReadDataClient());
               ScaffoldMessenger.of(context).showSnackBar(
                 mySnakcbar(
-                  'Berhasil Edit Data Client',
+                  LocaleKeys.successEditClient.tr(),
                   Theme.of(context).colorScheme.onPrimary,
                 ),
               );
@@ -111,14 +113,14 @@ class _ClientPageState extends State<ClientPage> {
           Icon(Icons.people_outline, color: Colors.grey[400], size: 80),
           SizedBox(height: 16),
           MyText(
-            title: 'Belum ada Client',
+            title: LocaleKeys.noClient.tr(),
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Colors.grey[700]!,
           ),
           SizedBox(height: 8),
           MyText(
-            title: 'Silahkan tambahkan client baru',
+            title: LocaleKeys.addClientFirst.tr(),
             color: Colors.grey[500]!,
             textAlign: TextAlign.center,
           ),
@@ -156,7 +158,7 @@ class _ClientPageState extends State<ClientPage> {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               icon: Icons.delete_outline,
-              label: 'Hapus',
+              label: LocaleKeys.deleteClient.tr(),
               borderRadius: BorderRadius.circular(16),
             ),
           ],
@@ -304,21 +306,21 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
         Icon(Icons.delete_outline, color: Colors.red),
         SizedBox(width: 8),
         Expanded(
-          child: MyText(title: 'Hapus Client?', fontWeight: FontWeight.bold),
+          child: MyText(title: LocaleKeys.deleteClient.tr(), fontWeight: FontWeight.bold),
         ),
       ],
     ),
     content: MyText(
       title:
-          'Apakah Anda yakin ingin menghapus client "$name"? Tindakan ini tidak dapat dibatalkan.',
-    ),
+          LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name':name})
+          ),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(),
         style: TextButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),
-        child: MyText(title: 'Batal', color: Colors.grey[700]!),
+        child: MyText(title: LocaleKeys.cancel.tr(), color: Colors.grey[700]!),
       ),
       ElevatedButton(
         onPressed: () {
@@ -331,7 +333,7 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: MyText(
-          title: 'Ya, Hapus',
+          title: LocaleKeys.yesDelete.tr(),
           color: Colors.white,
           fontWeight: FontWeight.w600,
         ),
@@ -377,7 +379,7 @@ Dialog editDataClient(
                       ),
                       SizedBox(width: 8),
                       MyText(
-                        title: 'Edit Client',
+                        title: LocaleKeys.editClient.tr(),
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -395,7 +397,7 @@ Dialog editDataClient(
               SizedBox(height: 20),
               MyTextFileds(
                 controller: name,
-                label: "Nama",
+                label: LocaleKeys.clientName2.tr(),
                 icon: Icons.person,
                 focusNode: nameF,
                 isOtional: false,
@@ -406,7 +408,7 @@ Dialog editDataClient(
               SizedBox(height: 12),
               MyTextFiledsForPhone(
                 controller: phone,
-                label: 'Nomor Telepon',
+                label: LocaleKeys.phoneNumber.tr(),
                 icon: Icons.phone,
                 focusNode: phoneF,
                 onEditingCom: () {
@@ -416,7 +418,7 @@ Dialog editDataClient(
               SizedBox(height: 12),
               MyTextFileds(
                 controller: alamat,
-                label: "Alamat",
+                label: LocaleKeys.address.tr(),
                 icon: Icons.home,
                 focusNode: alamatF,
                 maxlines: 10,
@@ -440,7 +442,7 @@ Dialog editDataClient(
                         ),
                       ),
                       child: MyText(
-                        title: 'Batal',
+                        title: LocaleKeys.cancel.tr(),
                         color: Colors.grey[700]!,
                         fontWeight: FontWeight.w600,
                       ),
@@ -471,7 +473,7 @@ Dialog editDataClient(
                             ),
                           ),
                           child: MyText(
-                            title: "Simpan",
+                            title: LocaleKeys.save.tr(),
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
