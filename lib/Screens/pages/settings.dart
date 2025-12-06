@@ -223,7 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, state) {
           return Column(
             children: [
-              _additionalInfo(Icons.credit_card, 'Payment Method'),
+              _additionalInfo(Icons.credit_card, LocaleKeys.paymentMethod.tr()),
               if (state) ...[
                 BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
                   builder: (context, state) {
@@ -366,7 +366,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           numberF,
                                           atasNamaC,
                                           atasNamaF,
-                                          'Tambah',
+                                          LocaleKeys.adding.tr(),
                                         ),
                                       ),
                                       child: ListTile(
@@ -379,7 +379,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             ),
                                             MyText(
                                               title:
-                                                  'Tambahkan Metode Pembayaran',
+                                                  LocaleKeys.addNewPaymentMethod.tr(),
                                               color: Colors.grey,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
@@ -430,7 +430,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MyText(
-                      title: '$title Metode Pembayaran',
+                      title: '$title ${LocaleKeys.paymentMethod.tr()}',
                       fontWeight: FontWeight.bold,
                     ),
                     InkWell(
@@ -478,7 +478,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           BlocBuilder<DropdownStatusinvoice, String?>(
                             builder: (context, state) {
                               return MyText(
-                                title: state ?? 'Tipe: BANK atau E-Wallet',
+                                title: state ?? 'BANK ${LocaleKeys.or.tr()} E-Wallet',
                                 color: state != null
                                     ? Colors.black
                                     : Colors.grey,
@@ -503,7 +503,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 MyTextFileds(
                   controller: numberC,
-                  label: 'Number',
+                  label: LocaleKeys.phoneNumber,
                   icon: Icons.onetwothree,
                   hint: MyText(
                     title: LocaleKeys.bankNumber.tr(),
@@ -514,7 +514,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 MyTextFileds(
                   controller: atasNamaC,
-                  label: 'Atas nama',
+                  label: LocaleKeys.onBehalfOf.tr(),
                   icon: Icons.person,
                   hint: MyText(title: LocaleKeys.accountNameExample.tr(), color: Colors.grey),
                   focusNode: atasNamaF,
@@ -568,7 +568,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                     child: MyText(
-                      title: 'Selesai',
+                      title: LocaleKeys.onBehalfOf.tr(),
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
@@ -853,7 +853,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
               child: _additionalInfo(
                 Icons.language,
-                'Bahasa'.tr(),
+                LocaleKeys.languageLabel.tr(),
                 iconTrailing: state
                     ? Icons.arrow_drop_up_rounded
                     : Icons.arrow_drop_down_rounded,
