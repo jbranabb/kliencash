@@ -36,4 +36,3 @@ flutter:
   assets:
     - assets/lang/en.json
     - assets/lang/id.json
-    - assets/lang/locale_keys.dart

@@ -174,8 +174,9 @@
     "nothingChanges": "Nothing Changes",
     "operational": "Operational",
     "adding": "Adding",
-       "projectsPrice": "Project Price",
-
-    "free": "FREE"
-
+    "projectsPrice": "Project Price",
+    "free": "FREE",
+    "addNewPaymentMethod": "Adding New Payment Method",
+    "or": "or",
+    "onBehalfOf": "On Behalf Of"
 }

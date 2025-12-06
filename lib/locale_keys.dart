@@ -9,7 +9,7 @@ class LocaleKeys {
   static const String onBoardingPage3Subtitle = 'onBoardingPage3Subtitle';
   static const String skipButton = 'skipButton';
   static const String getStartedButton = 'getStartedButton';
-  
+
   // Add User Page
   static const String createUser = 'createUser';
   static const String userBusinessInfo = 'userBusinessInfo';
@@ -197,8 +197,8 @@ class LocaleKeys {
   static const String pay = 'pay';
 
   // startdate and endDate
-  static const String startDateAndEndDate =  'startDateAndEndDate';
-  static const String save =  'save';
+  static const String startDateAndEndDate = 'startDateAndEndDate';
+  static const String save = 'save';
   static const String deleteClientConfirm = 'deleteClientConfirm';
   static const String start = 'start';
   static const String nothingChanges = 'nothingChanges';
@@ -206,7 +206,7 @@ class LocaleKeys {
   static const String adding = 'adding';
   static const String projectPrice = 'projectsPrice';
   static const String free = 'free';
-
-
-  
+  static const String addNewPaymentMethod = 'addNewPaymentMethod';
+  static const String or = 'or';
+  static const String onBehalfOf= 'onBehalfOf';
 }

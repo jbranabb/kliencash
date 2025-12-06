@@ -60,7 +60,7 @@
     "addNewInvoice": "Tambah Invoice Baru",
     "invoiceDetails": "Detail Invoice",
     "invoicePdfPreview": "Pratinjau PDF Invoice",
-    "invoice": "INVOICE",
+    "invoice": "Invoice",
     "billTo": "Diterbitkan Untuk:",
     "issued": "Diterbitkan",
     "dueDate": "Jatuh Tempo",
@@ -175,7 +175,10 @@
     "operational": "Operasional",
     "adding": "Tambahkan",
     "projectsPrice": "Harga Project",
-    "free": "GRATIS"
+    "free": "GRATIS",
+    "addNewPaymentMethod": "Tambahkan Metode Pembayaran",
+    "or": "atau",
+    "onBehalfOf": "AtasNama"
 
 
 }
