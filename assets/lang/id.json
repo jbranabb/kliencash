@@ -130,7 +130,7 @@
     "paymentPage": "Halaman Pembayaran",
     "addPayment": "Tambah Pembayaran",
     "amount": "Jumlah",
-    "uploadPaymentProof": "Upload Bukti Pembayaran",
+    "uploadPaymentProof": "Upload\nBukti Pembayaran",
     "selectProject": "Silahkan Pilih Projects Terlebih dahulu.",
     "noPayment": "Belum Ada Payment Saat Ini",
     "addPaymentFirst": "Silahkan tambahkan Terlebih Dahulu",
@@ -178,7 +178,9 @@
     "free": "GRATIS",
     "addNewPaymentMethod": "Tambahkan Metode Pembayaran",
     "or": "atau",
-    "onBehalfOf": "AtasNama"
+    "onBehalfOf": "AtasNama",
+   "clickToAdd": "Klik Untuk Menambahkan",
+    "select": "Pilih"    
 
 
 }

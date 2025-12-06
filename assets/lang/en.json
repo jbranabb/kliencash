@@ -167,7 +167,7 @@
     "successEdited": "Successfully edited",
     "operationalTotal": "Total Operational",
     "pay": "Pay",
-    "startDateAndEndDate": "StartDate and EndDate",
+    "startDateAndEndDate": "Start Date And End Date",
     "save": "Save",
     "deleteClientConfirm": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
     "start": "Start",
@@ -178,5 +178,7 @@
     "free": "FREE",
     "addNewPaymentMethod": "Adding New Payment Method",
     "or": "or",
-    "onBehalfOf": "On Behalf Of"
+    "onBehalfOf": "On Behalf Of",
+    "clickToAdd": "Click To Add",
+    "select": "Select"
 }

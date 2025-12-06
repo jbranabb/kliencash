@@ -208,5 +208,7 @@ class LocaleKeys {
   static const String free = 'free';
   static const String addNewPaymentMethod = 'addNewPaymentMethod';
   static const String or = 'or';
-  static const String onBehalfOf= 'onBehalfOf';
+  static const String onBehalfOf = 'onBehalfOf';
+  static const String clickToAdd = 'clickToAdd';
+  static const String select = 'select';
 }
