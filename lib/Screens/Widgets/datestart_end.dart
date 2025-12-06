@@ -20,7 +20,7 @@ class DateStartAndEnd extends StatelessWidget {
             spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(title: title ?? LocaleKeys.startDateAndEndDate),
+              MyText(title: title ?? LocaleKeys.startDateAndEndDate.tr()),
               InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {

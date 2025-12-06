@@ -166,7 +166,9 @@ class _InvoicePageState extends State<InvoicePage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: MyText(
-                        title: invoice.status.toUpperCase(),
+                        title: invoice.status.toLowerCase() == 'lunas'
+                            ? LocaleKeys.fullyPaid.tr()
+                            : invoice.status.toUpperCase(),
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: colors(invoice.status),
@@ -230,12 +232,6 @@ class _InvoicePageState extends State<InvoicePage> {
                   ),
                   child: Column(
                     children: [
-                      // _buildFinancialRow(
-                      //   'Estimasi',
-                      //   formatCurrency(invoice.projectsModel!.price),
-                      //   Colors.grey[700]!,
-                      // ),
-                      // _buildFinancialRow('Operasional', 'value', Colors.grey),
                       _operasional(invoice),
                       _buildFinancialRow(
                         'Subtotal',
@@ -245,7 +241,7 @@ class _InvoicePageState extends State<InvoicePage> {
                       if (invoice.pajak != null && invoice.pajak! > 0) ...[
                         SizedBox(height: 6),
                         _buildFinancialRow(
-                          'Pajak (${invoice.pajak}%)',
+                          '${LocaleKeys.tax.tr()} (${invoice.pajak}%)',
                           '+ ${formatRupiah.format(invoice.subtotal * invoice.pajak! / 100)}',
                           Colors.deepOrange,
                         ),
@@ -254,7 +250,7 @@ class _InvoicePageState extends State<InvoicePage> {
                           invoice.discount! > 0) ...[
                         SizedBox(height: 6),
                         _buildFinancialRow(
-                          'Diskon (${invoice.discount}%)',
+                          '${LocaleKeys.discount.tr()} (${invoice.discount}%)',
                           '- ${formatRupiah.format(invoice.subtotal * invoice.discount! / 100)}',
                           Colors.green,
                         ),
@@ -265,7 +261,7 @@ class _InvoicePageState extends State<InvoicePage> {
                       _buildFinancialRow(
                         'TOTAL',
                         invoice.totalAmount == 0
-                            ? 'GRATIS'
+                            ? LocaleKeys.free.tr()
                             : formatRupiah.format(invoice.totalAmount),
                         Theme.of(context).colorScheme.onPrimary,
                         isBold: true,
@@ -387,17 +383,16 @@ class _InvoicePageState extends State<InvoicePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         MyText(
-                          title:'${LocaleKeys.operationalTotal}: ',
+                          title: '${LocaleKeys.operationalTotal.tr()}: ',
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
-                          color:Colors.grey.shade600,
+                          color: Colors.grey.shade600,
                         ),
                         MyText(
-                          title:
-                              formatCurrency(totalAmount),
+                          title: formatCurrency(totalAmount),
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
-                          color:Colors.grey.shade600,
+                          color: Colors.grey.shade600,
                         ),
                       ],
                     ),

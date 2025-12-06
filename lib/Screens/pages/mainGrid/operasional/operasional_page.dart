@@ -57,7 +57,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
-                'Berhasil Mengedit Modal'.tr(),
+                LocaleKeys.successEditModal.tr(),
                 Theme.of(context).colorScheme.onPrimary,
               ),
             );
@@ -193,7 +193,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
                                   ),
                                   _buildRow(
                                     Icons.watch_later_outlined,
-                                    'Dibuat: ${formatDateDetail(data.createdAt)}',
+                                    '${LocaleKeys.created.tr()}: ${formatDateDetail(data.createdAt)}',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   Row(
@@ -202,7 +202,7 @@ class _OperasionalPageState extends State<OperasionalPage> {
                                     children: [
                                       _buildRow(
                                         Icons.touch_app,
-                                        'Klik Untuk Menambahkan Operasional',
+                                        "${LocaleKeys.clickToAdd.tr()} ${LocaleKeys.opeartional.tr()}",
                                         textSize: 8,
                                       ),
                                       Icon(

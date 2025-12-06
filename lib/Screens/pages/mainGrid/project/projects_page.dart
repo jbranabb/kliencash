@@ -379,7 +379,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                         SizedBox(width: 4),
                         MyText(
-                          title: LocaleKeys.holdToEdit,
+                          title: LocaleKeys.holdToEdit.tr(),
                           fontSize: 10,
                           color: Colors.grey[400]!,
                           fontWeight: FontWeight.w500,

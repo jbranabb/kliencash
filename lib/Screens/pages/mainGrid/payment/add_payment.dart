@@ -250,7 +250,7 @@ Widget _dateSection(BuildContext context) {
               return MyText(
                 title: state.isNotEmpty
                     ? formatDate(state[0].toIso8601String())
-                    : 'Tanggal Bayar',
+                    : LocaleKeys.selectDate.tr(),
                 fontSize: 10,
               );
             },
@@ -306,14 +306,14 @@ Widget _showSingleDateTime(BuildContext context) {
                 Navigator.of(context).pop();
                 context.read<SelectDateAddPayement>().reset();
               },
-              child: MyText(title: 'Batal'),
+              child: MyText(title: LocaleKeys.cancel.tr()),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: MyText(
-                title: 'Selesai',
+                title: LocaleKeys.done.tr(),
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
@@ -368,7 +368,7 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
                                   ),
                                   MyText(
                                     title:
-                                        'Belum Ada invoice Untuk Projects ini\nSilahkan Tambahkan terlebih dahulu..',
+                                        "${LocaleKeys.noProject.tr()}\n${LocaleKeys.addProjectFirst.tr()}",
                                     textAlign: TextAlign.center,
                                     color: Colors.grey,
                                   ),
@@ -508,7 +508,7 @@ Widget _selectedInvoiceWhenAddPayement(BuildContext context) {
               Icons.receipt_long_rounded,
               color: checkingData ? Colors.black : Colors.grey,
             ),
-            title: MyText(title: checkingData ? data!.title : 'Pilih Invoice'),
+            title: MyText(title: checkingData ? data!.title : '${LocaleKeys.select} Invoice'),
             subtitle: checkingData
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -645,7 +645,7 @@ Widget _pickPicturePayment(BuildContext context) {
                   children: [
                     Icon(Icons.photo, color: Colors.grey, size: 50),
                     MyText(
-                      title: 'Upload\nBukti Pembayaran',
+                      title: LocaleKeys.uploadPaymentProof.tr(),
                       color: Colors.grey,
                       textAlign: TextAlign.center,
                     ),

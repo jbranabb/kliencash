@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +44,7 @@ class TextFieldsDropDown extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0, top: 4,left: 8,right: 8),
-                    child: MyText(title: state ?? LocaleKeys.selectStatus,color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
+                    child: MyText(title: state ?? LocaleKeys.selectStatus.tr(),color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
                   )),
               );
             },

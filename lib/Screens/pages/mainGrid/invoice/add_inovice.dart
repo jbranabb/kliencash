@@ -66,7 +66,7 @@ class _AddInoviceState extends State<AddInovice> {
     var stateList = context.read<InvoiceBloc>().state;
     var state = context.watch<CountMount>().state;
     var formated = formatRupiah.format(state);
-    var display = state <= 0 ? 'Gratis' : formated;
+    var display = state <= 0 ? LocaleKeys.free.tr() : formated;
     totalAmountC.text = display;
     var idProjectsState = context.read<SelectedProjects>().state;
     idC.text = idProjectsState['Id'].toString();
@@ -117,7 +117,7 @@ class _AddInoviceState extends State<AddInovice> {
                   children: [
                     MyTextFileds(
                       controller: titleC,
-                      label: 'Judul Invoice',
+                      label: '${LocaleKeys.title.tr()} Invoice',
                       icon: Icons.receipt,
                       focusNode: titleF,
                       isOtional: false,
@@ -209,7 +209,7 @@ class _AddInoviceState extends State<AddInovice> {
                     MyText(title: LocaleKeys.notes.tr(), color: Colors.grey),
                     MyTextFileds(
                       controller: notes,
-                      label: "Catatan",
+                      label: LocaleKeys.notes.tr(),
                       icon: Icons.description,
                       focusNode: notesF,
                       isOtional: true,
@@ -221,7 +221,7 @@ class _AddInoviceState extends State<AddInovice> {
                   ],
                 ),
                 DateStartAndEnd(
-                  title: "Tanggal Awal Dan Jatuh Tempo",
+                  title: LocaleKeys.startDateAndEndDate.tr(),
                   listener: (_, state) {},
                 ),
                 Column(
@@ -327,7 +327,7 @@ class _AddInoviceState extends State<AddInovice> {
                     backgroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
                   child: MyText(
-                    title: "Selesai",
+                    title: LocaleKeys.done.tr(),
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -365,7 +365,7 @@ Widget selectedPayementMethod() {
                     Icon(Icons.payment, size: 40, color: Colors.grey),
                     MyText(
                       title:
-                          'Tidak ada Payment Method\nSilahkan tambahkan terlebih dahulu',
+                          LocaleKeys.noPayment.tr(),
                       textAlign: TextAlign.center,
                     ),
                   ],

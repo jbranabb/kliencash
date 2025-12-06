@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
@@ -280,7 +282,7 @@ Widget projectsToAdd(double height) {
                       Icon(Icons.cancel, color: Colors.grey, size: 60),
                       MyText(
                         title:
-                            'Belum Ada Projects Saat Ini\n Silahkan Tambahkan Terlebih Dahulu',
+                            "${LocaleKeys.noProject.tr()}\n${LocaleKeys.addProjectFirst.tr()}",
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -349,7 +351,7 @@ Widget projectsToAdd(double height) {
                                             .toList();
                                         if (data.isEmpty) {
                                           return MyText(
-                                            title: 'Belum Ada Biaya Operasional',
+                                            title: LocaleKeys.noOperationalCost.tr(),
                                             fontSize: 8,
                                             color: Colors.grey,
                                           );
