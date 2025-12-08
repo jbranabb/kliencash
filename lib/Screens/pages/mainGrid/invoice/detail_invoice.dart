@@ -5,7 +5,7 @@ import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
-import 'package:kliencash/Screens/pages/pdfViwer.dart';
+import 'package:kliencash/Screens/pages/pdf/pdfViwer.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';

@@ -13,7 +13,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/widgets.dart';
 
-Future<Uint8List> generatePDF(
+Future<Uint8List> generatePDFEn(
   BuildContext context,
   List<User> userState,
   OperasionalReadSucces opdata,
@@ -153,13 +153,13 @@ Future<Uint8List> generatePDF(
                   crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
                     pw.SizedBox(height: 8),
-                    MyTextPdf(title: 'Diterbitkan :'),
+                    MyTextPdf(title: 'Issued :'),
                     MyTextPdf(title: formatDateDetail(invoice.tanggal)),
                     pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [],
                     ),
-                    MyTextPdf(title: 'Jatuh Tempo :'),
+                    MyTextPdf(title: 'Due Date :'),
                     MyTextPdf(
                       title: formatDateDetail(invoice.jatuhTempo),
                       fontWeight: pw.FontWeight.bold,
@@ -270,7 +270,7 @@ Future<Uint8List> generatePDF(
                     pw.Align(
                       alignment: pw.Alignment.centerLeft,        
                       child: MyTextPdf(
-                        title: 'Biaya Operasional / Tambahan',
+                        title: 'Operational Cost / Additional',
                         fontSize: 12,
                         color: PdfColors.grey700,
                       ),
@@ -331,7 +331,7 @@ Future<Uint8List> generatePDF(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         if (invoice.pajak != 0) ...[
-                          MyTextPdf(title: 'Pajak (${invoice.pajak}%)'),
+                          MyTextPdf(title: 'Tax (${invoice.pajak}%)'),
                           MyTextPdf(
                             color: PdfColors.orange600,
                             title:
@@ -359,7 +359,7 @@ Future<Uint8List> generatePDF(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         if (invoice.isRounded != 0) ...[
-                          MyTextPdf(title: 'Pembulatan'),
+                          MyTextPdf(title: 'Rounding'),
                           MyTextPdf(title: invoice.roundedValue.toString()),
                         ],
                       ],
@@ -379,7 +379,7 @@ Future<Uint8List> generatePDF(
                         MyTextPdf(
                           title: invoice.totalAmount != 0
                               ? formatCurrency(invoice.totalAmount)
-                              : "GRATIS",
+                              : "FREE",
                           fontWeight: pw.FontWeight.bold,
                           fontSize: 18,
                           color: onprimaryColor,
@@ -397,15 +397,15 @@ Future<Uint8List> generatePDF(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 MyTextPdf(
-                  title: 'Informasi Pembayaran: ',
+                  title: 'Transaction Information: ',
                   fontWeight: pw.FontWeight.bold,
                 ),
                 pw.SizedBox(height: 4),
                 pw.Row(
                   children: [
-                    MyTextPdf(title: 'Bayar: '),
+                    MyTextPdf(title: 'Payment: '),
                     MyTextPdf(
-                      title: invoice.status.toUpperCase(),
+                      title: invoice.status.toLowerCase() == 'lunas' ?  'FULLY PAID' : 'DP / PARTIAL',
                       color: invoice.status.toLowerCase() == 'lunas'
                           ? PdfColors.blue700
                           : PdfColors.orange600,
@@ -414,7 +414,7 @@ Future<Uint8List> generatePDF(
                   ],
                 ),
                 MyTextPdf(
-                  title: 'Metode Pembayaran: ',
+                  title: 'Payment Method: ',
                   fontWeight: pw.FontWeight.bold,
                 ),
                 if (paymentM.type.toString().toLowerCase() == 'cash') ...[
@@ -436,7 +436,7 @@ Future<Uint8List> generatePDF(
                     children: [
                       MyTextPdf(
                         title: paymentM.type.toString() == 'BANK'
-                            ? 'No. Rekening: '
+                            ? 'Bank Account Number: '
                             : 'Number: ',
                       ),
                       MyTextPdf(
@@ -447,7 +447,7 @@ Future<Uint8List> generatePDF(
                   ),
                   pw.Row(
                     children: [
-                      MyTextPdf(title: 'A.n: '),
+                      MyTextPdf(title: 'OBO: '),
                       MyTextPdf(
                         title: paymentM.accountName!,
                         fontWeight: pw.FontWeight.bold,
@@ -470,7 +470,7 @@ Future<Uint8List> generatePDF(
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      MyTextPdf(title: '* Catatan'),
+                      MyTextPdf(title: '* Notes'),
                       MyTextPdf(title: invoice.notes!),
                     ],
                   ),
@@ -480,7 +480,7 @@ Future<Uint8List> generatePDF(
           ],
           pw.SizedBox(height: 20),
           MyTextPdf(
-            title: 'Invoice ini di buat otomatis oleh sistem KlienCash',
+            title: 'This invoice is automatically generated by the Client Cash system.',
             fontSize: 12,
             color: PdfColors.grey,
           ),
