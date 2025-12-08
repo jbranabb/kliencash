@@ -180,5 +180,7 @@
     "or": "or",
     "onBehalfOf": "On Behalf Of",
     "clickToAdd": "Click To Add",
-    "select": "Select"
+    "select": "Select",
+    "emptyFilter": "No items found. Try adjusting your search.",
+    "search": "Search"
 }

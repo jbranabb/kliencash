@@ -211,4 +211,6 @@ class LocaleKeys {
   static const String onBehalfOf = 'onBehalfOf';
   static const String clickToAdd = 'clickToAdd';
   static const String select = 'select';
+  static const String emptyFilter = 'emptyFilter';
+  static const String search = 'search';
 }

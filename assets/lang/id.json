@@ -180,7 +180,8 @@
     "or": "atau",
     "onBehalfOf": "AtasNama",
    "clickToAdd": "Klik Untuk Menambahkan",
-    "select": "Pilih"    
-
+    "select": "Pilih",
+    "emptyFilter": "Tidak ada hasil yang sesuai pencarian.",
+    "search": "Cari"
 
 }
