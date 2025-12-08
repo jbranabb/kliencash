@@ -11,3 +11,11 @@ class PostInvoice extends InoviceEvent{
   InvoiceModel invoiceModel;
   PostInvoice({required this.invoiceModel});
 }
+class SearchInvoice extends InoviceEvent{
+  String value;
+  SearchInvoice({required this.value});
+}
+class SearchInvoiceWithId extends InoviceEvent{
+  String value;
+  SearchInvoiceWithId({required this.value});
+}

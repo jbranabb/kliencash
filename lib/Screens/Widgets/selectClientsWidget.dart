@@ -6,16 +6,29 @@ import 'package:kliencash/Screens/pages/mainGrid/project/add_projects.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 
-class SelectClientsWidget extends StatelessWidget {
+class SelectClientsWidget extends StatefulWidget {
   SelectClientsWidget({super.key, required this.listener});
   void Function(BuildContext, Map<String, dynamic>) listener;
 
+  @override
+  State<SelectClientsWidget> createState() => _SelectClientsWidgetState();
+}
+
+class _SelectClientsWidgetState extends State<SelectClientsWidget> {
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
+  @override
+  void dispose() {
+    nameSeacrhC.dispose();
+    nameSeacrhF.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return BlocConsumer<Selectedclient, Map<String, dynamic>>(
-      listener: listener,
+      listener: widget.listener,
       builder: (context, state) {
         var stateIsnotEmpty = state['name'] != null;
         var rawName = state['name'].toString().trim().split(' ');
@@ -103,7 +116,7 @@ class SelectClientsWidget extends StatelessWidget {
                       topLeft: Radius.circular(12),
                     ),
                   ),
-                  child: userstoAdd(context, height,width),
+                  child: userstoAdd(context, height,width,nameSeacrhC, nameSeacrhF),
                 ),
               );
             },

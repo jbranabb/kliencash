@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
+import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
@@ -10,6 +12,7 @@ import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/pages/mainGrid/payment/add_payment.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/payment/payment_bloc.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 class PayementPage extends StatefulWidget {
   const PayementPage({super.key});
@@ -25,48 +28,106 @@ class _PayementPageState extends State<PayementPage> {
     context.read<PaymentBloc>().add(ReadDataPayment());
   }
 
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
+  @override
+  void dispose() {
+    nameSeacrhC.dispose();
+    nameSeacrhF.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: myAppBar(context, LocaleKeys.paymentPage.tr()),
-      body: BlocBuilder<PaymentBloc, PaymentState>(
-        builder: (context, state) {
-          if (state is PaymentReadDataSucces) {
-            if (state.list.isEmpty) {
-              return SizedBox(
-                height: height,
-                width: double.maxFinite,
-                child: Column(
-                  spacing: 4,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.attach_money, size: 60, color: Colors.grey),
-                    MyText(
-                      title: LocaleKeys.noPayment.tr(),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade700,
-                    ),
-                    MyText(
-                      title: LocaleKeys.addPaymentFirst.tr(),
-                      color: Colors.grey,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
+      appBar: myAppBar(
+        context,
+        LocaleKeys.paymentPage.tr(),
+        actions: [
+          seachButtonFunction(context, () {
+            context.read<Togglesearchuniversal>().toggleSearch();
+          }),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: BlocConsumer<Togglesearchuniversal, bool>(
+          listener: (context, state) {
+            if (state == false) {
+              nameSeacrhC.clear();
+              FocusScope.of(context).unfocus();
+            } else {
+              FocusScope.of(context).requestFocus(nameSeacrhF);
             }
-            return ListView.builder(
-              itemCount: state.list.length,
-              itemBuilder: (context, index) {
-                var data = state.list[index];
-                return _buildList(context, data);
+          },
+          builder: (context, isActiveSearch) {
+            return BlocBuilder<PaymentBloc, PaymentState>(
+              builder: (context, state) {
+                if (state is PaymentReadDataSucces) {
+                  if (state.list.isEmpty && !isActiveSearch) {
+                    return SizedBox(
+                      height: height,
+                      width: double.maxFinite,
+                      child: Column(
+                        spacing: 4,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.attach_money,
+                            size: 60,
+                            color: Colors.grey,
+                          ),
+                          MyText(
+                            title: LocaleKeys.noPayment.tr(),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade700,
+                          ),
+                          MyText(
+                            title: LocaleKeys.addPaymentFirst.tr(),
+                            color: Colors.grey,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      SizedBox(height: 12),
+                      isActiveSearch
+                          ? textFiledsForSearch(
+                              context,
+                              nameSeacrhC,
+                              nameSeacrhF,
+                              (value) {
+                                context.read<PaymentBloc>().add(
+                                  SearchPayement(value: value.trim()),
+                                );
+                              },
+                            )
+                          : SizedBox.shrink(),
+                      if (isActiveSearch && state.list.isEmpty) ...[
+                        SizedBox(height: 20),
+                        MyText(title: LocaleKeys.emptyFilter.tr()),
+                      ],
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.list.length,
+                        itemBuilder: (context, index) {
+                          var data = state.list[index];
+                          return _buildList(context, data);
+                        },
+                      ),
+                    ],
+                  );
+                }
+                return Container();
               },
             );
-          }
-          return Container();
-        },
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -155,68 +216,72 @@ Widget _buildList(BuildContext context, PaymentModel data) {
               ],
             ),
             Divider(color: Colors.grey.shade100),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(
-                        title: data.invoicemodel!.title,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      MyText(title: formatCurrency(data.amount)),
-                      Column(
-                        children: [
-                          _buildRow(
-                            Icon(Icons.work, color: Colors.grey, size: 14),
-                            Expanded(
-                              child: MyText(
-                                title: data.projectsModel!.agenda,
-                                color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          title: data.invoicemodel!.title,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        MyText(title: formatCurrency(data.amount)),
+                        Column(
+                          children: [
+                            _buildRow(
+                              Icon(Icons.work, color: Colors.grey, size: 14),
+                              Expanded(
+                                child: MyText(
+                                  title: data.projectsModel!.agenda,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
-                          ),
-                          _buildRow(
-                            Icon(Icons.person, color: Colors.grey, size: 14),
-                            Expanded(
-                              child: MyText(
-                                title: data.clientModel!.name,
-                                color: Colors.grey,
+                            _buildRow(
+                              Icon(Icons.person, color: Colors.grey, size: 14),
+                              Expanded(
+                                child: MyText(
+                                  title: data.clientModel!.name,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) =>
-                            Dialog(child: Image.file(File(data.buktiPayment))),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadiusGeometry.circular(12),
-                      child: Image.file(
-                        File(data.buktiPayment),
-                        height: pictHeight,
-                        width: pictHeight,
-                        fit: BoxFit.cover,
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            child: Image.file(File(data.buktiPayment)),
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(12),
+                        child: Image.file(
+                          File(data.buktiPayment),
+                          height: pictHeight,
+                          width: pictHeight,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Row(
               spacing: 4,

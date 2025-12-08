@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
@@ -13,6 +14,7 @@ import 'package:kliencash/state/bloc/invoice/inovice_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/cubit/selectedInvoice.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 class InvoicePage extends StatefulWidget {
   const InvoicePage({super.key});
@@ -28,33 +30,87 @@ class _InvoicePageState extends State<InvoicePage> {
     context.read<InvoiceBloc>().add(ReadInvoice());
   }
 
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
+  @override
+  void dispose() {
+    nameSeacrhC.dispose();
+    nameSeacrhF.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, LocaleKeys.invoiceList.tr()),
+      appBar: myAppBar(
+        context,
+        LocaleKeys.invoiceList.tr(),
+        actions: [
+          seachButtonFunction(context, () {
+            context.read<Togglesearchuniversal>().toggleSearch();
+          }),
+        ],
+      ),
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.onPrimary,
         onRefresh: () async {
           context.read<InvoiceBloc>().add(ReadInvoice());
         },
-        child: BlocBuilder<InvoiceBloc, InvoiceState>(
-          builder: (context, state) {
-            if (state is InvoiceReadSucces) {
-              if (state.list.isEmpty) {
-                return _buildEmptyState(context);
+        child: SingleChildScrollView(
+          child: BlocConsumer<Togglesearchuniversal, bool>(
+            listener: (context, state) {
+              if (state == false) {
+                nameSeacrhC.clear();
+                FocusScope.of(context).unfocus();
+              } else {
+                FocusScope.of(context).requestFocus(nameSeacrhF);
               }
-              return ListView.builder(
-                padding: EdgeInsets.all(16),
-                itemCount: state.list.length,
-                itemBuilder: (context, index) {
-                  var invoice = state.list[index];
-                  return _buildInvoiceCard(context, invoice);
+            },
+            builder: (context, isActiveSearch) {
+              return BlocBuilder<InvoiceBloc, InvoiceState>(
+                builder: (context, state) {
+                  if (state is InvoiceReadSucces) {
+                    if (state.list.isEmpty && !isActiveSearch) {
+                      return _buildEmptyState(context);
+                    }
+                    return Column(
+                      children: [
+                        SizedBox(height: 12),
+                        isActiveSearch
+                            ? textFiledsForSearch(
+                                context,
+                                nameSeacrhC,
+                                nameSeacrhF,
+                                (value) {
+                                  context.read<InvoiceBloc>().add(
+                                    SearchInvoice(value: value.trim()),
+                                  );
+                                },
+                              )
+                            : SizedBox.shrink(),
+                        if (isActiveSearch && state.list.isEmpty) ...[
+                          SizedBox(height: 20),
+                          MyText(title: LocaleKeys.emptyFilter.tr()),
+                        ],
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.all(16),
+                          itemCount: state.list.length,
+                          itemBuilder: (context, index) {
+                            var invoice = state.list[index];
+                            return _buildInvoiceCard(context, invoice);
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
                 },
               );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -128,6 +184,8 @@ class _InvoicePageState extends State<InvoicePage> {
           borderRadius: BorderRadius.circular(16),
           onTap: () {
             context.read<Selectedinvoice>().getbyId(invoice.id!);
+                nameSeacrhC.clear();
+                FocusScope.of(context).unfocus();
             Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (context) => DetailInvoice()));

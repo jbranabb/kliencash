@@ -9,9 +9,7 @@ part 'inovice_state.dart';
 class InvoiceBloc extends Bloc<InoviceEvent, InvoiceState> {
   InvoiceBloc() : super(InoviceInitial()) {
     var database = DatabaseHelper.instance;
-    on<ReadInvoice>((event, emit) async {
-      var db = await database.getDatabase;
-      var data = await db.rawQuery(''' 
+    var rawQuery = '''
       SELECT INVOICE.*,
        PROJECTS.Id as id_projects,
        PROJECTS.agenda as projects_agenda,
@@ -30,15 +28,8 @@ class InvoiceBloc extends Bloc<InoviceEvent, InvoiceState> {
       FROM INVOICE
       INNER JOIN PROJECTS ON INVOICE.project_id = PROJECTS.id
       INNER JOIN CLIENT ON PROJECTS.client_id = CLIENT.Id  
-      ''');
-      List<InvoiceModel> results = data
-          .map((e) => InvoiceModel.fromJson(e))
-          .toList();
-      emit(InvoiceReadSucces(list: results));
-    });
-    on<ReadInvoiceWithId>((event, emit) async {
-      var db = await database.getDatabase;
-      var data = await db.rawQuery(''' 
+    ''';
+    var rawQueryWithID =   ''' 
       SELECT INVOICE.*,
        PROJECTS.Id as id_projects,
        PROJECTS.agenda as projects_agenda,
@@ -65,7 +56,22 @@ class InvoiceBloc extends Bloc<InoviceEvent, InvoiceState> {
       INNER JOIN CLIENT ON PROJECTS.client_id = CLIENT.Id
       INNER JOIN PAYMENT_METHOD ON INVOICE.payement_method_id = PAYMENT_METHOD.id 
       WHERE PROJECTS.Id = ?  
-      ''',[event.id]);
+      ''';
+
+    on<ReadInvoice>((event, emit) async {
+      var db = await database.getDatabase;
+      var data = await db.rawQuery(rawQuery);
+      List<InvoiceModel> results = data
+          .map((e) => InvoiceModel.fromJson(e))
+          .toList();
+      emit(InvoiceReadSucces(list: results));
+    });
+    on<ReadInvoiceWithId>((event, emit) async {
+      var db = await database.getDatabase;
+      var data = await db.rawQuery(
+       rawQueryWithID,
+        [event.id],
+      );
       List<InvoiceModel> results = data
           .map((e) => InvoiceModel.fromJson(e))
           .toList();
@@ -75,6 +81,30 @@ class InvoiceBloc extends Bloc<InoviceEvent, InvoiceState> {
       var db = await database.getDatabase;
       await db.insert('INVOICE', event.invoiceModel.toJson());
       emit(InvoicePostSucces());
+    });
+    on<SearchInvoice>((event, emit) async {
+      var db = await database.getDatabase;
+      var data = await db.rawQuery(rawQuery);
+      var query = event.value.toLowerCase();
+      List<InvoiceModel> results = data
+          .map((e) => InvoiceModel.fromJson(e))
+          .toList();
+      var finalData = results.where(
+        (e) => e.title.toLowerCase().contains(query),
+      ).toList();
+      emit(InvoiceReadSucces(list: finalData));
+    });
+    on<SearchInvoiceWithId>((event, emit) async {
+      var db = await database.getDatabase;
+      var data = await db.rawQuery(rawQueryWithID);
+      var query = event.value.toLowerCase();
+      List<InvoiceModel> results = data
+          .map((e) => InvoiceModel.fromJson(e))
+          .toList();
+      var finalData = results.where(
+        (e) => e.title.toLowerCase().contains(query),
+      ).toList();
+      emit(InvoiceReadSuccesWithId(list: finalData));
     });
   }
 }

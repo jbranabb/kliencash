@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/colors_status.dart';
@@ -12,6 +13,7 @@ import 'package:kliencash/Screens/Widgets/text_fields.dart'
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 class OperasionalPage extends StatefulWidget {
   const OperasionalPage({super.key});
@@ -26,259 +28,326 @@ class _OperasionalPageState extends State<OperasionalPage> {
   var amountC = TextEditingController();
   var amountF = FocusNode();
 
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
+
   @override
   void dispose() {
     titleC.dispose();
     titleF.dispose();
     amountC.dispose();
     amountF.dispose();
+    nameSeacrhC.dispose();
+    nameSeacrhF.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, LocaleKeys.operasionalPage.tr()),
-      body: BlocListener<OperasionalBloc, OperasionalState>(
-        listener: (context, state) {
-          if (state is OperasionalPostSucces) {
-            context.read<OperasionalBloc>().add(ReadData());
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              mySnakcbar(
-                LocaleKeys.successAddModal.tr(),
-                Theme.of(context).colorScheme.onPrimary,
-              ),
-            );
-            titleC.clear();
-            amountC.clear();
-          } else if (state is OperasionalEditSucces) {
-            context.read<OperasionalBloc>().add(ReadData());
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              mySnakcbar(
-                LocaleKeys.successEditModal.tr(),
-                Theme.of(context).colorScheme.onPrimary,
-              ),
-            );
-            titleC.clear();
-            amountC.clear();
-          } else if (state is OperasionalDeleteSucces) {
-            context.read<OperasionalBloc>().add(ReadData());
-            ScaffoldMessenger.of(context).showSnackBar(
-              mySnakcbar(
-                LocaleKeys.successDeleteModal.tr(),
-                Theme.of(context).colorScheme.onPrimary,
-              ),
-            );
-          }
-        },
-        child: BlocBuilder<ProjectsBloc, ProjectsState>(
-          builder: (context, state) {
-            if (state is ProjectsSuccesState) {
-              if (state.list.isEmpty) {
-                return SizedBox(
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  child: Column(
-                    spacing: 4,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.work, size: 60, color: Colors.grey),
-                      MyText(
-                        title: LocaleKeys.noProjects.tr(),
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade700,
-                      ),
-                      MyText(
-                        title: LocaleKeys.addOperasionalFirst.tr(),
-                        color: Colors.grey,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return ListView.builder(
-                itemCount: state.list.length,
-                itemBuilder: (context, index) {
-                  var data = state.list[index];
-                  var isExpanded = data.isExpanded;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Container(
-                      margin: EdgeInsets.only(top: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(-2, 2),
-                            color: Colors.grey.shade300,
-                            blurRadius: 15,
-                          ),
-                        ],
-                      ),
-                      child: ClipRect(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              context.read<ProjectsBloc>().add(
-                                ToggleIsExpandedProjects(id: index),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                spacing: 4,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      MyText(
-                                        title: data.agenda,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: bgcolors(data.status),
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: MyText(
-                                            title: data.status.toUpperCase(),
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 10,
-                                            color: colors(data.status),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  _buildRow(
-                                    Icons.person,
-                                    data.client!.name,
-                                    iconSize: 16,
-                                    textSize: 14,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: _buildRow(
-                                        Icons.attach_money,
-                                        formatCurrency(data.price),
-                                        colors: Theme.of(
-                                          context,
-                                        ).colorScheme.onPrimary,
-                                        iconSize: 18,
-                                        textSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                  _buildRow(
-                                    Icons.watch_later_outlined,
-                                    '${LocaleKeys.created.tr()}: ${formatDateDetail(data.createdAt)}',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _buildRow(
-                                        Icons.touch_app,
-                                        "${LocaleKeys.clickToAdd.tr()} ${LocaleKeys.opeartional.tr()}",
-                                        textSize: 8,
-                                      ),
-                                      Icon(
-                                        isExpanded
-                                            ? Icons.arrow_drop_up_rounded
-                                            : Icons.arrow_drop_down_rounded,
-                                        color: Colors.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        AnimatedContainer(
-                                          height: isExpanded ? null : 0,
-                                          duration: Durations.long1,
-                                          child: Column(
-                                            children: [
-                                              operasionalList(
-                                                data,
-                                                context,
-                                                titleC,
-                                                titleF,
-                                                amountC,
-                                                amountF,
-                                              ),
-                                              SizedBox(height: 10),
-                                              addNewOperasionalButton(
-                                                context,
-                                                titleC,
-                                                titleF,
-                                                amountC,
-                                                amountF,
-                                                data,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+      appBar: myAppBar(
+        context,
+        LocaleKeys.operasionalPage.tr(),
+        actions: [
+          seachButtonFunction(context, () {
+            context.read<Togglesearchuniversal>().toggleSearch();
+          }),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: BlocListener<OperasionalBloc, OperasionalState>(
+          listener: (context, state) {
+            if (state is OperasionalPostSucces) {
+              context.read<OperasionalBloc>().add(ReadData());
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  LocaleKeys.successAddModal.tr(),
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
               );
-            } else if (state is ProjectsLoadingState) {
-              return SizedBox(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+              titleC.clear();
+              amountC.clear();
+            } else if (state is OperasionalEditSucces) {
+              context.read<OperasionalBloc>().add(ReadData());
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  LocaleKeys.successEditModal.tr(),
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+              titleC.clear();
+              amountC.clear();
+            } else if (state is OperasionalDeleteSucces) {
+              context.read<OperasionalBloc>().add(ReadData());
+              ScaffoldMessenger.of(context).showSnackBar(
+                mySnakcbar(
+                  LocaleKeys.successDeleteModal.tr(),
+                  Theme.of(context).colorScheme.onPrimary,
                 ),
               );
             }
-            return SizedBox.shrink();
           },
+          child: BlocConsumer<Togglesearchuniversal, bool>(
+            listener: (context, isActiveSearch) {
+              if (isActiveSearch == false) {
+                nameSeacrhC.clear();
+                FocusScope.of(context).unfocus();
+              } else {
+                FocusScope.of(context).requestFocus(nameSeacrhF);
+              }
+            },
+            builder: (context, isActiveSearch) {
+              return BlocBuilder<ProjectsBloc, ProjectsState>(
+                builder: (context, state) {
+                  if (state is ProjectsSuccesState) {
+                    if (state.list.isEmpty && !isActiveSearch) {
+                      return SizedBox(
+                        height: double.maxFinite,
+                        width: double.maxFinite,
+                        child: Column(
+                          spacing: 4,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.work, size: 60, color: Colors.grey),
+                            MyText(
+                              title: LocaleKeys.noProjects.tr(),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade700,
+                            ),
+                            MyText(
+                              title: LocaleKeys.addOperasionalFirst.tr(),
+                              color: Colors.grey,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        SizedBox(height: 12),
+                        isActiveSearch
+                            ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (value) {
+                              context.read<ProjectsBloc>().add(SearchProjects(agenda: value.trim()));
+                            },)
+                            : SizedBox.shrink(),
+                        if (isActiveSearch && state.list.isEmpty) ...[
+                          SizedBox(height: 20),
+                          MyText(title: LocaleKeys.emptyFilter.tr()),
+                        ],
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: state.list.length,
+                          itemBuilder: (context, index) {
+                            var data = state.list[index];
+                            var isExpanded = data.isExpanded;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.only(top: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(-2, 2),
+                                      color: Colors.grey.shade300,
+                                      blurRadius: 15,
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRect(
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(12),
+                                      splashColor: Colors.transparent,
+                                      onTap: () {
+                                        context.read<ProjectsBloc>().add(
+                                          ToggleIsExpandedProjects(id: index),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          spacing: 4,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                MyText(
+                                                  title: data.agenda,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: bgcolors(
+                                                      data.status,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
+                                                        ),
+                                                    child: MyText(
+                                                      title: data.status
+                                                          .toUpperCase(),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 10,
+                                                      color: colors(
+                                                        data.status,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            _buildRow(
+                                              Icons.person,
+                                              data.client!.name,
+                                              iconSize: 16,
+                                              textSize: 14,
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.primary,
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: _buildRow(
+                                                  Icons.attach_money,
+                                                  formatCurrency(data.price),
+                                                  colors: Theme.of(
+                                                    context,
+                                                  ).colorScheme.onPrimary,
+                                                  iconSize: 18,
+                                                  textSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                            _buildRow(
+                                              Icons.watch_later_outlined,
+                                              '${LocaleKeys.created.tr()}: ${formatDateDetail(data.createdAt)}',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                _buildRow(
+                                                  Icons.touch_app,
+                                                  "${LocaleKeys.clickToAdd.tr()} ${LocaleKeys.opeartional.tr()}",
+                                                  textSize: 8,
+                                                ),
+                                                Icon(
+                                                  isExpanded
+                                                      ? Icons
+                                                            .arrow_drop_up_rounded
+                                                      : Icons
+                                                            .arrow_drop_down_rounded,
+                                                  color: Colors.grey,
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                  ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  AnimatedContainer(
+                                                    height: isExpanded
+                                                        ? null
+                                                        : 0,
+                                                    duration: Durations.long1,
+                                                    child: Column(
+                                                      children: [
+                                                        operasionalList(
+                                                          data,
+                                                          context,
+                                                          titleC,
+                                                          titleF,
+                                                          amountC,
+                                                          amountF,
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        addNewOperasionalButton(
+                                                          context,
+                                                          titleC,
+                                                          titleF,
+                                                          amountC,
+                                                          amountF,
+                                                          data,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (state is ProjectsLoadingState) {
+                    return SizedBox(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              );
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-Widget addNewOperasionalButton(BuildContext context, 
+Widget addNewOperasionalButton(
+  BuildContext context,
   TextEditingController titleC,
   FocusNode titleF,
   TextEditingController amountC,
@@ -354,8 +423,9 @@ Widget operasionalList(
                     builder: (context) => AlertDialog(
                       title: MyText(title: LocaleKeys.deleteItem.tr()),
                       content: MyText(
-                        title:
-                            LocaleKeys.deleteClientConfirm.tr(namedArgs: {"name": list.title}),
+                        title: LocaleKeys.deleteClientConfirm.tr(
+                          namedArgs: {"name": list.title},
+                        ),
                       ),
                       actions: [
                         TextButton(
@@ -421,7 +491,9 @@ Widget operasionalList(
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: MyText(title: LocaleKeys.errorOccurred.tr()),
+                                    title: MyText(
+                                      title: LocaleKeys.errorOccurred.tr(),
+                                    ),
                                     content: MyText(
                                       title: LocaleKeys.fillFieldsFirst,
                                     ),
@@ -430,7 +502,9 @@ Widget operasionalList(
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: MyText(title: LocaleKeys.ok.tr()),
+                                        child: MyText(
+                                          title: LocaleKeys.ok.tr(),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -494,7 +568,8 @@ Widget operasionalFunction(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MyText(
-              title: '${title ?? LocaleKeys.adding.tr()} ${LocaleKeys.opeartional.tr()}',
+              title:
+                  '${title ?? LocaleKeys.adding.tr()} ${LocaleKeys.opeartional.tr()}',
               fontWeight: FontWeight.w600,
             ),
             Container(

@@ -20,6 +20,7 @@ import 'package:kliencash/state/cubit/drop_down_rounded.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 import 'package:kliencash/state/cubit/selectedProjects.dart';
 import 'package:kliencash/state/cubit/selectedpaymentMethod.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 class AddInovice extends StatefulWidget {
   AddInovice({super.key});
@@ -78,6 +79,7 @@ class _AddInoviceState extends State<AddInovice> {
             Navigator.of(context).pop();
             context.read<CountMount>().reset();
             context.read<SelectedProjects>().reset();
+            context.read<Togglesearchuniversal>().resetButton();
           },
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),

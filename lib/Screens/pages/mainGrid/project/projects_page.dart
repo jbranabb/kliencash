@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
@@ -19,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 var formatRupiah = NumberFormat.currency(
   decimalDigits: 0,
@@ -44,52 +46,93 @@ class _ProjectsPageState extends State<ProjectsPage> {
   var startAtC = TextEditingController();
   var endAtC = TextEditingController();
 
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, LocaleKeys.allProjects.tr()),
+      appBar: myAppBar(
+        context,
+        LocaleKeys.allProjects.tr(),
+        actions: [
+          seachButtonFunction(context, () {
+            context.read<Togglesearchuniversal>().toggleSearch();
+          }),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<ProjectsBloc>().add(ReadDataProjects());
         },
         color: Theme.of(context).colorScheme.onPrimary,
-        child: BlocConsumer<ProjectsBloc, ProjectsState>(
-          listener: (context, state) {
-            if (state is ProjectsDeleteSuccesState) {
-              context.read<ProjectsBloc>().add(ReadDataProjects());
-              ScaffoldMessenger.of(context).showSnackBar(
-                mySnakcbar(
-                  LocaleKeys.successDeleteProject.tr(),
-                  Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            } else if (state is ProjectsEditSuccesState) {
-              context.read<ProjectsBloc>().add(ReadDataProjects());
-              ScaffoldMessenger.of(context).showSnackBar(
-                mySnakcbar(
-                  "Berhasil Mengedit Projects",
-                  Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state is ProjectsSuccesState) {
-              if (state.list.isEmpty) {
-                return _buildEmptyState();
+        child: SingleChildScrollView(
+          child: BlocConsumer<Togglesearchuniversal, bool>(
+            listener: (context, state) {
+              if (state == false) {
+                nameSeacrhC.clear();
+                FocusScope.of(context).unfocus();
+              } else {
+                FocusScope.of(context).requestFocus(nameSeacrhF);
               }
-              return ListView.builder(
-                padding: EdgeInsets.all(16),
-                itemCount: state.list.length,
-                itemBuilder: (context, index) {
-                  var project = state.list[index];
-                  return _buildProjectCard(context, project, index);
+            },
+            builder: (context, isActiveSearch) {
+              return BlocConsumer<ProjectsBloc, ProjectsState>(
+                listener: (context, state) {
+                  if (state is ProjectsDeleteSuccesState) {
+                    context.read<ProjectsBloc>().add(ReadDataProjects());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      mySnakcbar(
+                        LocaleKeys.successDeleteProject.tr(),
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    );
+                  } else if (state is ProjectsEditSuccesState) {
+                    context.read<ProjectsBloc>().add(ReadDataProjects());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      mySnakcbar(
+                        "Berhasil Mengedit Projects",
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is ProjectsSuccesState) {
+                    if (state.list.isEmpty && !isActiveSearch) {
+                      return _buildEmptyState();
+                    }
+                    return Column(
+                      children: [
+                        SizedBox(height: 12),
+                        isActiveSearch
+                            ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (value) {
+                              context.read<ProjectsBloc>().add(SearchProjects(agenda: value.trim()));
+                            },)
+                            : SizedBox.shrink(),
+                        if (isActiveSearch && state.list.isEmpty) ...[
+                          SizedBox(height: 20),
+                          MyText(title: LocaleKeys.emptyFilter.tr()),
+                        ],
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.all(16),
+                          itemCount: state.list.length,
+                          itemBuilder: (context, index) {
+                            var project = state.list[index];
+                            return _buildProjectCard(context, project, index);
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
                 },
               );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -133,7 +176,11 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, ProjectsModel project, int index) {
+  Widget _buildProjectCard(
+    BuildContext context,
+    ProjectsModel project,
+    int index,
+  ) {
     final startDate = DateTime.parse(project.startAt);
     final endDate = DateTime.parse(project.endAt);
     final createdAt = DateTime.parse(project.createdAt);
@@ -599,7 +646,7 @@ Widget editProjects(
                       endAt.text,
                       stateStatus ?? "",
                       projectsModel.id!,
-                      projectsModel
+                      projectsModel,
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -634,7 +681,7 @@ void validateEditProjects(
   String endAt,
   String status,
   int id,
-  ProjectsModel projectsModel
+  ProjectsModel projectsModel,
 ) {
   if (agendaC == projectsModel.agenda &&
       descC == projectsModel.desc &&
@@ -642,7 +689,7 @@ void validateEditProjects(
       startAt == projectsModel.startAt &&
       endAt == projectsModel.endAt &&
       status == projectsModel.status &&
-      clientIdC == projectsModel.clientId.toString() ) {
+      clientIdC == projectsModel.clientId.toString()) {
     ScaffoldMessenger.of(context).showSnackBar(
       mySnakcbar(
         LocaleKeys.nothingChanges.tr(),
@@ -709,21 +756,26 @@ void validateDeleteProjects(String title, int id, BuildContext context) {
           Icon(Icons.delete_outline, color: Colors.red),
           SizedBox(width: 8),
           Expanded(
-            child: MyText(title: LocaleKeys.deleteProject.tr(), fontWeight: FontWeight.bold),
+            child: MyText(
+              title: LocaleKeys.deleteProject.tr(),
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
       content: MyText(
-        title:
-            LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name':title})
-            ),
+        title: LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name': title}),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
-          child: MyText(title: LocaleKeys.cancel.tr(), color: Colors.grey[700]!),
+          child: MyText(
+            title: LocaleKeys.cancel.tr(),
+            color: Colors.grey[700]!,
+          ),
         ),
         ElevatedButton(
           onPressed: () {

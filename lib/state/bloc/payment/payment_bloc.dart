@@ -8,9 +8,7 @@ part 'payment_state.dart';
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc() : super(PaymentInitial()) {
     var database = DatabaseHelper.instance;
-    on<ReadDataPayment>((event, emit) async {
-      var db = await database.getDatabase;
-      var data = await db.rawQuery('''
+    var rawQuery = '''
       SELECT PAYMENT.*,
       PROJECTS.Id as id_projects,
       PROJECTS.agenda as projects_agenda,
@@ -48,7 +46,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       INNER JOIN PROJECTS ON PROJECTS.Id = INVOICE.project_id
       INNER JOIN CLIENT ON CLIENT.Id =  PROJECTS.client_id
       INNER JOIN PAYMENT_METHOD ON PAYMENT_METHOD.id = PAYMENT.payment_method_id
-      ''');
+      ''';
+    on<ReadDataPayment>((event, emit) async {
+      var db = await database.getDatabase;
+      var data = await db.rawQuery(rawQuery);
       var results = data.map((e) => PaymentModel.fromJson(e)).toList();
       emit(PaymentReadDataSucces(list: results));
     });
@@ -56,6 +57,14 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       var db = await database.getDatabase;
       await db.insert('PAYMENT', event.paymentModel.toJson());
       emit(PaymentPostDataSucces());
+    });
+    on<SearchPayement>((event, emit) async{
+     var db = await database.getDatabase;
+      var data = await db.rawQuery(rawQuery);
+      var query = event.value.toLowerCase();
+      var results = data.map((e) => PaymentModel.fromJson(e)).toList();
+      var finalData =  results.where((e)=> e.invoicemodel!.title.toLowerCase().contains(query)).toList();
+      emit(PaymentReadDataSucces(list: finalData));  
     });
   }
 }

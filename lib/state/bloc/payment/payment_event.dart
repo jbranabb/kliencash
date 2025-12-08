@@ -7,3 +7,7 @@ class PostDataPayment extends PaymentEvent {
   PaymentModel paymentModel;
   PostDataPayment({required this.paymentModel});
 }
+class SearchPayement extends PaymentEvent {
+  String value;
+  SearchPayement({required this.value});
+}
