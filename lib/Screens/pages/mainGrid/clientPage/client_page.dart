@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/appbar.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
@@ -11,6 +12,7 @@ import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/client/client_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 class ClientPage extends StatefulWidget {
   const ClientPage({super.key});
@@ -28,64 +30,110 @@ class _ClientPageState extends State<ClientPage> {
   var phoneF = FocusNode();
   var alamatF = FocusNode();
 
+  var nameSeacrhC = TextEditingController();
+  var nameSeacrhF = FocusNode();
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    name.dispose();
+    phone.dispose();
+    alamat.dispose();
+    nameF.dispose();
+    phoneF.dispose();
+    alamatF.dispose();
+    nameSeacrhC.dispose();
+    nameSeacrhF.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: myAppBar(context, LocaleKeys.allClients.tr()),
+      appBar: myAppBar(
+        context,
+        LocaleKeys.allClients.tr(),
+        actions: [
+          seachButtonFunction(context, () {
+            context.read<Togglesearchuniversal>().toggleSearch();
+          }),
+        ],
+      ),
       body: RefreshIndicator(
         color: Theme.of(context).colorScheme.onPrimary,
         onRefresh: () async {
           context.read<ClientBloc>().add(ReadDataClient());
         },
-        child: BlocConsumer<ClientBloc, ClientState>(
-          listener: (context, state) {
-            if (state is DeleteClientSucces) {
-              context.read<ClientBloc>().add(ReadDataClient());
-              ScaffoldMessenger.of(context).showSnackBar(
-                mySnakcbar(
-                  LocaleKeys.successDeleteClient.tr(),
-                  Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            } else if (state is EditClientSucces) {
-              Navigator.of(context).pop();
-              context.read<ClientBloc>().add(ReadDataClient());
-              ScaffoldMessenger.of(context).showSnackBar(
-                mySnakcbar(
-                  LocaleKeys.successEditClient.tr(),
-                  Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state is ClientSucces) {
-              if (state.list.isEmpty) {
-                return _buildEmptyState();
+        child: SingleChildScrollView(
+          child: BlocConsumer<Togglesearchuniversal, bool>(
+            listener: (context, state) {
+              if (state == false) {
+                nameSeacrhC.clear();
+                FocusScope.of(context).unfocus();
+              }else{
+                FocusScope.of(context).requestFocus(nameSeacrhF);
               }
-              return ListView.builder(
-                padding: EdgeInsets.all(16),
-                itemCount: state.list.length,
-                itemBuilder: (context, index) {
-                  var client = state.list[index];
-                  return _buildClientCard(context, client, index);
+            },
+            builder: (context, isActiveSearch) {
+              return BlocConsumer<ClientBloc, ClientState>(
+                listener: (context, state) {
+                  if (state is DeleteClientSucces) {
+                    context.read<ClientBloc>().add(ReadDataClient());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      mySnakcbar(
+                        LocaleKeys.successDeleteClient.tr(),
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    );
+                  } else if (state is EditClientSucces) {
+                    Navigator.of(context).pop();
+                    context.read<ClientBloc>().add(ReadDataClient());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      mySnakcbar(
+                        LocaleKeys.successEditClient.tr(),
+                        Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is ClientSucces) {
+                    if (state.list.isEmpty && !isActiveSearch) {
+                      return _buildEmptyState();
+                    }
+                    return Column(
+                      children: [
+                        SizedBox(height: 12),
+                        isActiveSearch ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (value) {
+                              context.read<ClientBloc>().add(SeacrhClient(name: value.trim()));
+                            },)  : SizedBox.shrink(),
+                        if (isActiveSearch && state.list.isEmpty) ...[
+                          SizedBox(height: 20,),
+                          MyText(title: LocaleKeys.emptyFilter.tr())
+                        ],
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.all(16),
+                          itemCount: state.list.length,
+                          itemBuilder: (context, index) {
+                            var client = state.list[index];
+                            return _buildClientCard(context, client, index);
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (state is ClientLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    );
+                  }
+                  return SizedBox.shrink();
                 },
               );
-            } else if (state is ClientLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              );
-            }
-            return SizedBox.shrink();
-          },
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -182,8 +230,10 @@ class _ClientPageState extends State<ClientPage> {
               onLongPress: () {
                 name.text = client.name;
                 alamat.text = client.alamat;
-                phone.text =  client.handphone.toString();
-                context.read<CountrycodeCubit>().changeCountryCode(client.countryCode);
+                phone.text = client.handphone.toString();
+                context.read<CountrycodeCubit>().changeCountryCode(
+                  client.countryCode,
+                );
                 showDialog(
                   context: context,
                   builder: (context) => editDataClient(
@@ -306,14 +356,16 @@ AlertDialog confirmDelete(String name, BuildContext context, int id) {
         Icon(Icons.delete_outline, color: Colors.red),
         SizedBox(width: 8),
         Expanded(
-          child: MyText(title: LocaleKeys.deleteClient.tr(), fontWeight: FontWeight.bold),
+          child: MyText(
+            title: LocaleKeys.deleteClient.tr(),
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     ),
     content: MyText(
-      title:
-          LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name':name})
-          ),
+      title: LocaleKeys.deleteClientConfirm.tr(namedArgs: {'name': name}),
+    ),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(),
@@ -460,8 +512,8 @@ Dialog editDataClient(
                               name,
                               phone,
                               alamat,
-                              clientModel
-                             );
+                              clientModel,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(

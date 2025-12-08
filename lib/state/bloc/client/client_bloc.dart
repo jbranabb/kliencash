@@ -36,8 +36,20 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
     on<DeleteDataClient>((event, emit) async {
       emit(ClientLoading());
       final db = await database;
-      await db.delete("CLIENT",where: "Id = ?",whereArgs: [event.id]);
+      await db.delete("CLIENT", where: "Id = ?", whereArgs: [event.id]);
       emit(DeleteClientSucces());
+    });
+    on<SeacrhClient>((event, emit) async {
+      var db = await database;
+      var data = await db.query('CLIENT');
+      var query = event.name.toLowerCase();
+      List<ClientModel> rawClient = data
+          .map((e) => ClientModel.fromJson(e))
+          .toList();
+      var finalDataFiltered = rawClient
+          .where((e) => e.name.toLowerCase().contains(query))
+          .toList();
+      emit(ClientSucces(list: finalDataFiltered));
     });
   }
 }

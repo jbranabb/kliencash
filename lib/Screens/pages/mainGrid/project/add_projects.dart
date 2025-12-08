@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/search_widget.dart';
+import 'package:kliencash/Screens/Widgets/slideAbleShowModalBottomSheet.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/Screens/Widgets/datestart_end.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
@@ -17,6 +19,7 @@ import 'package:kliencash/state/cubit/SelectedClient.dart';
 import 'package:kliencash/state/cubit/SelectedDateCubit.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:intl/intl.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 
 var formatRupiah = NumberFormat.currency(
   decimalDigits: 0,
@@ -76,11 +79,16 @@ class _AddProjectsState extends State<AddProjects> {
           onPressed: () {
             Navigator.of(context).pop();
             context.read<Selectedclient>().reset();
+            context.read<Togglesearchuniversal>().resetButton();
           },
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: MyText(title: LocaleKeys.addProjects.tr(), color: Colors.white, fontSize: 18),
+        title: MyText(
+          title: LocaleKeys.addProjects.tr(),
+          color: Colors.white,
+          fontSize: 18,
+        ),
       ),
       body: BlocListener<ProjectsBloc, ProjectsState>(
         listener: (context, state) {
@@ -107,7 +115,10 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: LocaleKeys.clientInProjects.tr(), color: Colors.grey),
+                    MyText(
+                      title: LocaleKeys.clientInProjects.tr(),
+                      color: Colors.grey,
+                    ),
                     SelectClientsWidget(
                       listener: (_, state) {
                         idC.text = state['Id'].toString();
@@ -119,7 +130,10 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: LocaleKeys.agendaDescription.tr(), color: Colors.grey),
+                    MyText(
+                      title: LocaleKeys.agendaDescription.tr(),
+                      color: Colors.grey,
+                    ),
                     MyTextFileds(
                       controller: agendaC,
                       label: LocaleKeys.agenda.tr(),
@@ -147,7 +161,10 @@ class _AddProjectsState extends State<AddProjects> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 10,
                   children: [
-                    MyText(title: LocaleKeys.priceInfo.tr(), color: Colors.grey),
+                    MyText(
+                      title: LocaleKeys.priceInfo.tr(),
+                      color: Colors.grey,
+                    ),
                     MyTextFileds(
                       controller: priceC,
                       label: LocaleKeys.initialPrice.tr(),
@@ -223,12 +240,6 @@ void validatePost(
   String? status,
   BuildContext context,
 ) {
-  print(id);
-  print(agenda);
-  print(desc);
-  print(price);
-  print(startDate);
-  print(status);
   if (id.isNotEmpty &&
       agenda.isNotEmpty &&
       price.isNotEmpty &&
@@ -255,165 +266,167 @@ void validatePost(
   }
 }
 
-Widget userstoAdd(BuildContext context, double height, double width) {
-  return BlocBuilder<ClientBloc, ClientState>(
-    builder: (context, state) {
-      if (state is ClientSucces) {
-        if (state.list.isEmpty) {
-          return SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 0.0,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey.shade300,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: height * 0.4,
-                  // alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.person_off, size: 40, color: Colors.grey),
-                      MyText(
-                        title:
-                            LocaleKeys.noClient,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-        return SizedBox(
-          height: height * 0.8,
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              SizedBox(
-                height: 20,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 0.0,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: state.list.length,
-                  itemBuilder: (context, index) {
-                    var list = state.list[index];
-                    var rawName = state.list[index].name
-                        .toString()
-                        .trim()
-                        .split(' ');
-                    var displayedName = rawName.length == 1
-                        ? state.list[index].name.toString().characters.first
-                        : "${rawName[0].characters.first}${rawName[1].characters.first}";
-                    return Card(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        onTap: () {
-                          context.read<Selectedclient>().selectedClient(
-                            list.id!,
-                          );
-                          Navigator.of(context).pop();
-                        },
-                        child: ListTile(
-                          leading: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: Offset(-2, 2),
-                                  blurRadius: 10,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: MyText(
-                              title: displayedName.toUpperCase(),
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
+Widget userstoAdd(
+  BuildContext context,
+  double height,
+  double width,
+  TextEditingController nameSeacrhC,
+  FocusNode nameSeacrhF,
+) {
+  return BlocBuilder<Togglesearchuniversal, bool>(
+    builder: (context, isActiveSearch) {
+      return BlocBuilder<ClientBloc, ClientState>(
+        builder: (context, state) {
+          if (state is ClientSucces) {
+            if (state.list.isEmpty && !isActiveSearch) {
+              return SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    slideAbleModalBottomSheet(context),
+                    SizedBox(
+                      height: height * 0.4,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.person_off, size: 40, color: Colors.grey),
+                          MyText(
+                            title: LocaleKeys.noClient,
+                            textAlign: TextAlign.center,
                           ),
-                          title: MyText(title: list.name),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                spacing: 2,
-                                children: [
-                                  Icon(
-                                    Icons.phone,
-                                    size: 14,
-                                    color: Colors.grey,
-                                  ),
-                                  MyText(
-                                    title:
-                                        "${list.countryCode} ${list.handphone}",
-                                    color: Colors.grey,
-                                  ),
-                                ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return SizedBox(
+              height: height * 0.8,
+              child: Column(
+                spacing: 10,
+                children: [
+                  SizedBox(height: 10),
+                  slideAbleModalBottomSheet(context),
+                  isActiveSearch
+                      ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (
+                          value,
+                        ) {
+                          context.read<ClientBloc>().add(
+                            SeacrhClient(name: value.trim()),
+                          );
+                        })
+                      : SizedBox.shrink(),
+                  if (isActiveSearch && state.list.isEmpty) ...[
+                    SizedBox(height: 20),
+                    MyText(title: LocaleKeys.emptyFilter.tr()),
+                  ],
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.list.length,
+                      itemBuilder: (context, index) {
+                        var list = state.list[index];
+                        var rawName = state.list[index].name
+                            .toString()
+                            .trim()
+                            .split(' ');
+                        var displayedName = rawName.length == 1
+                            ? state.list[index].name.toString().characters.first
+                            : "${rawName[0].characters.first}${rawName[1].characters.first}";
+                        return Card(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              context.read<Selectedclient>().selectedClient(
+                                list.id!,
+                              );
+                              Navigator.of(context).pop();
+                            },
+                            child: ListTile(
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(-2, 2),
+                                      blurRadius: 10,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: MyText(
+                                  title: displayedName.toUpperCase(),
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              Row(
-                                spacing: 2,
+                              title: MyText(title: list.name),
+                              subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top:3.0),
-                                    child: Icon(
-                                      Icons.location_on_sharp,
-                                      size: 14,
-                                      color: Colors.grey,
-                                    ),
+                                  Row(
+                                    spacing: 2,
+                                    children: [
+                                      Icon(
+                                        Icons.phone,
+                                        size: 14,
+                                        color: Colors.grey,
+                                      ),
+                                      MyText(
+                                        title:
+                                            "${list.countryCode} ${list.handphone}",
+                                        color: Colors.grey,
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(
-                                    child: MyText(
-                                      title: list.alamat,
-                                      color: Colors.grey,
-                                    ),
+                                  Row(
+                                    spacing: 2,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 3.0,
+                                        ),
+                                        child: Icon(
+                                          Icons.location_on_sharp,
+                                          size: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: MyText(
+                                          title: list.alamat,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }
-      return Container();
+            );
+          }
+          return Container();
+        },
+      );
     },
   );
 }
@@ -498,9 +511,7 @@ Widget showDateTime(BuildContext context) {
                     context: context,
                     builder: (context) => AlertDialog(
                       title: MyText(title: LocaleKeys.errorOccurred.tr()),
-                      content: MyText(
-                        title: LocaleKeys.pleasSelectDates.tr(),
-                      ),
+                      content: MyText(title: LocaleKeys.pleasSelectDates.tr()),
                       actions: [
                         TextButton(
                           onPressed: () {

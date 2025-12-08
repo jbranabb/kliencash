@@ -13,7 +13,6 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     on<ReadDataProjects>((event, emit) async {
       emit(ProjectsLoadingState());
       var db = await database.getDatabase;
-
       var results = await db.rawQuery('''
       SELECT PROJECTS.*,
       CLIENT.name as client_name,
@@ -27,7 +26,6 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
           .map((e) => ProjectsModel.fromJson(e))
           .toList();
       emit(ProjectsSuccesState(list: data));
-      print(data);
     });
     on<PostDataProjects>((event, emit) async {
       var db = await database.getDatabase;
@@ -35,23 +33,47 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       emit(ProjectsPostSuccesState());
     });
     on<EditDataProjects>((event, emit) async {
-     var db = await database.getDatabase;
-     await db.update("PROJECTS", event.projectsModel.toJson(), where: "Id = ?", whereArgs: [event.id]); 
+      var db = await database.getDatabase;
+      await db.update(
+        "PROJECTS",
+        event.projectsModel.toJson(),
+        where: "Id = ?",
+        whereArgs: [event.id],
+      );
       emit(ProjectsEditSuccesState());
     });
-    on<DeleteDataProjects>((event, emit) async{
+    on<DeleteDataProjects>((event, emit) async {
       var db = await database.getDatabase;
-      await db.delete("PROJECTS", where: 'Id = ?',whereArgs: [event.id]);
+      await db.delete("PROJECTS", where: 'Id = ?', whereArgs: [event.id]);
       emit(ProjectsDeleteSuccesState());
     });
     on<ToggleIsExpandedProjects>((event, emit) {
-      if(state is ProjectsSuccesState){
+      if (state is ProjectsSuccesState) {
         var rawlist = state as ProjectsSuccesState;
         var data = List<ProjectsModel>.from(rawlist.list);
-        final updateUsers =  data[event.id];
-        data[event.id] = updateUsers.copyWith(isExpanded: !updateUsers.isExpanded);
-      emit(ProjectsSuccesState(list: data));
+        final updateUsers = data[event.id];
+        data[event.id] = updateUsers.copyWith(
+          isExpanded: !updateUsers.isExpanded,
+        );
+        emit(ProjectsSuccesState(list: data));
       }
+    });
+    on<SearchProjects>((event, emit) async {
+      var db = await database.getDatabase;
+      var results = await db.rawQuery('''
+      SELECT PROJECTS.*,
+      CLIENT.name as client_name,
+      CLIENT.handphone as client_handphone,
+      CLIENT.country_code as client_countryCode,
+      CLIENT.alamat as client_alamat
+      FROM PROJECTS INNER JOIN CLIENT ON PROJECTS.client_id = CLIENT.Id
+      ''');
+      var query = event.agenda.toLowerCase();
+      List<ProjectsModel> data = results
+          .map((e) => ProjectsModel.fromJson(e))
+          .toList();
+      var finalData = data.where((e) => e.agenda.toLowerCase().contains(query)).toList();
+      emit(ProjectsSuccesState(list: finalData));
     });
   }
 }

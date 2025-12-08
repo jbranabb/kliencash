@@ -20,3 +20,7 @@ class ToggleIsExpandedProjects extends ProjectsEvent{
   int id; 
   ToggleIsExpandedProjects({required this.id});
 }
+class SearchProjects extends ProjectsEvent{
+  String agenda; 
+  SearchProjects({required this.agenda});
+}

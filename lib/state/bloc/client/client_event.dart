@@ -17,3 +17,7 @@ class DeleteDataClient extends ClientEvent {
   int id; 
   DeleteDataClient({required this.id});
 }
+class SeacrhClient extends ClientEvent {
+  String name; 
+  SeacrhClient({required this.name});
+}
