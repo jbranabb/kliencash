@@ -205,7 +205,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  MyText(title: 'Build by J With Love', color: Colors.grey),
+                  MyText(
+                    title: '@productvtyera • J',
+                    color: Colors.grey,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -378,8 +382,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                               size: 16,
                                             ),
                                             MyText(
-                                              title:
-                                                  LocaleKeys.addNewPaymentMethod.tr(),
+                                              title: LocaleKeys
+                                                  .addNewPaymentMethod
+                                                  .tr(),
                                               color: Colors.grey,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
@@ -478,7 +483,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           BlocBuilder<DropdownStatusinvoice, String?>(
                             builder: (context, state) {
                               return MyText(
-                                title: state ?? 'BANK ${LocaleKeys.or.tr()} E-Wallet',
+                                title:
+                                    state ??
+                                    'BANK ${LocaleKeys.or.tr()} E-Wallet',
                                 color: state != null
                                     ? Colors.black
                                     : Colors.grey,
@@ -516,7 +523,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   controller: atasNamaC,
                   label: LocaleKeys.onBehalfOf.tr(),
                   icon: Icons.person,
-                  hint: MyText(title: LocaleKeys.accountNameExample.tr(), color: Colors.grey),
+                  hint: MyText(
+                    title: LocaleKeys.accountNameExample.tr(),
+                    color: Colors.grey,
+                  ),
                   focusNode: atasNamaF,
                   isOtional: false,
                 ),
@@ -548,7 +558,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: MyText(title: LocaleKeys.errorOccurred.tr()),
+                                title: MyText(
+                                  title: LocaleKeys.errorOccurred.tr(),
+                                ),
                                 content: MyText(
                                   title: LocaleKeys.pleaseCheckInput.tr(),
                                 ),
@@ -738,28 +750,33 @@ class _SettingsPageState extends State<SettingsPage> {
                                             } else {
                                               showDialog(
                                                 context: context,
-                                                builder: (context) => AlertDialog(
-                                                  title: MyText(
-                                                    title: LocaleKeys.errorOccurred.tr(),
-                                                  ),
-                                                  content: MyText(
-                                                    title: LocaleKeys.pleaseCheckInput.tr(),
-                                                  ),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop();
-                                                      },
-                                                      child: MyText(
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                      title: MyText(
                                                         title: LocaleKeys
-                                                            .understood
+                                                            .errorOccurred
                                                             .tr(),
                                                       ),
+                                                      content: MyText(
+                                                        title: LocaleKeys
+                                                            .pleaseCheckInput
+                                                            .tr(),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                              context,
+                                                            ).pop();
+                                                          },
+                                                          child: MyText(
+                                                            title: LocaleKeys
+                                                                .understood
+                                                                .tr(),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
                                               );
                                             }
                                           },
@@ -805,7 +822,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   MyText(
-                    title: 'Hallo, ',
+                    title: '${LocaleKeys.hallo.tr()}, ',
                     fontWeight: FontWeight.w600,
                     color: Colors.grey,
                     fontSize: 16,
@@ -871,7 +888,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: state == 'id' ? Colors.grey[50] : Colors.white,
+                              color: state == 'id'
+                                  ? Colors.grey[50]
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(18),
                             ),
                             child: ListTile(
@@ -885,7 +904,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              color: state == 'en' ? Colors.grey[50] : Colors.white,
+                              color: state == 'en'
+                                  ? Colors.grey[50]
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(18),
                             ),
                             child: ListTile(
