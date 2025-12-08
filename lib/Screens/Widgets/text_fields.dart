@@ -36,16 +36,24 @@ class TextFieldsDropDown extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: bgcolors(state ?? ''),
-                    border: Border.all(
-                      color: colors(state ?? '')
-                    ),
-                    borderRadius: BorderRadius.circular(12) 
+                    border: Border.all(color: colors(state ?? '')),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   alignment: Alignment.center,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0, top: 4,left: 8,right: 8),
-                    child: MyText(title: state ?? LocaleKeys.selectStatus.tr(),color: state != null ? colors(state) : Colors.grey, fontWeight: FontWeight.w600,),
-                  )),
+                    padding: const EdgeInsets.only(
+                      bottom: 8.0,
+                      top: 4,
+                      left: 8,
+                      right: 8,
+                    ),
+                    child: MyText(
+                      title: state ?? LocaleKeys.selectStatus.tr(),
+                      color: state != null ? colors(state) : Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               );
             },
           ),
@@ -55,42 +63,58 @@ class TextFieldsDropDown extends StatelessWidget {
   }
 }
 
-Color bgcolors(String state){
-  switch(state.toLowerCase()){
-    case "pending":
-    return Colors.orange.shade100;
-    case "on going":
-    return Colors.blue.shade100;
-    case "completed":
-    return Colors.green.shade100;
-    case "cancelled":
-    return Colors.red.shade100;
-    case "lunas":
-    return Colors.blue.shade100;
-  case "dp / partial":
-    return Colors.orange.shade100;
-  default:
-  return Colors.grey.shade100;
-  }
+Widget textFiledsForSearch(context, nameSeacrhC,nameSeacrhF, void Function(String value)? onchanged ) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    child: MyTextFileds(
+      controller: nameSeacrhC,
+      label: LocaleKeys.search.tr(),
+      icon: Icons.search,
+      focusNode: nameSeacrhF,
+      isOtional: true,
+      onChanged: onchanged
+    ),
+  );
 }
-Color colors(String state){
-  switch(state.toLowerCase()){
+
+Color bgcolors(String state) {
+  switch (state.toLowerCase()) {
     case "pending":
-    return Colors.orange.shade700;
+      return Colors.orange.shade100;
     case "on going":
-    return Colors.blue.shade700;
+      return Colors.blue.shade100;
     case "completed":
-    return Colors.green.shade700;
+      return Colors.green.shade100;
     case "cancelled":
-    return Colors.red;
+      return Colors.red.shade100;
     case "lunas":
-    return Colors.blue.shade700;
+      return Colors.blue.shade100;
     case "dp / partial":
-    return Colors.orange.shade700;
+      return Colors.orange.shade100;
     default:
-  return Colors.grey.shade500;
+      return Colors.grey.shade100;
   }
 }
+
+Color colors(String state) {
+  switch (state.toLowerCase()) {
+    case "pending":
+      return Colors.orange.shade700;
+    case "on going":
+      return Colors.blue.shade700;
+    case "completed":
+      return Colors.green.shade700;
+    case "cancelled":
+      return Colors.red;
+    case "lunas":
+      return Colors.blue.shade700;
+    case "dp / partial":
+      return Colors.orange.shade700;
+    default:
+      return Colors.grey.shade500;
+  }
+}
+
 class MyTextFileds extends StatelessWidget {
   MyTextFileds({
     super.key,
@@ -103,8 +127,8 @@ class MyTextFileds extends StatelessWidget {
     this.onEditingCom,
     this.onChanged,
     this.suffix,
-  this.maxlines
-  ,this.hint
+    this.maxlines,
+    this.hint,
   });
   TextEditingController controller;
   IconData icon;
@@ -126,16 +150,19 @@ class MyTextFileds extends StatelessWidget {
       maxLines: maxlines ?? 1,
       onEditingComplete: onEditingCom,
       keyboardType: textType ?? TextInputType.text,
-      inputFormatters:textType == TextInputType.number ? [
-        FilteringTextInputFormatter.digitsOnly,
-        // LengthLimitingTextInputFormatter(maxLength)
-      ] : [],
+      inputFormatters: textType == TextInputType.number
+          ? [
+              FilteringTextInputFormatter.digitsOnly,
+              // LengthLimitingTextInputFormatter(maxLength)
+            ]
+          : [],
       onChanged: onChanged,
       decoration: InputDecoration(
-        hint: hint ,
+        hint: hint,
         enabled: true,
         prefixIcon: Icon(icon, color: Colors.grey),
-        suffix: suffix ?? MyText(title: isOtional ? "" : "*", color: Colors.red),
+        suffix:
+            suffix ?? MyText(title: isOtional ? "" : "*", color: Colors.red),
         label: MyText(title: label),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -210,7 +237,7 @@ class TextFiledsReadOnly extends StatelessWidget {
     required this.controller,
     required this.label,
     required this.icon,
-    this.onChanged
+    this.onChanged,
   });
   TextEditingController controller;
   IconData icon;

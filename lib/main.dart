@@ -32,6 +32,7 @@ import 'package:kliencash/state/cubit/selectedProjects.dart';
 import 'package:kliencash/state/cubit/selectedpaymentMethod.dart';
 import 'package:kliencash/state/cubit/statusProjectrs.dart';
 import 'package:kliencash/state/cubit/toggleLang.dart';
+import 'package:kliencash/state/cubit/toggleSearchUniversal.dart';
 import 'package:kliencash/themeData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -95,6 +96,7 @@ void main() async {
           BlocProvider(create: (context) => ChartProjectsHightValue()),
           BlocProvider(create: (context) => ChartinvoiceStatus()),
           BlocProvider(create: (context) => Togglelang()),
+          BlocProvider(create: (context) => Togglesearchuniversal()),
         ],
         child: MainApp(launchcount: launchCount),
       ),
