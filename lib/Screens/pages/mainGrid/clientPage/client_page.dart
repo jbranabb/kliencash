@@ -287,7 +287,7 @@ class _ClientPageState extends State<ClientPage> {
                         children: [
                           MyText(
                             title: client.name,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),

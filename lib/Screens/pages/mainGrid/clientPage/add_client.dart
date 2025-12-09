@@ -70,7 +70,7 @@ class _AddClientState extends State<AddClient> {
                         MyTextFileds(
                           controller: nameC,
                           icon: Icons.person,
-                          label: LocaleKeys.phoneNumber.tr(),
+                          label: LocaleKeys.client.tr(),
                           focusNode: nameF,
                           isOtional: false,
                           onEditingCom: () {

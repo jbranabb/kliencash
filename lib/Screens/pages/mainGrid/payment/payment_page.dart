@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/search_widget.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/locale_keys.dart';
@@ -190,23 +191,20 @@ Widget _buildList(BuildContext context, PaymentModel data) {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color:
-                            data.invoicemodel!.status.toLowerCase() == 'lunas'
-                            ? Colors.blue.shade100
-                            : Colors.orange.shade100,
+                        color:bgcolors(data.invoicemodel!.status)
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: MyText(
-                          title:
-                              data.invoicemodel!.status.toLowerCase() == 'lunas'
-                              ? LocaleKeys.fullyPaid.tr().toUpperCase()
-                              : data.invoicemodel!.status.toUpperCase(),
+                          title:data.invoicemodel!.status.toLowerCase().contains('installments')
+                            ? LocaleKeys.installments.tr().toUpperCase()
+                            : data.invoicemodel!.status.toLowerCase().contains('down payment')
+                            ? LocaleKeys.dp.tr().toUpperCase()
+                            : data.invoicemodel!.status.toLowerCase().contains('fully paid')
+                            ? LocaleKeys.fullyPaid.tr().toUpperCase()
+                            : data.invoicemodel!.status,
                           fontSize: 12,
-                          color:
-                              data.invoicemodel!.status.toLowerCase() == 'lunas'
-                              ? Colors.blue
-                              : Colors.orange.shade600,
+                          color:colors(data.invoicemodel!.status),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

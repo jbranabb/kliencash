@@ -130,9 +130,16 @@ class _OperasionalPageState extends State<OperasionalPage> {
                       children: [
                         SizedBox(height: 12),
                         isActiveSearch
-                            ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (value) {
-                              context.read<ProjectsBloc>().add(SearchProjects(agenda: value.trim()));
-                            },)
+                            ? textFiledsForSearch(
+                                context,
+                                nameSeacrhC,
+                                nameSeacrhF,
+                                (value) {
+                                  context.read<ProjectsBloc>().add(
+                                    SearchProjects(agenda: value.trim()),
+                                  );
+                                },
+                              )
                             : SizedBox.shrink(),
                         if (isActiveSearch && state.list.isEmpty) ...[
                           SizedBox(height: 20),
@@ -185,10 +192,13 @@ class _OperasionalPageState extends State<OperasionalPage> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                MyText(
-                                                  title: data.agenda,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18,
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: MyText(
+                                                    title: data.agenda,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 16,
+                                                  ),
                                                 ),
                                                 Container(
                                                   decoration: BoxDecoration(
@@ -201,13 +211,18 @@ class _OperasionalPageState extends State<OperasionalPage> {
                                                         ),
                                                   ),
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          8.0,
-                                                        ),
+                                                    padding:const EdgeInsets.all(8.0,),
                                                     child: MyText(
-                                                      title: data.status
-                                                          .toUpperCase(),
+                                                      title:
+                                                          data.status.toLowerCase().contains('pending',)
+                                                          ? LocaleKeys.pending.tr().toUpperCase()
+                                                          : data.status.toLowerCase().contains('on going',)
+                                                          ? LocaleKeys.onGoing.tr().toUpperCase()
+                                                          : data.status.toLowerCase().contains(  'completed',)
+                                                          ? LocaleKeys.completed.tr().toUpperCase()
+                                                          : data.status.toLowerCase().contains(  'cancelled',)
+                                                          ? LocaleKeys.cancelled.tr().toUpperCase()
+                                                          : data.status,
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       fontSize: 10,

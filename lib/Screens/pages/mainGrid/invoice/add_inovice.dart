@@ -297,8 +297,6 @@ class _AddInoviceState extends State<AddInovice> {
                   onPressed: () {
                     print(totalAmountC.text);
                     print(subtotalC.text);
-
-                    // print(totalAmountC.text.toLowerCase().contains(LocaleKeys.free.tr().toLowerCase()) && totalAmountC.text.isNotEmpty ? 0 : 1);
                     var totalAmoutFormated = totalAmountC.text.toLowerCase().contains(LocaleKeys.free.tr().toLowerCase()) && totalAmountC.text.isNotEmpty
                         ? 0
                         : int.parse(totalAmountC.text.replaceAll(RegExp(r'[Rp\s.]'),'',));

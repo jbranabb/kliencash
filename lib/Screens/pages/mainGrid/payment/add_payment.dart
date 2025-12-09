@@ -95,7 +95,11 @@ class _AddPaymentState extends State<AddPayment> {
                   nameSeacrhC,
                   nameSeacrhF,
                 ),
-                _selectedInvoiceWhenAddPayement(context, nameSeacrhC,nameSeacrhF ),
+                _selectedInvoiceWhenAddPayement(
+                  context,
+                  nameSeacrhC,
+                  nameSeacrhF,
+                ),
                 BlocBuilder<Selectedinvoice, List<InvoiceModel>>(
                   builder: (context, state) {
                     amountC.text = state.isNotEmpty
@@ -358,9 +362,10 @@ Widget _showSingleDateTime(BuildContext context) {
   );
 }
 
-Widget _selectedInvoiceWhenAddPayement(BuildContext context,
-TextEditingController nameSeacrhC,
-FocusNode nameSeacrhF
+Widget _selectedInvoiceWhenAddPayement(
+  BuildContext context,
+  TextEditingController nameSeacrhC,
+  FocusNode nameSeacrhF,
 ) {
   var height = MediaQuery.of(context).size.height;
   return InkWell(
@@ -371,10 +376,10 @@ FocusNode nameSeacrhF
           : null;
       showModalBottomSheet(
         context: context,
-        isScrollControlled: true ,
+        isScrollControlled: true,
         builder: (context) => idProjects != null
             ? SizedBox(
-              height: height * 0.8,
+                height: height * 0.8,
                 width: double.maxFinite,
                 child: BlocBuilder<Togglesearchuniversal, bool>(
                   builder: (context, isActiveSearch) {
@@ -504,7 +509,32 @@ FocusNode nameSeacrhF
                                                 ),
                                                 child: MyText(
                                                   fontSize: 10,
-                                                  title: invoice.status,
+                                                  title:
+                                                      invoice.status
+                                                          .toLowerCase()
+                                                          .contains(
+                                                            'installments',
+                                                          )
+                                                      ? LocaleKeys.installments
+                                                            .tr()
+                                                            .toUpperCase()
+                                                      : invoice.status
+                                                            .toLowerCase()
+                                                            .contains(
+                                                              'down payment',
+                                                            )
+                                                      ? LocaleKeys.dp
+                                                            .tr()
+                                                            .toUpperCase()
+                                                      : invoice.status
+                                                            .toLowerCase()
+                                                            .contains(
+                                                              'fully paid',
+                                                            )
+                                                      ? LocaleKeys.fullyPaid
+                                                            .tr()
+                                                            .toUpperCase()
+                                                      : invoice.status,
                                                   color: colors(invoice.status),
                                                 ),
                                               ),
@@ -605,7 +635,14 @@ FocusNode nameSeacrhF
                       padding: const EdgeInsets.all(6.0),
                       child: MyText(
                         fontSize: 10,
-                        title: data.status,
+                        title:
+                            data.status.toLowerCase().contains('installments')
+                            ? LocaleKeys.installments.tr().toUpperCase()
+                            : data.status.toLowerCase().contains('down payment')
+                            ? LocaleKeys.dp.tr().toUpperCase()
+                            : data.status.toLowerCase().contains('fully paid')
+                            ? LocaleKeys.fullyPaid.tr().toUpperCase()
+                            : data.status,
                         color: colors(data.status),
                       ),
                     ),
@@ -771,62 +808,98 @@ Widget _selectProjectsWhenAddPayment(
                     : Colors.grey,
               ),
             ),
-            title: MyText(title: state['agenda'] ?? 'Pilih Projects'),
-            trailing: state['status'] != null
-                ? Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: bgcolors(state['status']),
-                      border: Border.all(color: colors(state['status'])),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: MyText(
-                        title: state['status'],
-                        fontSize: 10,
-                        color: colors(state['status']),
-                      ),
-                    ),
-                  )
-                : Icon(Icons.arrow_drop_down, color: Colors.grey),
+            title: state['agenda'] == null ?  MyText(title:  
+                                  LocaleKeys.selectProjects.tr() ) : null,
             subtitle: state['agenda'] != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                ? Row(
                     children: [
-                      MyText(
-                        title: state['client_name'],
-                        fontSize: 12,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w600,
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyText(
+                              title:
+                                  state['agenda'] ??
+                                  LocaleKeys.selectProjects.tr(),
+                            ),
+                            MyText(
+                              title: state['client_name'],
+                              fontSize: 12,
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            MyText(
+                              title: formatRupiah.format(
+                                state['estimatedValue'],
+                              ),
+                              fontSize: 12,
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              spacing: 4,
+                              children: [
+                                projectsDate(
+                                  startAt,
+                                  Colors.green.shade100,
+                                  Colors.green,
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 8,
+                                  color: Colors.grey,
+                                ),
+                                projectsDate(
+                                  endAt,
+                                  Colors.blue.shade100,
+                                  Colors.blue,
+                                  icon: Icons.done,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      MyText(
-                        title: formatRupiah.format(state['estimatedValue']),
-                        fontSize: 12,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        spacing: 4,
-                        children: [
-                          projectsDate(
-                            startAt,
-                            Colors.green.shade100,
-                            Colors.green,
-                          ),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 8,
-                            color: Colors.grey,
-                          ),
-                          projectsDate(
-                            endAt,
-                            Colors.blue.shade100,
-                            Colors.blue,
-                            icon: Icons.done,
-                          ),
-                        ],
-                      ),
+                      state['status'] != null
+                          ? Container(
+                              width: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: bgcolors(state['status']),
+                                border: Border.all(
+                                  color: colors(state['status']),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: MyText(
+                                  textAlign: TextAlign.center,
+                                  title:
+                                      state['status'].toLowerCase().contains(
+                                        'pending',
+                                      )
+                                      ? LocaleKeys.pending.tr().toUpperCase()
+                                      : state['status'].toLowerCase().contains(
+                                          'on going',
+                                        )
+                                      ? LocaleKeys.onGoing.tr().toUpperCase()
+                                      : state['status'].toLowerCase().contains(
+                                          'completed',
+                                        )
+                                      ? LocaleKeys.completed.tr().toUpperCase()
+                                      : state['status'].toLowerCase().contains(
+                                          'cancelled',
+                                        )
+                                      ? LocaleKeys.cancelled.tr().toUpperCase()
+                                      : state['status'],
+                                  fontSize: 10,
+                                  color: colors(state['status']),
+                                ),
+                              ),
+                            )
+                          : Icon(Icons.arrow_drop_down, color: Colors.grey),
                     ],
                   )
                 : null,

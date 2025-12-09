@@ -340,7 +340,15 @@ class DetailInvoice extends StatelessWidget {
                             SizedBox(height: 16),
                             _buildInfoRow(
                               'Project Status',
-                              project.status,
+                              project.status.toLowerCase().contains('on going')
+                            ? LocaleKeys.onGoing.tr().toUpperCase()
+                            : project.status.toLowerCase().contains('pending')
+                            ? LocaleKeys.pending.tr().toUpperCase()
+                            : project.status.toLowerCase().contains('completed')
+                            ? LocaleKeys.completed.tr().toUpperCase()
+                            : project.status.toLowerCase().contains('cancelled')
+                            ? LocaleKeys.cancelled.tr().toUpperCase()
+                            : project.status.toLowerCase(),
                               valueColor: colors(project.status),
                             ),
                             if (project.desc != null &&
