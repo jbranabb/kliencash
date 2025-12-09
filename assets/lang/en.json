@@ -184,6 +184,10 @@
     "emptyFilter": "No items found. Try adjusting your search.",
     "search": "Search",
     "installments": "Installments",
-    "DP": "Down Payment"
+    "DP": "Down Payment",
+    "pending": "Pending",
+    "onGoing": "On Going",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
     
 }

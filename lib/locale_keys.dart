@@ -215,4 +215,8 @@ class LocaleKeys {
   static const String search = 'search';
   static const String installments = 'installments';
   static const String dp = 'DP';
+  static const String pending = 'pending';
+  static const String onGoing = 'onGoing';
+  static const String completed = 'completed';
+  static const String cancelled = 'cancelled';
 }
