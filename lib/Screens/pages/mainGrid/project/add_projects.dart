@@ -245,6 +245,11 @@ void validatePost(
       price.isNotEmpty &&
       startDate.isNotEmpty &&
       status != null) {
+  var formatedStatus =
+    status.toLowerCase().contains('menunggu') ? "PENDING" :
+    status.toLowerCase().contains('sedang berjalan') ? 'ON GOING' :
+    status.toLowerCase().contains('selesai') ?  "COMPLETED" :
+    status.toLowerCase().contains('dibatalkan') ?  "CANCELLED" : status;
     context.read<ProjectsBloc>().add(
       PostDataProjects(
         projectsModel: ProjectsModel(
@@ -254,7 +259,7 @@ void validatePost(
           price: int.parse(price),
           startAt: startDate,
           endAt: enddate,
-          status: status,
+          status: formatedStatus,
           createdAt: DateTime.now().toIso8601String(),
         ),
       ),

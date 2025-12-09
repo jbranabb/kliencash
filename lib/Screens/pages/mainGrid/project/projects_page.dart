@@ -108,9 +108,16 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       children: [
                         SizedBox(height: 12),
                         isActiveSearch
-                            ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (value) {
-                              context.read<ProjectsBloc>().add(SearchProjects(agenda: value.trim()));
-                            },)
+                            ? textFiledsForSearch(
+                                context,
+                                nameSeacrhC,
+                                nameSeacrhF,
+                                (value) {
+                                  context.read<ProjectsBloc>().add(
+                                    SearchProjects(agenda: value.trim()),
+                                  );
+                                },
+                              )
                             : SizedBox.shrink(),
                         if (isActiveSearch && state.list.isEmpty) ...[
                           SizedBox(height: 20),
@@ -263,6 +270,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
+                          flex: 1,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -273,45 +281,55 @@ class _ProjectsPageState extends State<ProjectsPage> {
                                 color: Colors.black87,
                               ),
                               SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.person,
-                                    size: 14,
-                                    color: Colors.grey[600],
-                                  ),
-                                  SizedBox(width: 4),
-                                  MyText(
-                                    title: project.client!.name,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey[600]!,
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
-                        SizedBox(width: 8),
+                        // SizedBox(width: 8),
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12,
+                            horizontal: 10,
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
                             color: bgcolors(project.status),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: MyText(
-                            title: project.status,
-                            fontSize: 11,
+                            title:
+                                project.status.toLowerCase().contains('pending')
+                                ? LocaleKeys.pending.tr().toUpperCase()
+                                : project.status.toLowerCase().contains(
+                                    'on going',
+                                  )
+                                ? LocaleKeys.onGoing.tr().toUpperCase()
+                                : project.status.toLowerCase().contains(
+                                    'completed',
+                                  )
+                                ? LocaleKeys.completed.tr().toUpperCase()
+                                : project.status.toLowerCase().contains(
+                                    'cancelled',
+                                  )
+                                ? LocaleKeys.cancelled.tr().toUpperCase()
+                                : project.status,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: colors(project.status),
                           ),
                         ),
                       ],
                     ),
-
+                    Row(
+                      children: [
+                        Icon(Icons.person, size: 14, color: Colors.grey[600]),
+                        SizedBox(width: 4),
+                        MyText(
+                          title: project.client!.name,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600]!,
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 12),
                     Container(
                       padding: EdgeInsets.symmetric(
@@ -702,6 +720,11 @@ void validateEditProjects(
       priceC.isNotEmpty &&
       clientIdC.isNotEmpty &&
       startAt.isNotEmpty) {
+        var formatedStatus =
+    status.toLowerCase().contains('menunggu') ? "PENDING" :
+    status.toLowerCase().contains('sedang berjalan') ? 'ON GOING' :
+    status.toLowerCase().contains('selesai') ?  "COMPLETED" :
+    status.toLowerCase().contains('dibatalkan') ?  "CANCELLED" : status;
     var subtotalFormated = priceC.replaceAll(RegExp(r'[Rp\s.]'), '');
     context.read<ProjectsBloc>().add(
       EditDataProjects(
@@ -712,7 +735,7 @@ void validateEditProjects(
           price: int.parse(subtotalFormated),
           startAt: startAt,
           endAt: endAt,
-          status: status,
+          status: formatedStatus,
           createdAt: DateTime.now().toIso8601String(),
         ),
         id: id,

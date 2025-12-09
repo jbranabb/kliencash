@@ -11,6 +11,16 @@ Color bgcolors(String state) {
     case "completed":
       return Colors.green.shade100;
     case "cancelled":
+      return Colors.red.shade100; 
+
+    case "menunggu":
+      return Colors.orange.shade100;
+    case "sedang berjalan":
+      return Colors.blue.shade100;
+    case "selesai":
+      return Colors.green.shade100;
+    case "dibatalkan":
+      return Colors.red.shade100;
 
     // status invocie
       
@@ -45,6 +55,14 @@ Color colors(String state) {
       return Colors.green.shade700;
     case "cancelled":
       return Colors.red;
+    case "menunggu":
+      return Colors.orange.shade700;
+    case "sedang berjalan":
+      return Colors.blue.shade700;
+    case "selesai":
+      return Colors.green.shade700;
+    case "dibatalkan":
+      return Colors.red;
 
       // status invoice
     case "lunas":
@@ -76,11 +94,20 @@ PdfColor pdfcolors(String state) {
       return PdfColors.green;
     case "cancelled":
       return PdfColors.red;
+
+    case "menunggu":
+      return PdfColors.orange700;
+    case "sedang berjalan":
+      return PdfColors.blue700;
+    case "selesai":
+      return PdfColors.green700;
+    case "dibatalkan":
+      return PdfColors.red;
+
        case "lunas":
       return PdfColors.blue;
     case "fully paid":
       return PdfColors.blue;
-
     case "uang muka":
       return PdfColors.orange700;
     case "down payment":

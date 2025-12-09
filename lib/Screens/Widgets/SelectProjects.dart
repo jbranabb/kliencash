@@ -7,6 +7,7 @@ import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/slideAbleShowModalBottomSheet.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
@@ -27,7 +28,6 @@ class SelectProjecstWidget extends StatefulWidget {
 }
 
 class _SelectProjecstWidgetState extends State<SelectProjecstWidget> {
-
   var nameSeacrhC = TextEditingController();
   var nameSeacrhF = FocusNode();
   @override
@@ -36,6 +36,7 @@ class _SelectProjecstWidgetState extends State<SelectProjecstWidget> {
     nameSeacrhF.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -59,7 +60,7 @@ class _SelectProjecstWidgetState extends State<SelectProjecstWidget> {
                   topLeft: Radius.circular(12),
                 ),
               ),
-              child: projectsToAdd(context, height,nameSeacrhC,nameSeacrhF),
+              child: projectsToAdd(context, height, nameSeacrhC, nameSeacrhF),
             ),
           );
         },
@@ -96,120 +97,125 @@ class _SelectProjecstWidgetState extends State<SelectProjecstWidget> {
                 ),
                 title: MyText(title: state['agenda'] ?? 'Pilih Projects'),
                 subtitle: state['agenda'] != null
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          MyText(
-                            title: state['client_name'],
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          MyText(
-                            title: formatRupiah.format(state['estimatedValue']),
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          BlocBuilder<OperasionalBloc, OperasionalState>(
-                            builder: (context, state) {
-                              if (state is OperasionalReadSucces) {
-                                var data = state.list
-                                    .where((e) => e.projectId == id)
-                                    .toList();
-                                if (data.isEmpty) {
-                                  return MyText(
-                                    title: 'Belum Ada Biaya Operasional',
-                                    fontSize: 8,
-                                    color: Colors.grey,
-                                  );
-                                }
-                                var totalAmount = 0;
-                                for (var amount in data) {
-                                  totalAmount += amount.amount;
-                                }
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: data.length,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        var listOp = data[index];
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                MyText(
-                                                  title: '• ',
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 8,
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                                MyText(
-                                                  title: '${listOp.title} ',
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 8,
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                                MyText(
-                                                  title: formatCurrency(
-                                                    listOp.amount,
-                                                  ),
-                                                  fontSize: 8,
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                    ? Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  title: state['client_name'],
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                MyText(
+                                  title: formatRupiah.format(state['estimatedValue']),
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                BlocBuilder<OperasionalBloc, OperasionalState>(
+                                  builder: (context, state) {
+                                    if (state is OperasionalReadSucces) {
+                                      var data = state.list
+                                          .where((e) => e.projectId == id)
+                                          .toList();
+                                      if (data.isEmpty) {
+                                        return MyText(
+                                          title: 'Belum Ada Biaya Operasional',
+                                          fontSize: 8,
+                                          color: Colors.grey,
                                         );
-                                      },
+                                      }
+                                      var totalAmount = 0;
+                                      for (var amount in data) {
+                                        totalAmount += amount.amount;
+                                      }
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: data.length,
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemBuilder: (context, index) {
+                                              var listOp = data[index];
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.center,
+                                                    children: [
+                                                      MyText(
+                                                        title: '• ',
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 8,
+                                                        color: Colors.grey.shade700,
+                                                      ),
+                                                      MyText(
+                                                        title: '${listOp.title} ',
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 8,
+                                                        color: Colors.grey.shade700,
+                                                      ),
+                                                      MyText(
+                                                        title: formatCurrency(
+                                                          listOp.amount,
+                                                        ),
+                                                        fontSize: 8,
+                                                        color: Colors.grey,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                          MyText(
+                                            title:
+                                                'Total: ${formatCurrency(totalAmount + price)}',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 11,
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return Container();
+                                  },
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  spacing: 4,
+                                  children: [
+                                    projectsDate(
+                                      startAt,
+                                      Colors.green.shade100,
+                                      Colors.green,
                                     ),
-                                    MyText(
-                                      title:
-                                          'Total: ${formatCurrency(totalAmount + price)}',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 8,
+                                      color: Colors.grey,
+                                    ),
+                                    projectsDate(
+                                      endAt,
+                                      Colors.blue.shade100,
+                                      Colors.blue,
+                                      icon: Icons.done,
                                     ),
                                   ],
-                                );
-                              }
-                              return Container();
-                            },
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            spacing: 4,
-                            children: [
-                              projectsDate(
-                                startAt,
-                                Colors.green.shade100,
-                                Colors.green,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_rounded,
-                                size: 8,
-                                color: Colors.grey,
-                              ),
-                              projectsDate(
-                                endAt,
-                                Colors.blue.shade100,
-                                Colors.blue,
-                                icon: Icons.done,
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : null,
-                trailing: state['status'] != null
+                                ),
+                              ],
+                            ),
+                        ),
+                           state['status'] != null
                     ? Container(
+                      width: 60,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: bgcolors(state['status']),
@@ -218,13 +224,35 @@ class _SelectProjecstWidgetState extends State<SelectProjecstWidget> {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: MyText(
-                            title: state['status'],
+                            textAlign: TextAlign.center,
+                            title:
+                                state['status'].toLowerCase().contains(
+                                  'pending',
+                                )
+                                ? LocaleKeys.pending.tr().toUpperCase()
+                                : state['status'].toLowerCase().contains(
+                                    'on going',
+                                  )
+                                ? LocaleKeys.onGoing.tr().toUpperCase()
+                                : state['status'].toLowerCase().contains(
+                                    'completed',
+                                  )
+                                ? LocaleKeys.completed.tr().toUpperCase()
+                                : state['status'].toLowerCase().contains(
+                                    'cancelled',
+                                  )
+                                ? LocaleKeys.cancelled.tr().toUpperCase()
+                                : state['status'],
                             fontSize: 10,
                             color: colors(state['status']),
                           ),
                         ),
                       )
                     : Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      ],
+                    )
+                    : null,
+                // trailing:
               );
             },
           ),
@@ -268,278 +296,282 @@ Widget projectsDate(
   );
 }
 
-Widget projectsToAdd(context, double height,
-TextEditingController nameSeacrhC,
-FocusNode nameSeacrhF
+Widget projectsToAdd(
+  context,
+  double height,
+  TextEditingController nameSeacrhC,
+  FocusNode nameSeacrhF,
 ) {
   return SizedBox(
     height: height * 0.8,
     child: Column(
       children: [
-        Column(
-          children: [
-            SizedBox(height: 10),
-            slideAbleModalBottomSheet(context),
-            SizedBox(height: 10),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: slideAbleModalBottomSheet(context),
         ),
-        BlocBuilder<Togglesearchuniversal, bool>(
-          builder: (context, isActiveSearch) {
-            return BlocBuilder<ProjectsBloc, ProjectsState>(
-              builder: (context, state) {
-                if (state is ProjectsSuccesState) {
-                  if (state.list.isEmpty && !isActiveSearch) {
-                    return SizedBox(
-                      width: double.maxFinite,
-                      child: Column(
-                        children: [
-                          SizedBox(height: height * 0.18),
-                          Icon(Icons.cancel, color: Colors.grey, size: 60),
-                          MyText(
-                            title:
-                                "${LocaleKeys.noProject.tr()}\n${LocaleKeys.addProjectFirst.tr()}",
-                            textAlign: TextAlign.center,
-                          ),
+        Expanded(
+          child: BlocBuilder<Togglesearchuniversal, bool>(
+            builder: (context, isActiveSearch) {
+              return BlocBuilder<ProjectsBloc, ProjectsState>(
+                builder: (context, state) {
+                  if (state is ProjectsSuccesState) {
+                    if (state.list.isEmpty && !isActiveSearch) {
+                      return SizedBox(
+                        width: double.maxFinite,
+                        child: Column(
+                          children: [
+                            SizedBox(height: height * 0.18),
+                            Icon(Icons.cancel, color: Colors.grey, size: 60),
+                            MyText(
+                              title:
+                                  "${LocaleKeys.noProject.tr()}\n${LocaleKeys.addProjectFirst.tr()}",
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        isActiveSearch
+                            ? textFiledsForSearch(
+                                context,
+                                nameSeacrhC,
+                                nameSeacrhF,
+                                (value) {
+                                  context.read<ProjectsBloc>().add(
+                                    SearchProjects(agenda: value.trim()),
+                                  );
+                                },
+                              )
+                            : SizedBox.shrink(),
+                        if (isActiveSearch && state.list.isEmpty) ...[
+                          SizedBox(height: 20),
+                          MyText(title: LocaleKeys.emptyFilter.tr()),
                         ],
-                      ),
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: state.list.length,
+                            itemBuilder: (context, index) {
+                              var list = state.list[index];
+                              var formatedStart = DateTime.parse(list.startAt);
+                              var startAt = DateFormat(
+                                'dd-MM-yyyy',
+                              ).format(formatedStart);
+                              var formatedEnd = DateTime.parse(list.endAt);
+                              var endAt = DateFormat(
+                                'dd-MM-yyyy',
+                              ).format(formatedEnd);
+                              return listTileBuilder(
+                                context,
+                                list,
+                                startAt,
+                                endAt,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     );
                   }
-                  return Column(
+                  return Container();
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget listTileBuilder(
+  BuildContext context,
+  ProjectsModel list,
+  startAt,
+  endAt,
+) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+    child: Material(
+      color: Colors.transparent,
+      child: Card(
+        clipBehavior: Clip.none,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            context.read<SelectedProjects>().selecProjects(list.id!);
+            Navigator.of(context).pop();
+          },
+          child: ListTile(
+            leading: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.work,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            subtitle: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      isActiveSearch
-                      ? textFiledsForSearch(context, nameSeacrhC, nameSeacrhF, (
-                          value,
-                        ) {
-                          context.read<ProjectsBloc>().add(
-                          SearchProjects(agenda: value.trim())
-                          );
-                        })
-                      : SizedBox.shrink(),
-                  if (isActiveSearch && state.list.isEmpty) ...[
-                    SizedBox(height: 20),
-                    MyText(title: LocaleKeys.emptyFilter.tr()),
-                  ],
-                    SizedBox(height: 10),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: state.list.length,
-                        itemBuilder: (context, index) {
-                          var list = state.list[index];
-                          var formatedStart = DateTime.parse(list.startAt);
-                          var startAt = DateFormat(
-                            'dd-MM-yyyy',
-                          ).format(formatedStart);
-                          var formatedEnd = DateTime.parse(list.endAt);
-                          var endAt = DateFormat(
-                            'dd-MM-yyyy',
-                          ).format(formatedEnd);
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Card(
-                                clipBehavior: Clip.none,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(12),
-                                  onTap: () {
-                                    context
-                                        .read<SelectedProjects>()
-                                        .selecProjects(list.id!);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: ListTile(
-                                    leading: Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Icon(
-                                        Icons.work,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onPrimary,
-                                      ),
-                                    ),
-                                    subtitle: Column(
+                      MyText(
+                        title: list.agenda,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      MyText(
+                        title: list.client!.name,
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                      MyText(
+                        title: formatRupiah.format(list.price),
+                        fontSize: 10,
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      BlocBuilder<OperasionalBloc, OperasionalState>(
+                        builder: (context, state) {
+                          if (state is OperasionalReadSucces) {
+                            var data = state.list
+                                .where((e) => e.projectId == list.id)
+                                .toList();
+                            if (data.isEmpty) {
+                              return MyText(
+                                title: LocaleKeys.noOperationalCost.tr(),
+                                fontSize: 8,
+                                color: Colors.grey,
+                              );
+                            }
+                            var totalAmount = 0;
+                            for (var amount in data) {
+                              totalAmount += amount.amount;
+                            }
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: data.length,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var listOp = data[index];
+                                    return Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        MyText(
-                                          title: list.agenda,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        MyText(
-                                          title: list.client!.name,
-                                          fontSize: 12,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                        MyText(
-                                          title: formatRupiah.format(list.price),
-                                          fontSize: 10,
-                                          color: Colors.grey.shade700,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        BlocBuilder<
-                                          OperasionalBloc,
-                                          OperasionalState
-                                        >(
-                                          builder: (context, state) {
-                                            if (state is OperasionalReadSucces) {
-                                              var data = state.list
-                                                  .where(
-                                                    (e) => e.projectId == list.id,
-                                                  )
-                                                  .toList();
-                                              if (data.isEmpty) {
-                                                return MyText(
-                                                  title: LocaleKeys
-                                                      .noOperationalCost
-                                                      .tr(),
-                                                  fontSize: 8,
-                                                  color: Colors.grey,
-                                                );
-                                              }
-                                              var totalAmount = 0;
-                                              for (var amount in data) {
-                                                totalAmount += amount.amount;
-                                              }
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: data.length,
-                                                    physics:
-                                                        NeverScrollableScrollPhysics(),
-                                                    itemBuilder: (context, index) {
-                                                      var listOp = data[index];
-                                                      return Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              MyText(
-                                                                title: '• ',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 8,
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                              ),
-                                                              MyText(
-                                                                title:
-                                                                    '${listOp.title} ',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 8,
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                              ),
-                                                              MyText(
-                                                                title:
-                                                                    formatCurrency(
-                                                                      listOp
-                                                                          .amount,
-                                                                    ),
-                                                                fontSize: 8,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  ),
-                                                  MyText(
-                                                    title:
-                                                        'Total: ${formatCurrency(totalAmount + list.price)}',
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 11,
-                                                  ),
-                                                ],
-                                              );
-                                            }
-                                            return Container();
-                                          },
-                                        ),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          spacing: 4,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            projectsDate(
-                                              startAt,
-                                              Colors.green.shade100,
-                                              Colors.green,
+                                            MyText(
+                                              title: '• ',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 8,
+                                              color: Colors.grey.shade700,
                                             ),
-                                            Icon(
-                                              Icons.arrow_forward_rounded,
-                                              size: 8,
+                                            MyText(
+                                              title: '${listOp.title} ',
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 8,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                            MyText(
+                                              title: formatCurrency(
+                                                listOp.amount,
+                                              ),
+                                              fontSize: 8,
                                               color: Colors.grey,
-                                            ),
-                                            projectsDate(
-                                              endAt,
-                                              Colors.blue.shade100,
-                                              Colors.blue,
-                                              icon: Icons.done,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                           ],
                                         ),
                                       ],
-                                    ),
-                                    trailing: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: bgcolors(list.status),
-                                        border: Border.all(
-                                          color: colors(list.status),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: MyText(
-                                          title: list.status,
-                                          fontSize: 10,
-                                          color: colors(list.status),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 ),
-                              ),
-                            ),
-                          );
+                                MyText(
+                                  title:
+                                      'Total: ${formatCurrency(totalAmount + list.price)}',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                ),
+                              ],
+                            );
+                          }
+                          return Container();
                         },
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: 4,
+                        children: [
+                          projectsDate(
+                            startAt,
+                            Colors.green.shade100,
+                            Colors.green,
+                          ),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 8,
+                            color: Colors.grey,
+                          ),
+                          projectsDate(
+                            endAt,
+                            Colors.blue.shade100,
+                            Colors.blue,
+                            icon: Icons.done,
+                          ),
+                        ],
+                      ),
                     ],
-                  );
-                }
-                return Container();
-              },
-            );
-          },
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: bgcolors(list.status),
+                    border: Border.all(color: colors(list.status)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SizedBox(
+                      width: 50,
+                      child: MyText(
+                        textAlign: TextAlign.center,
+                        title: list.status.toLowerCase().contains('pending')
+                            ? LocaleKeys.pending.tr().toUpperCase()
+                            : list.status.toLowerCase().contains('on going')
+                            ? LocaleKeys.onGoing.tr().toUpperCase()
+                            : list.status.toLowerCase().contains('completed')
+                            ? LocaleKeys.completed.tr().toUpperCase()
+                            : list.status.toLowerCase().contains('cancelled')
+                            ? LocaleKeys.cancelled.tr().toUpperCase()
+                            : list.status,
+                        fontSize: 10,
+                        color: colors(list.status),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // trailing:
+          ),
         ),
-      ],
+      ),
     ),
   );
 }

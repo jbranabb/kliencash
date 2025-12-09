@@ -241,7 +241,15 @@ Future<Uint8List> generatePDF(
                     child: pw.Padding(
                       padding: pw.EdgeInsets.all(8),
                       child: MyTextPdf(
-                        title: projects.status.toUpperCase(),
+                        title: projects.status.toLowerCase().contains('on going')
+                            ? 'SEDANG BERJALAN'
+                            : projects.status.toLowerCase().contains('pending')
+                            ? 'MENUNGGU'
+                            : projects.status.toLowerCase().contains('completed')
+                            ? 'SELESAI'
+                            : projects.status.toLowerCase().contains('cancelled')
+                            ? 'DIBATALKAN'
+                            : projects.status.toLowerCase(),
                         color: pdfcolors(projects.status),
                         fontSize: 12,
                         fontWeight: pw.FontWeight.bold,
@@ -256,49 +264,50 @@ Future<Uint8List> generatePDF(
             pw.SizedBox(height: 8),
             pw.Align(
               alignment: pw.Alignment.centerLeft,
-              child:pw.Container(
-              width: width * 0.7,
-              decoration: pw.BoxDecoration(
-                border: pw.Border.all(color: PdfColors.grey),
-                color: PdfColors.grey100,
-                borderRadius: pw.BorderRadius.circular(4),
-              ),
-              child: pw.Padding(
-                padding: pw.EdgeInsets.all(10),
-                child: pw.Column(
-                  children: [
-                    pw.Align(
-                      alignment: pw.Alignment.centerLeft,        
-                      child: MyTextPdf(
-                        title: 'Biaya Operasional / Tambahan',
-                        fontSize: 12,
-                        color: PdfColors.grey700,
-                      ),
-                    ),
-                    ...finalOpData.map((items) {
-                      return pw.SizedBox(
-                        child: pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                          children: [
-                            MyTextPdf(
-                              title: "- ${items.title}",
-                              fontSize: 10,
-                              color: PdfColors.grey700,
-                            ),
-                            MyTextPdf(
-                              title: "- ${formatCurrency(items.amount)}",
-                              fontSize: 10,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColors.grey700,
-                            ),
-                          ],
+              child: pw.Container(
+                width: width * 0.7,
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey),
+                  color: PdfColors.grey100,
+                  borderRadius: pw.BorderRadius.circular(4),
+                ),
+                child: pw.Padding(
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Column(
+                    children: [
+                      pw.Align(
+                        alignment: pw.Alignment.centerLeft,
+                        child: MyTextPdf(
+                          title: 'Biaya Operasional / Tambahan',
+                          fontSize: 12,
+                          color: PdfColors.grey700,
                         ),
-                      );
-                    }),
-                  ],
+                      ),
+                      ...finalOpData.map((items) {
+                        return pw.SizedBox(
+                          child: pw.Row(
+                            mainAxisAlignment:
+                                pw.MainAxisAlignment.spaceBetween,
+                            children: [
+                              MyTextPdf(
+                                title: "- ${items.title}",
+                                fontSize: 10,
+                                color: PdfColors.grey700,
+                              ),
+                              MyTextPdf(
+                                title: "- ${formatCurrency(items.amount)}",
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                                color: PdfColors.grey700,
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ),
-            ), 
             ),
             pw.SizedBox(height: 10),
           ],
@@ -405,10 +414,16 @@ Future<Uint8List> generatePDF(
                   children: [
                     MyTextPdf(title: 'Bayar: '),
                     MyTextPdf(
-                      title: invoice.status.toLowerCase().contains('installments')
-                      ? 'CICILAN' : invoice.status.toLowerCase().contains('down payment')
-                      ? 'UANG MUKA' : invoice.status.toLowerCase().contains('fully paid') 
-                      ? 'LUNAS' : invoice.status.toLowerCase(),
+                      title:
+                          invoice.status.toLowerCase().contains('installments')
+                          ? 'CICILAN'
+                          : invoice.status.toLowerCase().contains(
+                              'down payment',
+                            )
+                          ? 'UANG MUKA'
+                          : invoice.status.toLowerCase().contains('fully paid')
+                          ? 'LUNAS'
+                          : invoice.status.toLowerCase(),
                       color: pdfcolors(invoice.status),
                       fontWeight: pw.FontWeight.bold,
                     ),

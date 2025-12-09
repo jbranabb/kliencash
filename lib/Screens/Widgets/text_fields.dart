@@ -11,7 +11,12 @@ import 'package:kliencash/state/cubit/statusProjectrs.dart';
 
 class TextFieldsDropDown extends StatelessWidget {
   TextFieldsDropDown({super.key});
-  List<String> status = ['Pending', 'On Going', 'Completed', 'Cancelled'];
+  List<String> status = [
+   LocaleKeys.pending.tr().toUpperCase(), 
+   LocaleKeys.onGoing.tr().toUpperCase(),
+   LocaleKeys.completed.tr().toUpperCase(),
+   LocaleKeys.cancelled.tr().toUpperCase()
+   ];
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<StatusprojectrsCubit, String?>(
