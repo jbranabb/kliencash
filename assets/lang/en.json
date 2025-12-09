@@ -182,5 +182,8 @@
     "clickToAdd": "Click To Add",
     "select": "Select",
     "emptyFilter": "No items found. Try adjusting your search.",
-    "search": "Search"
+    "search": "Search",
+    "installments": "Installments",
+    "DP": "Down Payment"
+    
 }

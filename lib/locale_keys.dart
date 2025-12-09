@@ -213,4 +213,6 @@ class LocaleKeys {
   static const String select = 'select';
   static const String emptyFilter = 'emptyFilter';
   static const String search = 'search';
+  static const String installments = 'installments';
+  static const String dp = 'DP';
 }
