@@ -405,10 +405,8 @@ Future<Uint8List> generatePDFEn(
                   children: [
                     MyTextPdf(title: 'Payment: '),
                     MyTextPdf(
-                      title: invoice.status.toLowerCase() == 'lunas' ?  'FULLY PAID' : 'DP / PARTIAL',
-                      color: invoice.status.toLowerCase() == 'lunas'
-                          ? PdfColors.blue700
-                          : PdfColors.orange600,
+                      title: invoice.status.toUpperCase(),
+                      color: pdfcolors(invoice.status),
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ],

@@ -405,10 +405,11 @@ Future<Uint8List> generatePDF(
                   children: [
                     MyTextPdf(title: 'Bayar: '),
                     MyTextPdf(
-                      title: invoice.status.toUpperCase(),
-                      color: invoice.status.toLowerCase() == 'lunas'
-                          ? PdfColors.blue700
-                          : PdfColors.orange600,
+                      title: invoice.status.toLowerCase().contains('installments')
+                      ? 'CICILAN' : invoice.status.toLowerCase().contains('down payment')
+                      ? 'UANG MUKA' : invoice.status.toLowerCase().contains('fully paid') 
+                      ? 'LUNAS' : invoice.status.toLowerCase(),
+                      color: pdfcolors(invoice.status),
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ],
