@@ -12,6 +12,10 @@ Color bgcolors(String state) {
       return Colors.green.shade100;
     case "cancelled":
       return Colors.red.shade100;
+    case "lunas":
+      return Colors.blue.shade100;
+    case "dp / partial":
+      return Colors.orange.shade100;
     default:
       return Colors.grey.shade100;
   }
@@ -27,10 +31,15 @@ Color colors(String state) {
       return Colors.green.shade700;
     case "cancelled":
       return Colors.red;
+    case "lunas":
+      return Colors.blue.shade700;
+    case "dp / partial":
+      return Colors.orange.shade700;
     default:
-      return Colors.grey.shade100;
+      return Colors.grey.shade500;
   }
 }
+
 PdfColor pdfcolors(String state) {
   switch (state.toLowerCase()) {
     case "pending":

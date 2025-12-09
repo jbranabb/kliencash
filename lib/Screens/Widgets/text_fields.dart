@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/countryCode.dart';
@@ -75,44 +76,6 @@ Widget textFiledsForSearch(context, nameSeacrhC,nameSeacrhF, void Function(Strin
       onChanged: onchanged
     ),
   );
-}
-
-Color bgcolors(String state) {
-  switch (state.toLowerCase()) {
-    case "pending":
-      return Colors.orange.shade100;
-    case "on going":
-      return Colors.blue.shade100;
-    case "completed":
-      return Colors.green.shade100;
-    case "cancelled":
-      return Colors.red.shade100;
-    case "lunas":
-      return Colors.blue.shade100;
-    case "dp / partial":
-      return Colors.orange.shade100;
-    default:
-      return Colors.grey.shade100;
-  }
-}
-
-Color colors(String state) {
-  switch (state.toLowerCase()) {
-    case "pending":
-      return Colors.orange.shade700;
-    case "on going":
-      return Colors.blue.shade700;
-    case "completed":
-      return Colors.green.shade700;
-    case "cancelled":
-      return Colors.red;
-    case "lunas":
-      return Colors.blue.shade700;
-    case "dp / partial":
-      return Colors.orange.shade700;
-    default:
-      return Colors.grey.shade500;
-  }
 }
 
 class MyTextFileds extends StatelessWidget {

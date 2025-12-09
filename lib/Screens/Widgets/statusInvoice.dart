@@ -1,8 +1,11 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/text_fields.dart';
+import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 
 class StatusInvoice extends StatelessWidget {
@@ -49,7 +52,7 @@ class StatusInvoice extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0, top: 4,left: 8,right: 8),
-                    child: MyText(title: stateTtile ?? 'Pilih Status', color: colors(stateTtile ?? ''),),
+                    child: MyText(title: stateTtile ?? LocaleKeys.selectStatus.tr(), color: colors(stateTtile ?? ''),),
                   ),
                 ),
               ),
