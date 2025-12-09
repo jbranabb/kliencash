@@ -69,7 +69,10 @@ class DetailInvoice extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                MyText(title: LocaleKeys.invoiceNumber.tr(), fontSize: 10),
+                                MyText(
+                                  title: LocaleKeys.invoiceNumber.tr(),
+                                  fontSize: 10,
+                                ),
                                 MyText(
                                   title: invoice.invoiceNumber,
                                   fontWeight: FontWeight.bold,
@@ -87,7 +90,19 @@ class DetailInvoice extends StatelessWidget {
                                   vertical: 4,
                                 ),
                                 child: MyText(
-                                  title: invoice.status.toUpperCase(),
+                                  title:
+                                      invoice.status.toLowerCase() ==
+                                          'fully paid'
+                                      ? LocaleKeys.fullyPaid.tr().toUpperCase()
+                                      : invoice.status.toLowerCase() ==
+                                            'installments'
+                                      ? LocaleKeys.installments
+                                            .tr()
+                                            .toUpperCase()
+                                      : invoice.status.toLowerCase() ==
+                                            'down payment'
+                                      ? LocaleKeys.dp.tr().toUpperCase()
+                                      : invoice.status.toUpperCase(),
                                   color: colors(invoice.status),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12,
@@ -99,7 +114,10 @@ class DetailInvoice extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            MyText(title: LocaleKeys.projectTitle.tr(), fontSize: 10),
+                            MyText(
+                              title: LocaleKeys.projectTitle.tr(),
+                              fontSize: 10,
+                            ),
                             MyText(
                               title: invoice.title,
                               fontWeight: FontWeight.bold,
@@ -123,7 +141,7 @@ class DetailInvoice extends StatelessWidget {
                               Colors.red.shade100,
                               Colors.red,
                               Icons.event_busy,
-                              LocaleKeys.dueDate,
+                              LocaleKeys.dueDate.tr(),
                             ),
                           ],
                         ),
@@ -172,8 +190,14 @@ class DetailInvoice extends StatelessWidget {
                             _buildInfoRow(LocaleKeys.project, project.agenda),
                             if (project.desc != null) ...[
                               SizedBox(height: 8),
-                              _buildInfoRow(LocaleKeys.phoneNumber, client.handphone),
-                              _buildInfoRow(LocaleKeys.phoneNumber, client.alamat),
+                              _buildInfoRow(
+                                LocaleKeys.phoneNumber,
+                                client.handphone,
+                              ),
+                              _buildInfoRow(
+                                LocaleKeys.phoneNumber,
+                                client.alamat,
+                              ),
                             ],
                           ],
                         ),
@@ -204,7 +228,10 @@ class DetailInvoice extends StatelessWidget {
                                     return Column(
                                       children: [
                                         SizedBox(height: 8),
-                                        _buildInfoRow('${LocaleKeys.opeartional}:', ''),
+                                        _buildInfoRow(
+                                          '${LocaleKeys.opeartional}:',
+                                          '',
+                                        ),
                                         ListView.builder(
                                           shrinkWrap: true,
                                           physics:

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
-import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/locale_keys.dart';
 import 'package:kliencash/state/cubit/dropdown_statusinvoice.dart';
 
@@ -21,7 +20,7 @@ class StatusInvoice extends StatelessWidget {
       children: [
         BlocBuilder<DropdownStatusinvoice, String?>(
           builder: (context, stateTtile) {
-            List<String> list = ['Dp / Partial', 'Lunas'];
+            List<String> list = [LocaleKeys.dp.tr().toUpperCase(), LocaleKeys.fullyPaid.tr().toUpperCase(),LocaleKeys.installments.tr().toUpperCase() ];
             return DropdownButton<String>(
               onChanged: (value) {
                 context.read<DropdownStatusinvoice>().setStatus(

@@ -69,8 +69,6 @@ class _AddInoviceState extends State<AddInovice> {
     var formated = formatRupiah.format(state);
     var display = state <= 0 ? LocaleKeys.free.tr() : formated;
     totalAmountC.text = display;
-    var idProjectsState = context.read<SelectedProjects>().state;
-    idC.text = idProjectsState['Id'].toString();
     var datevalue = context.watch<Selecteddatecubit>().state;
     return Scaffold(
       appBar: AppBar(
@@ -297,18 +295,16 @@ class _AddInoviceState extends State<AddInovice> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    print(totalAmountC.text);
                     print(subtotalC.text);
-                    var rawtotalAmoutFormated = totalAmountC.text.replaceAll(
-                      RegExp(r'[Rp\s.]'),
-                      '',
-                    );
-                    var totalAmoutFormated =
-                        rawtotalAmoutFormated.toLowerCase().contains('gratis')
+
+                    // print(totalAmountC.text.toLowerCase().contains(LocaleKeys.free.tr().toLowerCase()) && totalAmountC.text.isNotEmpty ? 0 : 1);
+                    var totalAmoutFormated = totalAmountC.text.toLowerCase().contains(LocaleKeys.free.tr().toLowerCase()) && totalAmountC.text.isNotEmpty
                         ? 0
-                        : int.parse(rawtotalAmoutFormated);
+                        : int.parse(totalAmountC.text.replaceAll(RegExp(r'[Rp\s.]'),'',));
                     validatePost(
                       context,
-                      idC.text,
+                      // idC.text,
                       subtotalC.text,
                       pajakC.text,
                       discountC.text,
@@ -431,7 +427,7 @@ Widget selectedPayementMethod() {
 
 void validatePost(
   BuildContext context,
-  String id,
+  // String id,
   String subtotal,
   String pajak,
   String discount,
@@ -445,24 +441,32 @@ void validatePost(
   int roundedValue,
   String statelist,
 ) {
+    var idProjectsState = context.read<SelectedProjects>().state;
+    var  id  = idProjectsState['Id'];
   var paymentId = context.read<SelectedPaymentMethod>().state['id'];
-  if (id.isNotEmpty &&
-      subtotal.isNotEmpty &&
+  print('subtotal : $subtotal');
+  print('totalAmout : $totalAmout');
+  if (
+    id != null && id.toString().isNotEmpty && 
       startAt.isNotEmpty &&
       title.isNotEmpty &&
       paymentId != null &&
       jatuhTempoAt.isNotEmpty &&
-      status != null) {
-    var subtotalFormated = subtotal.replaceAll(RegExp(r'[Rp\s.]'), '');
+      status != null) { 
+    var subtotalFormated = subtotal.isEmpty  ? '0' : subtotal.replaceAll(RegExp(r'[Rp\s.]'), '');
     var rawLegth = int.parse(statelist) + 1;
     var seprated = rawLegth / 100;
     var listlength = seprated.toString().replaceAll('.', '');
     var date = DateFormat('ddMMyyyy').format(DateTime.now());
+    var formatedStatus =
+     status.toLowerCase().contains('uang muka') ? 'DOWN PAYMENT' 
+     : status.toLowerCase().contains('lunas') ? 'FULLY PAID' 
+     : status.toLowerCase().contains('cicilan')  ? 'INSTALLMENTS' : status;
     context.read<InvoiceBloc>().add(
       PostInvoice(
         invoiceModel: InvoiceModel(
-          projectsId: int.parse(id),
-          status: status,
+          projectsId: id,
+          status: formatedStatus,
           subtotal: int.parse(subtotalFormated),
           pajak: int.tryParse(pajak) ?? 0,
           discount: int.tryParse(discount) ?? 0,

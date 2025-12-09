@@ -225,8 +225,12 @@ class _InvoicePageState extends State<InvoicePage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: MyText(
-                        title: invoice.status.toLowerCase() == 'lunas'
-                            ? LocaleKeys.fullyPaid.tr()
+                        title: invoice.status.toLowerCase() == 'fully paid'
+                            ? LocaleKeys.fullyPaid.tr().toUpperCase()
+                            : invoice.status.toLowerCase() == 'installments'
+                            ? LocaleKeys.installments.tr().toUpperCase() 
+                            : invoice.status.toLowerCase() == 'down payment' 
+                            ? LocaleKeys.dp.tr().toUpperCase()
                             : invoice.status.toUpperCase(),
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
