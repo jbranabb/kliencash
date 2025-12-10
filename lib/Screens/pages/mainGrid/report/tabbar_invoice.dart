@@ -24,40 +24,45 @@ class TabbarInvoice extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: BlocBuilder<InvoiceBloc, InvoiceState>(
                     builder: (context, state) {
-                      if(state is InvoiceReadSucces){
-                        var totalinvoice = 0 ; 
-                        for(var i in state.list){
+                      if (state is InvoiceReadSucces) {
+                        var totalinvoice = 0;
+                        for (var i in state.list) {
                           totalinvoice += i.totalAmount;
-                        } 
-                        var dppartial =  state.list.where((e)=> e.status.toLowerCase() != 'lunas');
-                        var  dppartialtotal = 0;
-                        for(var total in dppartial){
+                        }
+                        var dppartial = state.list.where(
+                          (e) => e.status.toLowerCase() != 'fully paid',
+                        );
+                        var dppartialtotal = 0;
+                        for (var total in dppartial) {
                           dppartialtotal += total.totalAmount;
                         }
                         return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          MyText(title: LocaleKeys.summaryOverall.tr(), fontWeight: FontWeight.w600,),
-                          SizedBox(height: 10,),
-                          _buildRow(
-                            Icons.receipt_long_rounded,
-                            LocaleKeys.totalInvoice.tr(),
-                            state.list.length.toString(),
-                          ),
-                          _buildRow(
-                            Icons.payment_rounded,
-                            LocaleKeys.totalPaid.tr(),
-                            formatCurrency(totalinvoice),
-                          ),
-                          _buildRow(
-                            Icons.schedule_rounded,
-                            'Dp / Partial (${dppartial.length})',
-                            formatCurrency(dppartialtotal),
-                          ),
-                        ],
-                      );
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            MyText(
+                              title: LocaleKeys.summaryOverall.tr(),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            SizedBox(height: 10),
+                            _buildRow(
+                              Icons.receipt_long_rounded,
+                              LocaleKeys.totalInvoice.tr(),
+                              state.list.length.toString(),
+                            ),
+                            _buildRow(
+                              Icons.payment_rounded,
+                              LocaleKeys.totalPaid.tr(),
+                              formatCurrency(totalinvoice),
+                            ),
+                            _buildRow(
+                              Icons.schedule_rounded,
+                              '${LocaleKeys.dp.tr()}/${LocaleKeys.installments.tr()} (${dppartial.length})',
+                              formatCurrency(dppartialtotal),
+                            ),
+                          ],
+                        );
                       }
-                      return SizedBox.shrink(); 
+                      return SizedBox.shrink();
                     },
                   ),
                 ),
@@ -89,8 +94,7 @@ class TabbarInvoice extends StatelessWidget {
                             color: Colors.grey,
                           ),
                           MyText(
-                            title:
-                                LocaleKeys.noInvoiceData.tr(),
+                            title: LocaleKeys.noInvoiceData.tr(),
                             textAlign: TextAlign.center,
                             color: Colors.grey,
                           ),
@@ -110,19 +114,26 @@ class TabbarInvoice extends StatelessWidget {
                     series: [
                       DoughnutSeries<Invoicestatus, String>(
                         dataSource: state,
-                        xValueMapper: (data, _) => data.status,
+                        xValueMapper: (data, _) =>
+                            translatedStatus(data.status),
                         yValueMapper: (data, _) => data.value,
                         enableTooltip: true,
                         pointColorMapper: (data, index) {
                           switch (data.status.toLowerCase()) {
-                            case 'lunas':
-                              return Colors.blue;
-                            case 'dp / partial':
-                              return Colors.orange;
-                            case 'completed':
-                              return Colors.green;
-                            case 'cancelled':
-                              return Colors.red;
+                            case "lunas":
+                              return Colors.blue.shade700;
+                            case "fully paid":
+                              return Colors.blue.shade700;
+
+                            case "uang muka":
+                              return Colors.orange.shade700;
+                            case "down payment":
+                              return Colors.orange.shade700;
+
+                            case "cicilan":
+                              return Colors.yellow.shade800;
+                            case "installments":
+                              return Colors.yellow.shade800;
                             default:
                               return Colors.black;
                           }
@@ -143,6 +154,19 @@ class TabbarInvoice extends StatelessWidget {
   }
 }
 
+String translatedStatus(String status) {
+  switch (status.toLowerCase()) {
+    case "down payment":
+      return LocaleKeys.dp.tr();
+    case "installments":
+      return LocaleKeys.installments.tr();
+    case "fully paid":
+      return LocaleKeys.fullyPaid.tr();
+    default:
+      return status;
+  }
+}
+
 Widget _buildRow(IconData icon, String title1, String title2) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,12 +174,11 @@ Widget _buildRow(IconData icon, String title1, String title2) {
       Row(
         spacing: 4,
         children: [
-          Icon(icon, size: 16,),
+          Icon(icon, size: 16),
           MyText(title: title1),
         ],
       ),
       MyText(title: title2),
     ],
   );
-  
 }
