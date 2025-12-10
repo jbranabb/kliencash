@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:kliencash/data/database/database_helper.dart';
 import 'package:kliencash/data/model/model.dart';
+import 'package:kliencash/locale_keys.dart';
 
 class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
   BookstatuslengthCubit() : super([]);
@@ -19,13 +21,13 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
     } 
     final List<Map<String, dynamic>> cardData = [
       {
-        'title': 'Active Clients',
+        'title': LocaleKeys.activeClients.tr(),
         'value':  dataClient.isNotEmpty ? dataClient.length : 0,
         'icon': Icons.people_outline,
         'color': Colors.blue,
       },
       {
-        'title': 'DP - Partial',
+        'title': "${LocaleKeys.installments.tr()} & ${LocaleKeys.dp.tr()}" ,
         'value':  
         invoiceResults.isNotEmpty ? invoiceResults.where((e) => e.status == 'Dp / Partial').length :
          0,
@@ -33,13 +35,13 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
         'color': Colors.orange,
       },
       {
-        'title': 'Payments Done',
+        'title': '${LocaleKeys.payment.tr()} ${LocaleKeys.done.tr()}',
         'value': dataPayments.isNotEmpty ?  dataPayments.length : 0,
         'icon': Icons.pending_actions,
         'color': Colors.green,
       },
       {
-        'title': 'Outsanding',
+        'title': LocaleKeys.outstanding.tr(),
         'value': 
         invoiceResults.isNotEmpty ?  outstandingDate.where((e) => e ==  true).length :
          0,
@@ -47,7 +49,6 @@ class BookstatuslengthCubit extends Cubit<List<Map<String, dynamic>>> {
         'color': Colors.red,
       },
     ];
-    print('object from bookstaus');
     emit(cardData);
   }
 }

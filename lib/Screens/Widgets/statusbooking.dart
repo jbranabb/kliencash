@@ -76,14 +76,23 @@ class _BookingStatuesState extends State<BookingStatues> {
                               mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                               children: [
-                                MyText(
-                                  title:  cardData[index]['title'].toString(),
-                                  color: cardData[index]['color'] as Color,
+                                Expanded(
+                                  flex: 5,
+                                  child: MyText(
+                                    title:  cardData[index]['title'].toString(),
+                                    color: cardData[index]['color'] as Color,
+                                  ),
                                 ),
-                                MyText(
-                                  title:  cardData[index]['value'].toString(),
-                                  fontWeight: FontWeight.bold,
-                                  color: cardData[index]['color'] as Color,
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: MyText(
+                                      title:  cardData[index]['value'].toString(),
+                                      fontWeight: FontWeight.bold,
+                                      color: cardData[index]['color'] as Color,
+                                    ),
+                                  ),
                                 ),
                               ],
                             );
