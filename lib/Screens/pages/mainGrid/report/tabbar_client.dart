@@ -19,40 +19,69 @@ class TabbarClient extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Card(
-                child: BlocBuilder<ChartDataClientCubit, List<ClientMonthlyData>>(
-                  builder: (context, state) {
-                    return SfCartesianChart(
-                      title: ChartTitle(text: LocaleKeys.newClientsMonthly.tr()),
-                      primaryXAxis: CategoryAxis(
-                        majorGridLines: const MajorGridLines(),
-                      ),
-                      primaryYAxis: NumericAxis(
-                        majorGridLines: MajorGridLines(
-                          width: 0.3,
-                          color: Colors.grey[50],
+                child:
+                    BlocBuilder<ChartDataClientCubit, List<ClientMonthlyData>>(
+                      builder: (context, state) {
+                        if (state.isEmpty) {
+                          return SizedBox(
+                        width: double.maxFinite,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 8,
+                          children: [
+                            SizedBox(height: 16),
+                            Icon(Icons.work, size: 40, color: Colors.grey),
+                            MyText(
+                              title: LocaleKeys.noChartData.tr(),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                            MyText(
+                              title:
+                                  LocaleKeys.noClient.tr(),
+                              textAlign: TextAlign.center,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16),
+                          ],
                         ),
-                        minimum: 0,
-                      ),
-                      series: [
-                        LineSeries<ClientMonthlyData, String>(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          dataSource: state,
-                          xValueMapper: (data, _) => data.month,
-                          yValueMapper: (data, _) => data.count,
-                          markerSettings: const MarkerSettings(
-                            isVisible: true,
-                            height: 8,
-                            width: 8,
+                      );
+                        }
+                        return SfCartesianChart(
+                          title: ChartTitle(
+                            text: LocaleKeys.newClientsMonthly.tr(),
                           ),
+                          primaryXAxis: CategoryAxis(
+                            majorGridLines: const MajorGridLines(),
+                          ),
+                          primaryYAxis: NumericAxis(
+                            majorGridLines: MajorGridLines(
+                              width: 0.3,
+                              color: Colors.grey[50],
+                            ),
+                            minimum: 0,
+                          ),
+                          series: [
+                            LineSeries<ClientMonthlyData, String>(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              dataSource: state,
+                              xValueMapper: (data, _) => data.month,
+                              yValueMapper: (data, _) => data.count,
+                              markerSettings: const MarkerSettings(
+                                isVisible: true,
+                                height: 8,
+                                width: 8,
+                              ),
 
-                          dataLabelSettings: const DataLabelSettings(
-                            isVisible: true,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                              dataLabelSettings: const DataLabelSettings(
+                                isVisible: true,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
               ),
             ),
             SizedBox(
@@ -197,4 +226,3 @@ class TabbarClient extends StatelessWidget {
     );
   }
 }
-
