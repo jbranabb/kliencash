@@ -82,6 +82,10 @@ class _SettingsPageState extends State<SettingsPage> {
       body: BlocListener<PaymentMethodBloc, PaymentMethodState>(
         listener: (context, state) {
           if (state is PaymentMethodPostSucces) {
+            context.read<DropdownStatusinvoice>().reset();
+              nameC.clear();
+              numberC.clear();
+              atasNamaC.clear();
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
@@ -91,6 +95,10 @@ class _SettingsPageState extends State<SettingsPage> {
             );
             context.read<PaymentMethodBloc>().add(ReadPaymentMethod());
           } else if (state is PaymentMethodEditSucces) {
+            context.read<DropdownStatusinvoice>().reset();
+              nameC.clear();
+              numberC.clear();
+              atasNamaC.clear();
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
@@ -510,7 +518,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 MyTextFileds(
                   controller: numberC,
-                  label: LocaleKeys.phoneNumber,
+                  label: LocaleKeys.bankNumber.tr(),
                   icon: Icons.onetwothree,
                   hint: MyText(
                     title: LocaleKeys.bankNumber.tr(),
@@ -580,7 +588,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       backgroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                     child: MyText(
-                      title: LocaleKeys.onBehalfOf.tr(),
+                      title: LocaleKeys.done.tr(),
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),

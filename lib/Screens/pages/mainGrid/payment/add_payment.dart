@@ -73,6 +73,8 @@ class _AddPaymentState extends State<AddPayment> {
       body: BlocListener<PaymentBloc, PaymentState>(
         listener: (context, state) {
           if (state is PaymentPostDataSucces) {
+            context.read<SelectedProjects>().reset();
+            context.read<Selectedinvoice>().reset();
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               mySnakcbar(
