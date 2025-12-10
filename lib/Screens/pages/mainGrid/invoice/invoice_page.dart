@@ -132,25 +132,29 @@ class _InvoicePageState extends State<InvoicePage> {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.receipt_long_outlined, color: Colors.grey[400], size: 80),
-          SizedBox(height: 16),
-          MyText(
-            title: LocaleKeys.noInvoice.tr(),
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700]!,
-          ),
-          SizedBox(height: 8),
-          MyText(
-            title: LocaleKeys.addInvoiceFirst.tr(),
-            color: Colors.grey[500]!,
-            textAlign: TextAlign.center,
-          ),
-        ],
+    var height =  MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: height * 0.8,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.receipt_long_outlined, color: Colors.grey[400], size: 80),
+            SizedBox(height: 16),
+            MyText(
+              title: LocaleKeys.noInvoice.tr(),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700]!,
+            ),
+            SizedBox(height: 8),
+            MyText(
+              title: LocaleKeys.addInvoiceFirst.tr(),
+              color: Colors.grey[500]!,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -67,7 +67,7 @@ class _PayementPageState extends State<PayementPage> {
                 if (state is PaymentReadDataSucces) {
                   if (state.list.isEmpty && !isActiveSearch) {
                     return SizedBox(
-                      height: height,
+                      height: height * 0.8,
                       width: double.maxFinite,
                       child: Column(
                         spacing: 4,

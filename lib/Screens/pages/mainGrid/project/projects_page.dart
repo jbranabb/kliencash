@@ -161,25 +161,29 @@ class _ProjectsPageState extends State<ProjectsPage> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.work_outline, color: Colors.grey[400], size: 80),
-          SizedBox(height: 16),
-          MyText(
-            title: LocaleKeys.noProject.tr(),
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700]!,
-          ),
-          SizedBox(height: 8),
-          MyText(
-            title: LocaleKeys.addProjectFirst.tr(),
-            color: Colors.grey[500]!,
-            textAlign: TextAlign.center,
-          ),
-        ],
+    var height =  MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: height * 0.8,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.work_outline, color: Colors.grey[400], size: 80),
+            SizedBox(height: 16),
+            MyText(
+              title: LocaleKeys.noProject.tr(),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700]!,
+            ),
+            SizedBox(height: 8),
+            MyText(
+              title: LocaleKeys.addProjectFirst.tr(),
+              color: Colors.grey[500]!,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

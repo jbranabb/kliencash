@@ -8,8 +8,7 @@ import 'package:kliencash/Screens/Widgets/colors_status.dart';
 import 'package:kliencash/Screens/Widgets/format.dart';
 import 'package:kliencash/Screens/Widgets/my_text.dart';
 import 'package:kliencash/Screens/Widgets/snackbar.dart';
-import 'package:kliencash/Screens/Widgets/text_fields.dart'
-    hide colors, bgcolors;
+import 'package:kliencash/Screens/Widgets/text_fields.dart';
 import 'package:kliencash/data/model/model.dart';
 import 'package:kliencash/state/bloc/operasional/operasional_bloc.dart';
 import 'package:kliencash/state/bloc/projets/projects_bloc.dart';
@@ -102,6 +101,9 @@ class _OperasionalPageState extends State<OperasionalPage> {
               return BlocBuilder<ProjectsBloc, ProjectsState>(
                 builder: (context, state) {
                   if (state is ProjectsSuccesState) {
+                  if(state.list.isEmpty){
+                    return _buildEmptyState(context);
+                  }
                     if (state.list.isEmpty && !isActiveSearch) {
                       return SizedBox(
                         height: double.maxFinite,
@@ -360,6 +362,35 @@ class _OperasionalPageState extends State<OperasionalPage> {
     );
   }
 }
+
+  Widget _buildEmptyState(BuildContext context) {
+    var height =  MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: height * 0.8,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.work_outline, color: Colors.grey[400], size: 80),
+            SizedBox(height: 16),
+            MyText(
+              title: LocaleKeys.noProject.tr(),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700]!,
+            ),
+            SizedBox(height: 8),
+            MyText(
+              title: LocaleKeys.addProjectFirst.tr(),
+              color: Colors.grey[500]!,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
 Widget addNewOperasionalButton(
   BuildContext context,
