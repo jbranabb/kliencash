@@ -128,7 +128,7 @@ class TabbarProjects extends StatelessWidget {
                       series: [
                         DoughnutSeries<ProjectsStatus, String>(
                           dataSource: state,
-                          xValueMapper: (data, _) => data.status,
+                          xValueMapper: (data, _) => _translatedStatusProjects(data.status),
                           yValueMapper: (data, _) => data.value,
                           enableTooltip: true,
                           pointColorMapper: (data, index) {
@@ -159,5 +159,20 @@ class TabbarProjects extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+String _translatedStatusProjects(String status) {
+  switch (status.toLowerCase()) {
+    case "pending":
+      return LocaleKeys.pending.tr();
+    case "on going":
+      return LocaleKeys.onGoing.tr();
+    case "completed":
+      return LocaleKeys.completed.tr();
+    case "cancelled":
+      return LocaleKeys.cancelled.tr();
+    default:
+      return status;
   }
 }
