@@ -178,7 +178,7 @@
     "free": "GRATIS",
     "addNewPaymentMethod": "Tambahkan Metode Pembayaran",
     "or": "atau",
-    "onBehalfOf": "AtasNama",
+    "onBehalfOf": "Atas Nama",
     "clickToAdd": "Klik Untuk Menambahkan",
     "select": "Pilih",
     "emptyFilter": "Tidak ada hasil yang sesuai pencarian.",
@@ -188,5 +188,7 @@
     "pending": "Menunggu",
     "onGoing": "Sedang Berjalan",
     "completed": "Selesai",
-    "cancelled": "Dibatalkan"
+    "cancelled": "Dibatalkan",
+    "outstanding": "Tertunggak",
+    "activeClients": "Client Aktif"
 }

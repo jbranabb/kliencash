@@ -188,6 +188,8 @@
     "pending": "Pending",
     "onGoing": "On Going",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "outstanding": "Outstanding",
+    "activeClients": "Client Aktif"
     
 }

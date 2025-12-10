@@ -219,4 +219,6 @@ class LocaleKeys {
   static const String onGoing = 'onGoing';
   static const String completed = 'completed';
   static const String cancelled = 'cancelled';
+  static const String outstanding = 'outstanding';
+  static const String activeClients = 'activeClients';
 }
